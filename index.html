@@ -798,9 +798,15 @@ function isAdmin() {
 function showNotif(msg, type='info') {
     const icons = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' };
     const box = document.getElementById('notifBox');
+    if (!box) return;
     const el  = document.createElement('div');
     el.className = `notification ${type}`;
-    el.textContent = (icons[type]||'') + ' ' + msg;
+    // Handle error objects properly
+    let msgStr = msg;
+    if (msg && typeof msg === 'object') {
+        msgStr = msg.message || msg.error?.message || JSON.stringify(msg);
+    }
+    el.textContent = (icons[type]||'') + ' ' + msgStr;
     box.appendChild(el);
     requestAnimationFrame(() => el.classList.add('show'));
     setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 4000);
@@ -958,8 +964,17 @@ async function insert(r) {
     return data;
 }
 async function loadAll(type) {
-    const { data } = await sb.from('builds').select('*').eq('type', type).order('upload_date', { ascending: false });
-    return data || [];
+    try {
+        const { data, error } = await sb.from('builds').select('*').eq('type', type).order('upload_date', { ascending: false });
+        if (error) {
+            console.error('Load error:', error);
+            return [];
+        }
+        return data || [];
+    } catch(e) {
+        console.error('Load error:', e);
+        return [];
+    }
 }
 async function deleteItem(id) {
     const { error } = await sb.from('builds').delete().eq('id', id);
@@ -1115,15 +1130,21 @@ async function loadAllAndRender() {
         const sells  = await loadAll('sell');
         const trades = await loadAll('trade');
 
-        document.getElementById('buildGal').innerHTML = builds.length
-            ? builds.map(b => cardHTML(b, false)).join('')
-            : '<div class="loading">No builds yet</div>';
-        document.getElementById('sellGal').innerHTML = sells.length
-            ? sells.map(s => cardHTML(s, false)).join('')
-            : '<div class="loading">No items for sale</div>';
-        document.getElementById('tradeGal').innerHTML = trades.length
-            ? trades.map(t => cardHTML(t, false)).join('')
-            : '<div class="loading">No trades yet</div>';
+        if (document.getElementById('buildGal')) {
+            document.getElementById('buildGal').innerHTML = builds.length
+                ? builds.map(b => cardHTML(b, false)).join('')
+                : '<div class="loading">No builds yet</div>';
+        }
+        if (document.getElementById('sellGal')) {
+            document.getElementById('sellGal').innerHTML = sells.length
+                ? sells.map(s => cardHTML(s, false)).join('')
+                : '<div class="loading">No items for sale</div>';
+        }
+        if (document.getElementById('tradeGal')) {
+            document.getElementById('tradeGal').innerHTML = trades.length
+                ? trades.map(t => cardHTML(t, false)).join('')
+                : '<div class="loading">No trades yet</div>';
+        }
     } catch(e) {
         console.error('Load error:', e);
     }
@@ -1132,11 +1153,17 @@ async function loadAllAndRender() {
 async function loadMyUploads() {
     if (!user) return;
     try {
-        const { data } = await sb.from('builds').select('*').eq('owner_email', user.email).order('upload_date', { ascending: false });
+        const { data, error } = await sb.from('builds').select('*').eq('owner_email', user.email).order('upload_date', { ascending: false });
+        if (error) {
+            console.error('Load my uploads error:', error);
+            return;
+        }
         const items = data || [];
-        document.getElementById('myGal').innerHTML = items.length
-            ? items.map(i => cardHTML(i, true)).join('')
-            : '<p style="text-align:center;color:var(--text2);padding:40px;">You haven\'t uploaded anything yet</p>';
+        if (document.getElementById('myGal')) {
+            document.getElementById('myGal').innerHTML = items.length
+                ? items.map(i => cardHTML(i, true)).join('')
+                : '<p style="text-align:center;color:var(--text2);padding:40px;">You haven\'t uploaded anything yet</p>';
+        }
     } catch(e) {
         console.error('Load my uploads error:', e);
     }
