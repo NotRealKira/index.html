@@ -1008,6 +1008,7 @@ async function uploadBuild(event) {
         const fileUrl = await uploadCloud(file);
         await insert({
             type: 'build',
+            owner: user.id,
             owner_email: user.email,
             owner_name:  localStorage.getItem('lh_username') || user.user_metadata?.name,
             owner_avatar: user.user_metadata?.picture,
@@ -1042,6 +1043,7 @@ async function uploadSell(event) {
         const imgUrl = await uploadCloud(img);
         await insert({
             type: 'sell',
+            owner: user.id,
             owner_email: user.email,
             owner_name:  localStorage.getItem('lh_username') || user.user_metadata?.name,
             owner_avatar: user.user_metadata?.picture,
@@ -1074,6 +1076,7 @@ async function uploadTrade(event) {
         const imgUrl = await uploadCloud(img);
         await insert({
             type: 'trade',
+            owner: user.id,
             owner_email: user.email,
             owner_name:  localStorage.getItem('lh_username') || user.user_metadata?.name,
             owner_avatar: user.user_metadata?.picture,
