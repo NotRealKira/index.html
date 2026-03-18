@@ -1289,7 +1289,7 @@ async function updateProfilePicture() {
 // ── Owner Modal ───────────────────────────────────────────────────────────────
 function showOwnerModal(name, email, avatar) {
     document.getElementById('ownerName').textContent = name || 'Unknown';
-    document.getElementById('ownerEmail').textContent = Email hided.|| 'email Hided.';
+    document.getElementById('ownerEmail').textContent = email || 'No email';
     const avatarEl = document.getElementById('ownerAvatar');
     if (avatar) {
         avatarEl.innerHTML = `<img src="${avatar}" onerror="this.style.display='none'">`;
@@ -1300,7 +1300,7 @@ function showOwnerModal(name, email, avatar) {
     modal.classList.add('show');
     modal.style.display = 'flex';
 }
-
+        
 function closeOwnerModal() {
     const modal = document.getElementById('ownerModal');
     const content = document.getElementById('ownerModalContent');
