@@ -1203,23 +1203,33 @@ async function adminDeleteItem(id, ownerEmail) {
 }
 
 async function adminBanUser(email, name) {
-    if (!isAdmin()) { showNotif('Admin access denied', 'error'); return; }
-    if (!confirm(`Ban user ${name} (${email})? All their uploads will be deleted.`)) return;
+    if (!isAdmin()) { 
+        showNotif('Admin access denied', 'error'); 
+        return; 
+    }
+    if (!confirm(`Ban user \( {name} ( \){email})? All their uploads will be deleted.`)) return;
+
     try {
+        // Delete all their uploads
         const { data: items } = await sb.from('builds').select('id').eq('owner_email', email);
         if (items && items.length > 0) {
             for (const item of items) {
                 await deleteItem(item.id);
             }
         }
-        
-        await sb.from('banned_users').insert([{
-            email: email,
-            name: name,
-            banned_date: new Date().toISOString(),
-            banned_by: user.email
-        }]).catch(() => {});
-        
+
+        // Try to log the ban (ignore error if the table doesn't exist yet)
+        try {
+            await sb.from('banned_users').insert([{
+                email: email,
+                name: name,
+                banned_date: new Date().toISOString(),
+                banned_by: user.email
+            }]);
+        } catch (banError) {
+            console.warn('Ban record insert skipped (table may not exist yet):', banError);
+        }
+
         showNotif(`User ${name} has been banned!`, 'success');
         loadAllAndRender();
     } catch(e) {
