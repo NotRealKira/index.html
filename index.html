@@ -100,7 +100,7 @@
         .search-box input{border:none;background:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.88em;padding:10px 0;width:100%;outline:none}
         .search-box input::placeholder{color:var(--text-dim)}
         .sel{padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.82em;cursor:pointer}
-        .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:5px}
+        .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
         .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.2s}
         .card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 30px var(--accent-glow)}
         .card-img{aspect-ratio:16/10;background:var(--surface2);overflow:hidden}
@@ -283,7 +283,39 @@ function fmtTime(e){const d=e-new Date(),days=Math.floor(d/864e5),hrs=Math.floor
 function calcExp(d){if(d==='permanent')return null;const m={'1h':1,'6h':6,'12h':12,'1d':24,'3d':72,'7d':168,'14d':336,'30d':720};return new Date(Date.now()+(m[d]||24)*36e5).toISOString()}
 function openBanModal(e,n){pendingBanEmail=e;pendingBanName=n;document.getElementById('banTarget').textContent=`${n} (${e})`;document.getElementById('banModal').classList.add('show')}
 function closeBanModal(){document.getElementById('banModal').classList.remove('show')}
-async function confirmBan(){if(!isAdmin()||!pendingBanEmail)return;const dur=document.getElementById('banDuration').value,reason=document.getElementById('banReason').value.trim(),exp=calcExp(dur);try{const ex=getBanRec(pendingBanEmail);if(ex)await sb.from('banned_users').update({expires_at:exp,reason,banned_date:new Date().toISOString(),banned_by:user.email}).eq('id',ex.id);else await sb.from('banned_users').insert([{email:pendingBanEmail,name:pendingBanName,banned_date:new Date().toISOString(),banned_by:user.email,expires_at:exp,reason}]);await loadBanned();toast(`${pendingBanName} banned ${dur==='permanent'?'permanently':'for '+dur}`,'ok');closeBanModal();loadBuilds();loadSells();loadTrades();renderBanList()}catch(e){toast(e.message||e,'err')}}
+async function confirmBan(){
+    if(!isAdmin()||!pendingBanEmail)return;
+    const dur=document.getElementById('banDuration').value,reason=document.getElementById('banReason').value.trim(),exp=calcExp(dur);
+    try{
+        const ex=getBanRec(pendingBanEmail);
+        let res;
+        if(ex){
+            res = await sb.from('banned_users').update({expires_at:exp,reason,banned_date:new Date().toISOString(),banned_by:user.email}).eq('id',ex.id);
+        } else {
+            res = await sb.from('banned_users').insert([{email:pendingBanEmail,name:pendingBanName,banned_date:new Date().toISOString(),banned_by:user.email,expires_at:exp,reason}]);
+        }
+        
+        if(res.error) throw res.error;
+
+        // Automatically delete their builds after banning
+        const { data: userBuilds } = await sb.from('builds').select('id').eq('owner_email', pendingBanEmail);
+        if(userBuilds && userBuilds.length > 0) {
+            for(const b of userBuilds) {
+                await sb.from('builds').delete().eq('id', b.id);
+            }
+        }
+
+        await loadBanned();
+        toast(`${pendingBanName} banned ${dur==='permanent'?'permanently':'for '+dur}`,'ok');
+        closeBanModal();
+        await Promise.all([loadBuilds(), loadSells(), loadTrades()]);
+        renderBanList();
+        updateForms();
+    }catch(e){
+        console.error('Ban error:', e);
+        toast(e.message||e,'err');
+    }
+}
 async function unbanUser(id){if(!isAdmin()||!confirm('Unban?'))return;try{await sb.from('banned_users').delete().eq('id',id);await loadBanned();toast('Unbanned','ok');renderBanList();updateForms()}catch(e){toast(e.message||e,'err')}}
 function renderBanList(){const p=document.getElementById('adminBanPanel'),l=document.getElementById('banList');if(!isAdmin()){p.style.display='none';return}p.style.display='block';if(!bannedList.length){l.innerHTML='<p style="color:var(--text-dim);font-size:0.85em">No bans</p>';return}l.innerHTML=bannedList.map(b=>{let sc='perm',st='Permanent';if(b.expires_at){const e=new Date(b.expires_at);if(e>new Date()){sc='temp';st='Expires '+fmtTime(e)}else{sc='expired';st='Expired'}}return`<div class="ban-list-item"><div class="ban-info"><div class="ban-name">${esc(b.name||b.email)}</div><div class="ban-detail">${esc(b.email)}${b.reason?'  '+esc(b.reason):''}</div></div><span class="ban-status ${sc}">${st}</span><button class="btn btn-s" style="padding:6px 12px;font-size:0.75em" onclick="unbanUser(${b.id})">Unban</button></div>`}).join('')}
 
