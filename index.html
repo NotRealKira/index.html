@@ -411,60 +411,121 @@
 <div class="modal-bg" id="banModal"><div class="modal"><h3> Ban User</h3><div id="banTarget" style="font-weight:600;margin-bottom:16px"></div><div class="field"><label>Duration</label><select class="input" id="banDuration"><option value="permanent">Permanent</option><option value="1h">1 Hour</option><option value="6h">6 Hours</option><option value="12h">12 Hours</option><option value="1d">1 Day</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="14d">14 Days</option><option value="30d">30 Days</option></select></div><div class="field"><label>Reason</label><input type="text" class="input" id="banReason" placeholder="Rule violation..."></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-d" style="flex:1" onclick="confirmBan()">Ban</button><button class="btn btn-s" style="flex:1" onclick="closeBanModal()">Cancel</button></div></div></div>
 
 <script>
-const SB_URL='https://puhusbessxmmstfxdowr.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aHVzYmVzc3htbXN0Znhkb3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU4MjIsImV4cCI6MjA4OTI0MTgyMn0.7tW48EhCOz6H4cDxF6AuqUH9m8SoXWwj2Cn_rqucm1w';
-const sb=supabase.createClient(SB_URL,SB_KEY);
-let user=null,bannedList=[],allBuilds=[],dlCooldowns={},pendingBanEmail='',pendingBanName='',lastUpload=0;
-const ADMIN='amd156935@gmail.com',DISCORD='https://discord.gg/fduHT98E4X';
-const isAdmin=()=>user?.email===ADMIN;
+const SB_URL = 'https://puhusbessxmmstfxdowr.supabase.co';
+const SB_KEY = 'eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aHVzYmVzc3htbXN0Znhkb3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU4MjIsImV4cCI6MjA4OTI0MTgyMn0.7tW48EhCOz6H4cDxF6AuqUH9m8SoXWwj2Cn_rqucm1w';
 
-//  TOP PROFILE 
-function renderTopProfile(){
-   const el=document.getElementById('topProfile');
-   if(user){
-       const pic=getAv(user),nm=getNm(user)||'User';
-       let dl=0;allBuilds.filter(b=>b.owner_email===user.email).forEach(b=>{dl+=(b.downloads||0)});
-       el.innerHTML=`<div class="top-profile" onclick="go('profile')"><div class="top-profile-av">${pic?`<img src="${pic}" onerror="this.parentElement.textContent='${nm[0].toUpperCase()}'">`:nm[0].toUpperCase()}</div><div class="top-profile-info"><span class="top-profile-name">${esc(nm)}</span><span class="top-profile-sub"> ${dl} downloads</span></div></div>`;
-   }else{
-       el.innerHTML=`<div class="top-profile" onclick="openLoginModal()"><div class="top-profile-av">?</div><div class="top-profile-info"><span class="top-profile-name">Login</span><span class="top-profile-sub">Click to sign in</span></div></div>`;
-   }
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let user = null,
+    bannedList = [],
+    allBuilds = [],
+    dlCooldowns = {},
+    pendingBanEmail = '',
+    pendingBanName = '',
+    lastUpload = 0;
+
+const ADMIN = 'amd156935@gmail.com';
+const DISCORD = 'https://discord.gg/fduHT98E4X';
+
+const isAdmin = () => user?.email === ADMIN;
+
+// TOP PROFILE
+function renderTopProfile() {
+  const el = document.getElementById('topProfile');
+
+  if (user) {
+    const pic = getAv(user);
+    const nm = getNm(user) || 'User';
+
+    let dl = 0;
+    allBuilds
+      .filter(b => b.owner_email === user.email)
+      .forEach(b => dl += (b.downloads || 0));
+
+    el.innerHTML = `
+      <div class="top-profile" onclick="go('profile')">
+        <div class="top-profile-av">
+          ${pic
+            ? `<img src="${pic}" onerror="this.parentElement.textContent='${nm[0].toUpperCase()}'">`
+            : nm[0].toUpperCase()}
+        </div>
+        <div class="top-profile-info">
+          <span class="top-profile-name">${esc(nm)}</span>
+          <span class="top-profile-sub">${dl} downloads</span>
+        </div>
+      </div>
+    `;
+  } else {
+    el.innerHTML = `
+      <div class="top-profile" onclick="openLoginModal()">
+        <div class="top-profile-av">?</div>
+        <div class="top-profile-info">
+          <span class="top-profile-name">Login</span>
+          <span class="top-profile-sub">Click to sign in</span>
+        </div>
+      </div>
+    `;
+  }
 }
 
-// Login Modal Functions
-function openLoginModal(){
-   document.getElementById('loginModal').classList.add('show');
-   // Open in new tab logic - create a hidden popup window
-   const width = 500;
-   const height = 600;
-   const left = (screen.width - width) / 2;
-   const top = (screen.height - height) / 2;
-   window.loginPopup = {width, height, left, top};
-}
-function closeLoginModal(){
-   document.getElementById('loginModal').classList.remove('show');
-}
-async function loginWithGoogle(){
-   closeLoginModal();
-   const {error}=await sb.auth.signInWithOAuth({
-       provider:'google',
-       options:{
-           redirectTo:location.origin+location.pathname,
-           skipBrowserRedirect:false
-       }
-   });
-   if(error)toast(error.message,'err');
-}
-async function loginWithDiscord(){
-   closeLoginModal();
-   const {error}=await sb.auth.signInWithOAuth({
-       provider:'discord',
-       options:{
-           redirectTo:location.origin+location.pathname,
-           skipBrowserRedirect:false
-       }
-   });
-   if(error)toast(error.message,'err');
+// LOGIN MODAL
+function openLoginModal() {
+  document.getElementById('loginModal').classList.add('show');
 }
 
+function closeLoginModal() {
+  document.getElementById('loginModal').classList.remove('show');
+}
+
+// GOOGLE LOGIN
+async function loginWithGoogle() {
+  closeLoginModal();
+
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://lexushubcatalog.onrender.com/'
+    }
+  });
+
+  if (error) {
+    toast(error.message, 'err');
+    console.error(error);
+  }
+}
+
+// DISCORD LOGIN
+async function loginWithDiscord() {
+  closeLoginModal();
+
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'discord',
+    options: {
+      redirectTo: 'https://lexushubcatalog.onrender.com/',
+      scopes: 'identify email'
+    }
+  });
+
+  if (error) {
+    toast(error.message, 'err');
+    console.error(error);
+  }
+}
+
+// RESTORE SESSION AFTER REDIRECT
+sb.auth.getSession().then(({ data }) => {
+  user = data.session?.user || null;
+  renderTopProfile();
+});
+
+// LIVE AUTH CHANGE
+sb.auth.onAuthStateChange((event, session) => {
+  user = session?.user || null;
+  renderTopProfile();
+});
+</script>
+
+   
 //  BAN 
 async function loadBanned(){try{const{data}=await sb.from('banned_users').select('*');bannedList=data||[]}catch(e){bannedList=[]}}
 function getBanRec(e){return e?bannedList.find(b=>b.email.toLowerCase()===e.toLowerCase()):null}
