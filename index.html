@@ -313,7 +313,11 @@ async function confirmBan(){
         updateForms();
     }catch(e){
         console.error('Ban error:', e);
-        toast(e.message||e,'err');
+        if(e.code === '42501') {
+            toast('Database Error: RLS Policy Violation. Please run the SQL fix in Supabase.', 'err');
+        } else {
+            toast(e.message||e,'err');
+        }
     }
 }
 async function unbanUser(id){if(!isAdmin()||!confirm('Unban?'))return;try{await sb.from('banned_users').delete().eq('id',id);await loadBanned();toast('Unbanned','ok');renderBanList();updateForms()}catch(e){toast(e.message||e,'err')}}
