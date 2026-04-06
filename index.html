@@ -113,8 +113,8 @@
         .card-owner{display:flex;align-items:center;gap:6px;font-size:0.8em;color:var(--text-dim);margin-bottom:6px;cursor:pointer;transition:color 0.15s}
         .card-owner:hover{color:var(--accent)}
         .card-owner img{width:18px;height:18px;border-radius:50%;object-fit:cover}
-        .card-desc{font-size:0.82em;color:var(--text-dim);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:300}
-        .card-meta{display:flex;gap:12px;font-size:0.7em;color:var(--text-dim);margin-bottom:12px}
+        .card-desc{font-size:0.8em;color:var(--text-dim);margin-bottom:6px;font-weight:300}
+        .card-meta{display:flex;justify-content:space-between;font-size:0.72em;color:var(--text-dim);margin-bottom:12px}
         .card-actions{display:flex;flex-direction:column;gap:5px}.card-actions .btn{width:100%;padding:9px;font-size:0.82em}
         .p-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
         .p-top{display:flex;align-items:center;gap:20px;margin-bottom:20px}
@@ -123,9 +123,14 @@
         .p-info h2{font-size:1.3em;font-weight:700}.p-info p{color:var(--text-dim);font-size:0.85em}
         .gmail-btn{display:inline-flex;align-items:center;gap:10px;background:#ea4335;color:#fff;padding:12px 24px;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.9em;font-weight:600;cursor:pointer;transition:all 0.15s}
         .gmail-btn:hover{background:#d33426;transform:translateY(-1px)}
+        .discord-btn{display:inline-flex;align-items:center;gap:10px;background:#5865F2;color:#fff;padding:12px 24px;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.9em;font-weight:600;cursor:pointer;transition:all 0.15s}
+        .discord-btn:hover{background:#4752c4;transform:translateY(-1px)}
         .s-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
         .s-box h4{font-size:0.92em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
         .s-box p{font-size:0.85em;color:var(--text-dim);margin-bottom:10px;font-weight:300}
+        .rules-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+        .rules-list li{background:var(--surface2);padding:12px 16px;border-radius:8px;border-left:3px solid var(--accent);font-size:0.9em}
+        .rules-list li.policy{border-left-color:var(--danger);background:rgba(248,113,113,0.05)}
         .picker-label{font-size:0.72em;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;font-weight:500}
         .color-presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
         .color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.15s;position:relative}
@@ -194,11 +199,165 @@
         </div>
     </div>
 
-    <nav id="nav"><button class="on" data-t="home">Home</button><button data-t="builds">Builds</button><button data-t="sell">Sell</button><button data-t="trade">Trade</button><button data-t="script">Script</button><button data-t="profile">Profile</button><button data-t="settings">Settings</button><button data-t="prices">Prices</button></nav>
+    <nav id="nav">
+        <button class="on" data-t="home">Home</button>
+        <button data-t="builds">Builds</button>
+        <button data-t="sell">Sell</button>
+        <button data-t="trade">Trade</button>
+        <button data-t="script">Script</button>
+        <button data-t="rules">Rules</button>
+        <button data-t="profile">Profile</button>
+        <button data-t="settings">Settings</button>
+        <button data-t="prices">Prices</button>
+    </nav>
 
     <section id="home" class="on">
-        <div class="hero reveal visible"><div><h1>The <em>marketplace</em> for BABFT builds</h1><p>Upload, download, sell, and trade build files freely. Built by K I R A.</p><div class="exec-badge"><div class="pulse"></div><div><div class="num" id="hExec">0</div><div class="lbl">Script Executions</div></div></div><div class="btns"><button class="btn btn-p" onclick="go('script')">Get Script</button><button class="btn btn-s" onclick="go('builds')">Browse Builds</button><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></div><div class="hero-img"><img src="https://i.imgur.com/ZkebzWz.png" alt="LexusHub"></div></div>
-        <div class="feat-grid"><div class="feat reveal"><div class="feat-ico">⏩</div><h4>Fast</h4><p>Files load instantly</p></div><div class="feat reveal reveal-d1"><div class="feat-ico">🔐</div><h4>Secure</h4><p>Your data is safe</p></div><div class="feat reveal reveal-d2"><div class="feat-ico">🆓</div><h4>Free</h4><p>All free</p></div><div class="feat reveal reveal-d3"><div class=""></div>🫧<h4>Clean</h4><p>Minimal interface</p></div></div>
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Fix Test</title>
+    <style>
+        /* Basic styling to simulate the environment */
+        body {
+            background-color: #0a0a0a;
+            color: white;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 100px 5%;
+            min-height: 80vh;
+            gap: 40px;
+        }
+
+        .hero > div:first-child {
+            flex: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 em {
+            color: #007bff;
+            font-style: normal;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .exec-badge {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 25px;
+            border-radius: 12px;
+            width: fit-content;
+            margin-bottom: 30px;
+        }
+
+        .pulse {
+            width: 12px;
+            height: 12px;
+            background: #00ff00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .num {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .lbl {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .btns {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-p { background: #007bff; color: white; }
+        .btn-s { background: rgba(255, 255, 255, 0.1); color: white; }
+
+        /* The problematic area */
+        .hero-img {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-img img {
+            /* This is likely where the issue is */
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Mobile responsiveness might be missing */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 50px 5%;
+            }
+            .exec-badge {
+                margin: 0 auto 30px;
+            }
+            .btns {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero reveal visible">
+        <div>
+            <h1>The <em>marketplace</em> for BABFT builds</h1>
+            <p>Upload, download, sell, and trade build files freely. Built by K I R A.</p>
+            <div class="exec-badge">
+                <div class="pulse"></div>
+                <div>
+                    <div class="num" id="hExec">0</div>
+                    <div class="lbl">Script Executions</div>
+                </div>
+            </div>
+            <div class="btns">
+                <button class="btn btn-p" onclick="go('script')">Get Script</button>
+                <button class="btn btn-s" onclick="go('builds')">Browse Builds</button>
+                <button class="btn btn-s" onclick="openDiscord()">Discord</button>
+            </div>
+        </div>
+        <div class="hero-img">
+            <img src="https://i.imgur.com/ZkebzWz.png" alt="LexusHub">
+        </div>
+    </div>
+</body>
+</html>
+        <div class="feat-grid"><div class="feat reveal"><div class="feat-ico">⚡︎</div><h4>Fast</h4><p>Files load instantly</p></div><div class="feat reveal reveal-d1"><div class="feat-ico">⛨</div><h4>Secure</h4><p>Your data is safe</p></div><div class="feat reveal reveal-d2"><div class="feat-ico">✪</div><h4>Free</h4><p>All free</p></div><div class="feat reveal reveal-d3"><div class=""></div>✦<h4>Clean</h4><p>Minimal interface</p></div></div>
     </section>
 
     <section id="builds">
@@ -208,20 +367,52 @@
                 <div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="bIB"><span></span><span id="bIT">Choose image...</span><input type="file" id="bImg" accept="image/*" required onchange="fileChg(this,'bIB','bIT')"></div></div>
                 <div class="field"><label>Build File <span class="req">*</span></label><div class="file-box" id="bFB"><span></span><span id="bFT">Choose .build file...</span><input type="file" id="bFile" accept=".build" required onchange="fileChg(this,'bFB','bFT')"></div></div>
                 <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" required></div>
-                <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
+                <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</><option>Anime<option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
                 <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="bDesc" placeholder="Optional"></textarea></div>
             </div><button type="submit" class="btn btn-p btn-full" id="bBtn">Upload</button>
             <div id="cooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:0.82em;color:var(--warning)"></div></form>
         </div>
-        <div class="controls"><h3>All Builds</h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div>
-        <div class="cards" id="bCards"><div class="empty">Loading...</div></div>
-    </section>
+        <div class="controls"><h3>All Builds</h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</><option>Anime<option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="bCards"><div class="empty">Loading...</div></div></section>
 
     <section id="sell"><div id="sellBan" class="ban-box" style="display:none"></div><div id="sellWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>List for Sale</h3><form id="sellForm" onsubmit="return upSell(event)"><div class="form-row"><div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="sIB"><span></span><span id="sIT">Choose image...</span><input type="file" id="sImg" accept="image/*" required onchange="fileChg(this,'sIB','sIT')"></div></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="sTitle" required></div><div class="field"><label>Price (R$) <span class="req">*</span></label><input type="number" class="input" id="sPrice" min="1" required></div><div class="field"><label>Description</label><textarea class="input" id="sDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="sBtn">List Item</button></form></div><div class="controls"><h3>For Sale</h3><select class="sel" id="sSort" onchange="loadSells()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="sCards"><div class="empty">Loading...</div></div></section>
 
     <section id="trade"><div id="tradeBan" class="ban-box" style="display:none"></div><div id="tradeWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>Post Trade</h3><form id="tradeForm" onsubmit="return upTrade(event)"><div class="form-row"><div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="tIB"><span></span><span id="tIT">Choose image...</span><input type="file" id="tImg" accept="image/*" required onchange="fileChg(this,'tIB','tIT')"></div></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="tTitle" required></div><div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="tDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="tBtn">Post Trade</button></form></div><div class="controls"><h3>Trades</h3><select class="sel" id="tSort" onchange="loadTrades()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="tCards"><div class="empty">Loading...</div></div></section>
 
     <section id="script"><div class="sc-grid"><div class="sc-box reveal"><h2>LexusHub Script</h2><p>Copy the loadstring and paste it into your executor.</p><div class="exec-badge"><div class="pulse"></div><div><div class="num" id="scExec">0</div><div class="lbl">Total Executions</div></div></div><div class="code-block"><button class="copy" onclick="copyCode()">Copy</button><code id="codeText">loadstring(game:HttpGet("https://raw.githubusercontent.com/amd156935-create/BoatbuilderhubIsShitLexusHubIsBestAlso/main/9b21a6b954470aed.lua.txt"))()</code></div></div><div class="sc-img reveal reveal-d1"><img src="https://i.imgur.com/ZkebzWz.png" alt="Preview"></div></div></section>
+
+    <section id="rules">
+        <div class="s-box reveal">
+            <h4>LexusHub Rules</h4>
+            <ul class="rules-list">
+                <li>No promotion</li>
+                <li>No gr#ss content</li>
+                <li>No bad words</li>
+                <li>No IRL images [BABFT only]</li>
+                <li>No nude content</li>
+                <li>No p##n</li>
+                <li>No NSFW content</li>
+                <li>No illegal content</li>
+                <li>No self-harm or violence</li>
+                <li>Keep personal info private</li>
+                <li>No spamming</li>
+                <li>Safe language only</li>
+                <li>No impersonation</li>
+                <li>No scamming</li>
+                <li>No hateful or discriminatory content</li>
+                <li>No exploits promotes</li>
+                <li>Stay on topic</li>
+                <li>No inappropriate usernames or avatars</li>
+            </ul>
+        </div>
+        <div class="s-box reveal reveal-d1">
+            <h4>Enforcement Policy</h4>
+            <ul class="rules-list">
+                <li class="policy"><strong>First violation:</strong> Temporary ban, All files/posts removed</li>
+                <li class="policy"><strong>Second violation:</strong> Permanent ban</li>
+                <li>Admins will enforce these rules strictly.</li>
+            </ul>
+        </div>
+    </section>
 
     <section id="profile"><div class="p-card reveal"><div class="p-top"><div class="avatar" id="pAv">?</div><div class="p-info"><h2 id="pName">Not logged in</h2><p id="pEmail">Sign in to get started</p></div></div><div id="authArea"></div></div><div id="userArea" style="display:none"><div class="s-box reveal"><h4>Display Name</h4><input type="text" class="input" id="nameIn" placeholder="Your name" style="margin-bottom:10px"><button class="btn btn-p" onclick="saveName()">Save</button></div><div class="s-box reveal reveal-d1"><h4>Profile Picture</h4><div class="file-box" id="pfpB" style="margin-bottom:10px"><span></span><span id="pfpT">Choose image...</span><input type="file" id="pfpIn" accept="image/*" onchange="fileChg(this,'pfpB','pfpT')"></div><button class="btn btn-p" id="pfpBtn" onclick="savePfp()">Update</button></div></div><div id="adminBanPanel" style="display:none"><div class="s-box"><h4>Ban Management</h4><div id="banList"></div></div></div><div class="note reveal"> Your data is Safe</div><h3 class="sec-title">Your Uploads</h3><div class="cards" id="myCards"><div class="empty">Login to see uploads</div></div></section>
 
@@ -255,6 +446,8 @@
 <div class="modal-bg" id="modal"><div class="modal"><h3>Owner</h3><div class="m-user"><div class="m-av" id="mAv">?</div><div><div style="font-weight:600" id="mName">Unknown</div><div style="color:var(--text-dim);font-size:0.82em" id="mEmail">Hidden</div></div></div><button class="btn btn-d" style="width:100%" onclick="closeModal()">Close</button></div></div>
 <div class="modal-bg" id="banModal"><div class="modal"><h3> Ban User</h3><div id="banTarget" style="font-weight:600;margin-bottom:16px"></div><div class="field"><label>Duration</label><select class="input" id="banDuration"><option value="permanent">Permanent</option><option value="1h">1 Hour</option><option value="6h">6 Hours</option><option value="12h">12 Hours</option><option value="1d">1 Day</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="14d">14 Days</option><option value="30d">30 Days</option></select></div><div class="field"><label>Reason</label><input type="text" class="input" id="banReason" placeholder="Rule violation..."></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-d" style="flex:1" onclick="confirmBan()">Ban</button><button class="btn btn-s" style="flex:1" onclick="closeBanModal()">Cancel</button></div></div></div>
 
+<div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to LexusHub</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0 1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0 1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
+
 <script>
 const SB_URL='https://puhusbessxmmstfxdowr.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aHVzYmVzc3htbXN0Znhkb3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU4MjIsImV4cCI6MjA4OTI0MTgyMn0.7tW48EhCOz6H4cDxF6AuqUH9m8SoXWwj2Cn_rqucm1w';
 const sb=supabase.createClient(SB_URL,SB_KEY);
@@ -270,7 +463,7 @@ function renderTopProfile(){
         let dl=0;allBuilds.filter(b=>b.owner_email===user.email).forEach(b=>{dl+=(b.downloads||0)});
         el.innerHTML=`<div class="top-profile" onclick="go('profile')"><div class="top-profile-av">${pic?`<img src="${pic}" onerror="this.parentElement.textContent='${nm[0].toUpperCase()}'">`:nm[0].toUpperCase()}</div><div class="top-profile-info"><span class="top-profile-name">${esc(nm)}</span><span class="top-profile-sub"> ${dl} downloads</span></div></div>`;
     }else{
-        el.innerHTML=`<div class="top-profile" onclick="login()"><div class="top-profile-av">?</div><div class="top-profile-info"><span class="top-profile-name">Login</span><span class="top-profile-sub">Click to sign in</span></div></div>`;
+        el.innerHTML=`<div class="top-profile" onclick="openLoginModal()"><div class="top-profile-av">?</div><div class="top-profile-info"><span class="top-profile-name">Login</span><span class="top-profile-sub">Click to sign in</span></div></div>`;
     }
 }
 
@@ -298,10 +491,10 @@ async function confirmBan(){
         if(res.error) throw res.error;
 
         // Automatically delete their builds after banning
-        const { data: userBuilds } = await sb.from('builds').select('id').eq('owner_email', pendingBanEmail);
+        const { data: userBuilds } = await sb.from('builds').select('id, data').eq('owner_email', pendingBanEmail);
         if(userBuilds && userBuilds.length > 0) {
             for(const b of userBuilds) {
-                await sb.from('builds').delete().eq('id', b.id);
+                await delItemLogic(b.id, b.data?.previewImage);
             }
         }
 
@@ -313,15 +506,11 @@ async function confirmBan(){
         updateForms();
     }catch(e){
         console.error('Ban error:', e);
-        if(e.code === '42501') {
-            toast('Database Error: RLS Policy Violation. Please run the SQL fix in Supabase.', 'err');
-        } else {
-            toast(e.message||e,'err');
-        }
+        toast(e.message||e,'err');
     }
 }
 async function unbanUser(id){if(!isAdmin()||!confirm('Unban?'))return;try{await sb.from('banned_users').delete().eq('id',id);await loadBanned();toast('Unbanned','ok');renderBanList();updateForms()}catch(e){toast(e.message||e,'err')}}
-function renderBanList(){const p=document.getElementById('adminBanPanel'),l=document.getElementById('banList');if(!isAdmin()){p.style.display='none';return}p.style.display='block';if(!bannedList.length){l.innerHTML='<p style="color:var(--text-dim);font-size:0.85em">No bans</p>';return}l.innerHTML=bannedList.map(b=>{let sc='perm',st='Permanent';if(b.expires_at){const e=new Date(b.expires_at);if(e>new Date()){sc='temp';st='Expires '+fmtTime(e)}else{sc='expired';st='Expired'}}return`<div class="ban-list-item"><div class="ban-info"><div class="ban-name">${esc(b.name||b.email)}</div><div class="ban-detail">${esc(b.email)}${b.reason?'  '+esc(b.reason):''}</div></div><span class="ban-status ${sc}">${st}</span><button class="btn btn-s" style="padding:6px 12px;font-size:0.75em" onclick="unbanUser(${b.id})">Unban</button></div>`}).join('')}
+function renderBanList(){const el=document.getElementById('banList');if(!el||!isAdmin())return;el.innerHTML=bannedList.length?bannedList.map(b=>{const exp=b.expires_at?new Date(b.expires_at):null,active=!exp||exp>new Date();return`<div class="ban-list-item"><div class="ban-info"><div class="ban-name">${esc(b.name)}</div><div class="ban-detail">${esc(b.email)} - ${b.reason||'No reason'}</div></div><div class="ban-status ${active?(b.expires_at?'temp':'perm'):'expired'}">${active?(b.expires_at?'Temp':'Perm'):'Expired'}</div><button class="btn btn-s" onclick="unbanUser('${b.id}')">Unban</button></div>`}).join(''):'<div class="empty">No bans</div>'}
 
 //  ACCENT 
 const AP=['#6ee7b7','#34d399','#10b981','#60a5fa','#818cf8','#a78bfa','#f472b6','#fb7185','#f87171','#fbbf24','#fb923c','#e879f9','#22d3ee','#2dd4bf','#a3e635'];
@@ -372,7 +561,21 @@ async function initAuth(){
     renderAuth();updateForms();
 }
 
-async function login(){const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});if(error)toast(error.message,'err')}
+function openLoginModal(){document.getElementById('loginModal').classList.add('show')}
+function closeLoginModal(){document.getElementById('loginModal').classList.remove('show')}
+
+async function login(provider){
+    closeLoginModal();
+    const{error}=await sb.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+            redirectTo: location.origin + location.pathname,
+            scopes: provider === 'discord' ? 'identify email' : 'email profile'
+        }
+    });
+    if(error) toast(error.message,'err');
+}
+
 async function logout(){await sb.auth.signOut();user=null;renderAuth();updateForms();toast('Logged out')}
 
 function updateForms(){
@@ -387,10 +590,15 @@ function updateForms(){
     document.querySelectorAll('.form-card .file-box').forEach(f=>{ok?f.classList.remove('disabled'):f.classList.add('disabled')});
     document.querySelectorAll('.form-card .input').forEach(i=>{i.disabled=!ok});
     renderBanList();
+    if(allBuilds.length)renderBuilds();
 }
 
-function getAv(u){return u?.user_metadata?.picture||u?.user_metadata?.avatar_url||null}
-function getNm(u){return localStorage.getItem('lh_name')||u?.user_metadata?.full_name||u?.user_metadata?.name||null}
+function getAv(u){
+    return u?.user_metadata?.avatar_url || u?.user_metadata?.picture || null;
+}
+function getNm(u){
+    return localStorage.getItem('lh_name') || u?.user_metadata?.full_name || u?.user_metadata?.name || u?.user_metadata?.custom_claims?.global_name || null;
+}
 
 function renderAuth(){
     const auth=document.getElementById('authArea'),ua=document.getElementById('userArea');
@@ -398,20 +606,46 @@ function renderAuth(){
         const p=getAv(user),av=document.getElementById('pAv');
         if(p)av.innerHTML=`<img src="${p}" onerror="this.remove();this.parentElement.textContent='${(user.email||'?')[0].toUpperCase()}'">`;else av.textContent=(user.email||'?')[0].toUpperCase();
         document.getElementById('pName').textContent=getNm(user)||'Set name';document.getElementById('pEmail').textContent=user.email;
-        auth.innerHTML=`<button class="btn btn-d" onclick="logout()">Logout</button>`;ua.style.display='block';document.getElementById('nameIn').value=localStorage.getItem('lh_name')||'';loadMy();
+        auth.innerHTML=`<div style="display:flex;gap:10px"><button class="btn btn-d" onclick="logout()">Logout</button><button class="discord-btn" style="padding:8px 16px;font-size:0.8em" onclick="login('discord')">Link Discord</button></div>`;
+        ua.style.display='block';document.getElementById('nameIn').value=localStorage.getItem('lh_name')||'';loadMy();
     }else{
         document.getElementById('pAv').textContent='?';document.getElementById('pName').textContent='Not logged in';document.getElementById('pEmail').textContent='Sign in';
-        auth.innerHTML=`<button class="gmail-btn" onclick="login()"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Sign in with Google</button>`;
+        auth.innerHTML=`<button class="btn btn-p" onclick="openLoginModal()">Sign In</button>`;
         ua.style.display='none';document.getElementById('myCards').innerHTML='<div class="empty">Login to see uploads</div>';
     }
     renderTopProfile();setTimeout(obsAll,50);
 }
 
 function saveName(){const v=document.getElementById('nameIn').value.trim().slice(0,20);if(!v){toast('Enter a name','err');return}localStorage.setItem('lh_name',v);document.getElementById('pName').textContent=v;renderTopProfile();toast('Saved','ok')}
-async function cloud(f){if(f.size>5*1024*1024)throw'Max 5MB';const fd=new FormData();fd.append('file',f);fd.append('upload_preset','Lexushub database');const r=await fetch('https://api.cloudinary.com/v1_1/dqhzdbwl2/auto/upload',{method:'POST',body:fd});const j=await r.json();if(!r.ok)throw j.error?.message||'Upload failed';return j.secure_url}
+
+async function cloud(f){
+    if(f.size>5*1024*1024)throw'Max 5MB';
+    const fd=new FormData();
+    fd.append('file',f);
+    fd.append('upload_preset','Lexushub database');
+    const r=await fetch('https://api.cloudinary.com/v1_1/dqhzdbwl2/auto/upload',{method:'POST',body:fd});
+    const j=await r.json();
+    if(!r.ok)throw j.error?.message||'Upload failed';
+    return j.secure_url;
+}
+
+async function deleteFromCloudinary(url) {
+    if(!url || !url.includes('cloudinary.com')) return;
+    console.log('Requesting deletion of:', url);
+}
+
 async function ins(r){const{data,error}=await sb.from('builds').insert([r]).select().single();if(error)throw error;return data}
 async function loadDB(t,s='new'){const{data,error}=await sb.from('builds').select('*').eq('type',t).order('upload_date',{ascending:s==='old'});if(error)throw error;return data||[]}
-async function del(id){const{error}=await sb.from('builds').delete().eq('id',id);if(error)throw error}
+
+async function delItemLogic(id, imageUrl) {
+    const { error } = await sb.from('builds').delete().eq('id', id);
+    if (error) throw error;
+    if (imageUrl) await deleteFromCloudinary(imageUrl);
+}
+
+async function del(id, imageUrl){
+    await delItemLogic(id, imageUrl);
+}
 
 function preCheck(){
     if(!user){toast('Login first','warn');go('profile');return false}
@@ -423,7 +657,7 @@ function preCheck(){
 async function upBuild(e){
     e.preventDefault();if(!preCheck())return false;
     const btn=document.getElementById('bBtn');btn.disabled=true;btn.textContent='Uploading...';
-    try{const img=document.getElementById('bImg').files[0],file=document.getElementById('bFile').files[0],title=document.getElementById('bTitle').value.trim(),cat=document.getElementById('bCat').value;if(!img)throw'Image required';if(!file?.name.toLowerCase().endsWith('.build'))throw'Need .build file';if(!title)throw'Title required';if(!cat)throw'Category required';const[iu,fu]=await Promise.all([cloud(img),cloud(file)]);await ins({type:'build',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,downloads:0});document.getElementById('buildForm').reset();resetFile('bIB','bIT','Choose image...');resetFile('bFB','bFT','Choose .build file...');startCooldown();toast('Uploaded','ok');loadBuilds();updateCounts()}catch(err){toast(err.message||err,'err')}
+    try{const img=document.getElementById('bImg').files[0],file=document.getElementById('bFile').files[0],title=document.getElementById('bTitle').value.trim(),cat=document.getElementById('bCat').value;if(!img)throw'Image required';if(!file?.name.toLowerCase().endsWith('.build'))throw'Need .build file';if(!title)throw'Title required';if(!cat)throw'Category required';const[iu,fu]=await Promise.all([cloud(img),cloud(file)]);await ins({type:'build',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,downloads:0});document.getElementById('buildForm').reset();resetFile('bIB','bIT','Choose image...');startCooldown();toast('Uploaded','ok');loadBuilds();updateCounts()}catch(err){toast(err.message||err,'err')}
     btn.disabled=false;btn.textContent='Upload';return false;
 }
 
@@ -441,31 +675,47 @@ async function upTrade(e){
     btn.disabled=false;btn.textContent='Post Trade';return false;
 }
 
-async function savePfp(){if(!user)return;const img=document.getElementById('pfpIn').files[0];if(!img){toast('Select image','warn');return}const btn=document.getElementById('pfpBtn');btn.disabled=true;btn.textContent='...';try{const u=await cloud(img);const nm={...user.user_metadata,picture:u,avatar_url:u};const{data:ud,error}=await sb.auth.updateUser({data:nm});if(error)throw error;if(ud?.user)user=ud.user;user.user_metadata=nm;resetFile('pfpB','pfpT','Choose image...');renderAuth();toast('Updated','ok')}catch(err){toast(err.message||err,'err')}btn.disabled=false;btn.textContent='Update'}
+async function savePfp(){
+    const f=document.getElementById('pfpIn').files[0];if(!f){toast('Choose image','err');return}
+    const btn=document.getElementById('pfpBtn');btn.disabled=true;btn.textContent='Updating...';
+    try{
+        const url=await cloud(f);
+        const { error } = await sb.auth.updateUser({ data: { avatar_url: url, picture: url } });
+        if(error) throw error;
+        toast('Profile picture updated','ok');
+        renderAuth();
+    }catch(e){toast(e.message||e,'err')}
+    btn.disabled=false;btn.textContent='Update';
+}
 
-//  CARDS 
 function card(item,canDel=false){
     const admin=isAdmin(),on=esc(item.owner_name)||'Unknown',oe=esc(item.owner_email)||'',oa=item.owner_avatar||'',cat=item.data?.category,dl=item.downloads||0;
-    return`<div class="card reveal"><div class="card-img${item.data?.previewImage?'':' empty'}">${item.data?.previewImage?`<img src="${item.data.previewImage}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div><div class="card-desc">${esc(item.data?.description)||'No description'}</div><div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button>`:''}</div></div></div>`}
+    const img = item.data?.previewImage;
+    const desc = item.data?.description;
+    return`<div class="card reveal"><div class="card-img${img?'':' empty'}">${img?`<img src="${img}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}<div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}', '${img}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}', '${img}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button>`:''}</div></div></div>`}
 
 async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();renderTopProfile()}catch(e){console.error(e)}}
 function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new';let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found</div>';obsAll()}
 async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){console.error(e)}}
 async function loadTrades(){try{const i=await loadDB('trade',document.getElementById('tSort')?.value);document.getElementById('tCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No trades</div>';obsAll()}catch(e){console.error(e)}}
 async function loadMy(){if(!user)return;try{const{data}=await sb.from('builds').select('*').eq('owner_email',user.email).order('upload_date',{ascending:false});document.getElementById('myCards').innerHTML=data?.length?data.map(i=>card(i,true)).join(''):'<div class="empty">No uploads</div>';obsAll()}catch(e){console.error(e)}}
-async function delItem(id){if(!confirm('Delete?'))return;try{await del(id);toast('Deleted','ok');loadMy();loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
-async function adminDel(id){if(!isAdmin()||!confirm('Delete?'))return;try{await del(id);toast('Deleted','ok');loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
+async function delItem(id, img){if(!confirm('Delete?'))return;try{await del(id, img);toast('Deleted','ok');loadMy();loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
+async function adminDel(id, img){if(!isAdmin()||!confirm('Delete?'))return;try{await del(id, img);toast('Deleted','ok');loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
 async function updateCounts(){try{const{count}=await sb.from('builds').select('*',{count:'exact',head:true}).eq('type','build');document.getElementById('sBuilds').textContent=count||0}catch(e){console.error(e)}}
 
-function showOwner(n,e,a){document.getElementById('mName').textContent=n||'Unknown';document.getElementById('mEmail').textContent=e?e.slice(0,4)+'*****':'Hidden';document.getElementById('mAv').innerHTML=a?`<img src="${a}" onerror="this.parentElement.textContent='?'">`:'?';document.getElementById('modal').classList.add('show')}
+function showOwner(n,e,a){document.getElementById('mName').textContent=n||'Unknown';document.getElementById('mEmail').textContent=e?e.slice(0,3)+'**********************':'Hidden';document.getElementById('mAv').innerHTML=a?`<img src="${a}" onerror="this.parentElement.textContent='?'">`:'?';document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openDiscord(){window.open(DISCORD,'_blank')}
 function copyCode(){navigator.clipboard.writeText(document.getElementById('codeText').textContent).then(()=>toast('Copied','ok'))}
 
 window.addEventListener('load',async()=>{
     const a=localStorage.getItem('lh_accent');if(a)setAccent(a);initAP();pickTheme(localStorage.getItem('lh_theme')||'dark');obsAll();
-    await initAuth();await loadExecs();await Promise.all([loadBuilds(),loadSells(),loadTrades(),updateCounts()]);
+    loadExecs();
+    loadBuilds();
+    updateCounts();
+    await initAuth();
+    await Promise.all([loadSells(),loadTrades()]);
 });
 </script>
 </body>
-</html
+</html>
