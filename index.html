@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LexusHub</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -88,8 +91,8 @@
         .input{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.9em;transition:border-color 0.15s}
         .input:focus{outline:none;border-color:var(--accent)}.input::placeholder{color:var(--text-dim)}.input:disabled{opacity:0.4;cursor:not-allowed}
         textarea.input{resize:vertical;min-height:60px}
-        select.input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236e6e7a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
-        .file-box{position:relative;padding:12px;background:var(--surface2);border:1px dashed var(--border);border-radius:8px;cursor:pointer;font-size:0.85em;color:var(--text-dim);display:flex;align-items:center;gap:10px;transition:all 0.15s}
+        select.input{cursor:pointer}
+        .file-box{position:relative;background:var(--surface2);border:1px dashed var(--border);border-radius:8px;padding:10px;text-align:center;font-size:0.82em;color:var(--text-dim);transition:all 0.15s;cursor:pointer;overflow:hidden}
         .file-box:hover{border-color:var(--accent)}.file-box input{position:absolute;inset:0;opacity:0;cursor:pointer}
         .file-box.ok{border-color:var(--accent);border-style:solid;color:var(--accent)}
         .file-box.disabled{opacity:0.4;pointer-events:none}
@@ -176,10 +179,61 @@
         .sec-title{font-size:1.1em;font-weight:600;margin:32px 0 14px}
         .ban-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;gap:8px}
         .ban-list-item .ban-info{flex:1;min-width:200px}.ban-list-item .ban-name{font-weight:600;font-size:0.9em}.ban-list-item .ban-detail{font-size:0.75em;color:var(--text-dim)}
-        .ban-list-item .ban-status{font-size:0.72em;padding:3px 8px;border-radius:4px;font-weight:600}
+        .ban-list-item .ban-status{font-size:0.72em;padding:3px 8px;border-radius:4px;font-weight:600;text-transform:uppercase}
         .ban-list-item .ban-status.perm{background:rgba(248,113,113,0.2);color:var(--danger)}
         .ban-list-item .ban-status.temp{background:rgba(251,191,36,0.2);color:var(--warning)}
         .ban-list-item .ban-status.expired{background:rgba(110,231,183,0.2);color:var(--accent)}
+
+        /* 3D Previewer Styles */
+        #previewModal {
+            max-width: 95vw;
+            width: 1000px;
+            height: 80vh;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        #previewContainer {
+            flex: 1;
+            width: 100%;
+            background: #0a0a14;
+            position: relative;
+        }
+        #previewUI {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(20, 20, 40, 0.85);
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            pointer-events: none;
+        }
+        #previewUI h4 { margin-bottom: 4px; color: var(--accent); }
+        #previewStatus { font-size: 0.8em; color: var(--text-dim); }
+        .preview-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 20;
+            background: rgba(248, 113, 113, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .preview-close:hover { background: var(--danger); color: #fff; }
     </style>
 </head>
 <body id="app">
@@ -212,152 +266,33 @@
     </nav>
 
     <section id="home" class="on">
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hero Fix Test</title>
-    <style>
-        /* Basic styling to simulate the environment */
-        body {
-            background-color: #0a0a0a;
-            color: white;
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .hero {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 100px 5%;
-            min-height: 80vh;
-            gap: 40px;
-        }
-
-        .hero > div:first-child {
-            flex: 1;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-        }
-
-        .hero h1 em {
-            color: #007bff;
-            font-style: normal;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: #ccc;
-            margin-bottom: 30px;
-        }
-
-        .exec-badge {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px 25px;
-            border-radius: 12px;
-            width: fit-content;
-            margin-bottom: 30px;
-        }
-
-        .pulse {
-            width: 12px;
-            height: 12px;
-            background: #00ff00;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #00ff00;
-        }
-
-        .num {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .lbl {
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        .btns {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 12px 25px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn-p { background: #007bff; color: white; }
-        .btn-s { background: rgba(255, 255, 255, 0.1); color: white; }
-
-        /* The problematic area */
-        .hero-img {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-img img {
-            /* This is likely where the issue is */
-            max-width: 100%;
-            height: auto;
-        }
-
-        /* Mobile responsiveness might be missing */
-        @media (max-width: 768px) {
-            .hero {
-                flex-direction: column;
-                text-align: center;
-                padding: 50px 5%;
-            }
-            .exec-badge {
-                margin: 0 auto 30px;
-            }
-            .btns {
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="hero reveal visible">
-        <div>
-            <h1>The <em>marketplace</em> for BABFT builds</h1>
-            <p>Upload, download, sell, and trade build files freely. Built by K I R A.</p>
-            <div class="exec-badge">
-                <div class="pulse"></div>
-                <div>
-                    <div class="num" id="hExec">0</div>
-                    <div class="lbl">Script Executions</div>
+        <div class="hero reveal visible">
+            <div>
+                <h1>The <em>marketplace</em> for BABFT builds</h1>
+                <p>Upload, download, sell, and trade build files freely. Built by K I R A.</p>
+                <div class="exec-badge">
+                    <div class="pulse"></div>
+                    <div>
+                        <div class="num" id="hExec">0</div>
+                        <div class="lbl">Script Executions</div>
+                    </div>
+                </div>
+                <div class="btns">
+                    <button class="btn btn-p" onclick="go('script')">Get Script</button>
+                    <button class="btn btn-s" onclick="go('builds')">Browse Builds</button>
+                    <button class="btn btn-s" onclick="openDiscord()">Discord</button>
                 </div>
             </div>
-            <div class="btns">
-                <button class="btn btn-p" onclick="go('script')">Get Script</button>
-                <button class="btn btn-s" onclick="go('builds')">Browse Builds</button>
-                <button class="btn btn-s" onclick="openDiscord()">Discord</button>
+            <div class="hero-img">
+                <img src="https://i.imgur.com/ZkebzWz.png" alt="LexusHub">
             </div>
         </div>
-        <div class="hero-img">
-            <img src="https://i.imgur.com/ZkebzWz.png" alt="LexusHub">
+        <div class="feat-grid">
+            <div class="feat reveal"><div class="feat-ico">⚡︎</div><h4>Fast</h4><p>Files load instantly</p></div>
+            <div class="feat reveal reveal-d1"><div class="feat-ico">⛨</div><h4>Secure</h4><p>Your data is safe</p></div>
+            <div class="feat reveal reveal-d2"><div class="feat-ico">✪</div><h4>Free</h4><p>All free</p></div>
+            <div class="feat reveal reveal-d3"><div class="feat-ico">✦</div><h4>Clean</h4><p>Minimal interface</p></div>
         </div>
-    </div>
-</body>
-</html>
-        <div class="feat-grid"><div class="feat reveal"><div class="feat-ico">⚡︎</div><h4>Fast</h4><p>Files load instantly</p></div><div class="feat reveal reveal-d1"><div class="feat-ico">⛨</div><h4>Secure</h4><p>Your data is safe</p></div><div class="feat reveal reveal-d2"><div class="feat-ico">✪</div><h4>Free</h4><p>All free</p></div><div class="feat reveal reveal-d3"><div class=""></div>✦<h4>Clean</h4><p>Minimal interface</p></div></div>
     </section>
 
     <section id="builds">
@@ -367,12 +302,12 @@
                 <div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="bIB"><span></span><span id="bIT">Choose image...</span><input type="file" id="bImg" accept="image/*" required onchange="fileChg(this,'bIB','bIT')"></div></div>
                 <div class="field"><label>Build File <span class="req">*</span></label><div class="file-box" id="bFB"><span></span><span id="bFT">Choose .build file...</span><input type="file" id="bFile" accept=".build" required onchange="fileChg(this,'bFB','bFT')"></div></div>
                 <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" required></div>
-                <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</><option>Anime<option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
+                <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Anime</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
                 <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="bDesc" placeholder="Optional"></textarea></div>
             </div><button type="submit" class="btn btn-p btn-full" id="bBtn">Upload</button>
             <div id="cooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:0.82em;color:var(--warning)"></div></form>
         </div>
-        <div class="controls"><h3>All Builds</h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</><option>Anime<option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="bCards"><div class="empty">Loading...</div></div></section>
+        <div class="controls"><h3>All Builds</h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Anime</option><option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="bCards"><div class="empty">Loading...</div></div></section>
 
     <section id="sell"><div id="sellBan" class="ban-box" style="display:none"></div><div id="sellWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>List for Sale</h3><form id="sellForm" onsubmit="return upSell(event)"><div class="form-row"><div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="sIB"><span></span><span id="sIT">Choose image...</span><input type="file" id="sImg" accept="image/*" required onchange="fileChg(this,'sIB','sIT')"></div></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="sTitle" required></div><div class="field"><label>Price (R$) <span class="req">*</span></label><input type="number" class="input" id="sPrice" min="1" required></div><div class="field"><label>Description</label><textarea class="input" id="sDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="sBtn">List Item</button></form></div><div class="controls"><h3>For Sale</h3><select class="sel" id="sSort" onchange="loadSells()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="sCards"><div class="empty">Loading...</div></div></section>
 
@@ -385,11 +320,11 @@
             <h4>LexusHub Rules</h4>
             <ul class="rules-list">
                 <li>No promotion</li>
-                <li>No gr#ss content</li>
+                <li>No gross content</li>
                 <li>No bad words</li>
                 <li>No IRL images [BABFT only]</li>
                 <li>No nude content</li>
-                <li>No p##n</li>
+                <li>No p#rn</li>
                 <li>No NSFW content</li>
                 <li>No illegal content</li>
                 <li>No self-harm or violence</li>
@@ -397,7 +332,7 @@
                 <li>No spamming</li>
                 <li>Safe language only</li>
                 <li>No impersonation</li>
-                <li>No scamming</li>
+                <li>No sc#mming</li>
                 <li>No hateful or discriminatory content</li>
                 <li>No exploits promotes</li>
                 <li>Stay on topic</li>
@@ -419,34 +354,33 @@
     <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>LexusHub v2.7  By K I R A</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
 
     <section id="prices">
-  <h2 class="reveal" style="margin-bottom:8px;font-size:1.6em">Pricing</h2>
-  <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">
-   massage devil06723 (K I R A) to buy!
-  </p>
-  <div class="price-grid">
-    <div class="price-card reveal">
-      <div class="ico"></div>
-      <h4>Boost Key</h4>
-      <p>Temporary</p>
-    </div>
-    <div class="price-card reveal reveal-d1">
-      <div class="ico"></div>
-      <h4>Basic 50R$</h4>
-      <p>10 days</p>
-    </div>
-    <div class="price-card reveal reveal-d2">
-      <div class="ico"></div>
-      <h4>Lifetime</h4>
-      <p>600 Robux</p>
-    </div>
-  </div>
-</section>
+        <h2 class="reveal" style="margin-bottom:8px;font-size:1.6em">Pricing</h2>
+        <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">massage devil06723 (K I R A) to buy!</p>
+        <div class="price-grid">
+            <div class="price-card reveal"><div class="ico"></div><h4>Boost Key</h4><p>Temporary</p></div>
+            <div class="price-card reveal reveal-d1"><div class="ico"></div><h4>Basic 50R$</h4><p>10 days</p></div>
+            <div class="price-card reveal reveal-d2"><div class="ico"></div><h4>Lifetime</h4><p>600 Robux</p></div>
+        </div>
+    </section>
 </div>
 
+<!-- Modals -->
 <div class="modal-bg" id="modal"><div class="modal"><h3>Owner</h3><div class="m-user"><div class="m-av" id="mAv">?</div><div><div style="font-weight:600" id="mName">Unknown</div><div style="color:var(--text-dim);font-size:0.82em" id="mEmail">Hidden</div></div></div><button class="btn btn-d" style="width:100%" onclick="closeModal()">Close</button></div></div>
 <div class="modal-bg" id="banModal"><div class="modal"><h3> Ban User</h3><div id="banTarget" style="font-weight:600;margin-bottom:16px"></div><div class="field"><label>Duration</label><select class="input" id="banDuration"><option value="permanent">Permanent</option><option value="1h">1 Hour</option><option value="6h">6 Hours</option><option value="12h">12 Hours</option><option value="1d">1 Day</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="14d">14 Days</option><option value="30d">30 Days</option></select></div><div class="field"><label>Reason</label><input type="text" class="input" id="banReason" placeholder="Rule violation..."></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-d" style="flex:1" onclick="confirmBan()">Ban</button><button class="btn btn-s" style="flex:1" onclick="closeBanModal()">Cancel</button></div></div></div>
+<div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to LexusHub</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0 1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
 
-<div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to LexusHub</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0 1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0 1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
+<!-- 3D Preview Modal -->
+<div class="modal-bg" id="previewModalBg">
+    <div class="modal" id="previewModal">
+        <div class="preview-close" onclick="closePreview()">×</div>
+        <div id="previewContainer">
+            <div id="previewUI">
+                <h4 id="previewTitle">Build Preview</h4>
+                <div id="previewStatus">Ready</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 const SB_URL='https://puhusbessxmmstfxdowr.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aHVzYmVzc3htbXN0Znhkb3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU4MjIsImV4cCI6MjA4OTI0MTgyMn0.7tW48EhCOz6H4cDxF6AuqUH9m8SoXWwj2Cn_rqucm1w';
@@ -454,6 +388,233 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 let user=null,bannedList=[],allBuilds=[],dlCooldowns={},pendingBanEmail='',pendingBanName='',lastUpload=0;
 const ADMIN='amd156935@gmail.com',DISCORD='https://discord.gg/fduHT98E4X';
 const isAdmin=()=>user?.email===ADMIN;
+
+// ================== THREE.JS PREVIEWER LOGIC ==================
+let scene, camera, renderer, controls, buildGroup = null, grid = null;
+let DEFAULT_BLOCK_SIZE = { x: 2, y: 2, z: 2 };
+let isThreeInit = false;
+
+function initThree() {
+    if (isThreeInit) return;
+    const container = document.getElementById('previewContainer');
+    if (!container) return;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0a14);
+    
+    camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 5000);
+    camera.position.set(50, 50, 50);
+    
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+    
+    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambient);
+    
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(100, 200, 100);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+    
+    grid = new THREE.GridHelper(2000, 100, 0x6ee7b7, 0x112233);
+    grid.position.y = -0.01;
+    scene.add(grid);
+    
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    
+    window.addEventListener('resize', onPreviewResize);
+    isThreeInit = true;
+    animate();
+}
+
+function onPreviewResize() {
+    const container = document.getElementById('previewContainer');
+    if (!container || !renderer || !camera) return;
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    if (controls) controls.update();
+    if (renderer && scene && camera) renderer.render(scene, camera);
+}
+
+function parseNum(str) {
+    if (!str) return 0;
+    if (typeof str === 'number') return str;
+    const colonPos = str.indexOf(':');
+    if (colonPos !== -1) {
+        const baseStr = str.substring(0, colonPos);
+        const expStr = str.substring(colonPos + 1);
+        const base = parseFloat(baseStr);
+        const exp = parseFloat(expStr);
+        if (!isNaN(base) && !isNaN(exp)) return base * Math.pow(10, exp);
+    }
+    return parseFloat(str) || 0;
+}
+
+function parseVecShort(str) {
+    if (!str) return { x: 0, y: 0, z: 0 };
+    if (typeof str === 'object' && str.x !== undefined) return str;
+    const parts = str.split(',').map(s => parseNum(s.trim()));
+    if (parts.length === 3) return { x: parts[0], y: parts[1], z: parts[2] };
+    return { x: 0, y: 0, z: 0 };
+}
+
+function parseColor(str, defaultColor = 0x888888) {
+    if (!str) return defaultColor;
+    if (typeof str === 'number') return str;
+    if (str.startsWith('#')) {
+        const hex = str.replace('#', '');
+        if (hex.length === 6) return parseInt(hex, 16);
+    }
+    const rgb = str.split(',').map(n => parseFloat(n.trim()));
+    if (rgb.length === 3) {
+        // Handle both 0-1 and 0-255 ranges
+        const r = rgb[0] <= 1 ? rgb[0] * 255 : rgb[0];
+        const g = rgb[1] <= 1 ? rgb[1] * 255 : rgb[1];
+        const b = rgb[2] <= 1 ? rgb[2] * 255 : rgb[2];
+        return (Math.floor(r) << 16) + (Math.floor(g) << 8) + Math.floor(b);
+    }
+    return defaultColor;
+}
+
+function stringToRotationCFrame(rotStr) {
+    if (!rotStr) return new THREE.Quaternion();
+    if (typeof rotStr === 'object' && rotStr.x !== undefined) {
+        const degToRad = Math.PI / 180;
+        return new THREE.Quaternion().setFromEuler(new THREE.Euler(rotStr.x * degToRad, rotStr.y * degToRad, rotStr.z * degToRad));
+    }
+    const parts = rotStr.split(',').map(n => parseFloat(n.trim()));
+    if (parts.length !== 3) return new THREE.Quaternion();
+    const degToRad = Math.PI / 180;
+    return new THREE.Quaternion().setFromEuler(new THREE.Euler(parts[0] * degToRad, parts[1] * degToRad, parts[2] * degToRad));
+}
+
+async function openPreview(url, title) {
+    document.getElementById('previewModalBg').classList.add('show');
+    document.getElementById('previewTitle').textContent = title || 'Build Preview';
+    const statusEl = document.getElementById('previewStatus');
+    statusEl.innerHTML = `<span style="color:#ffcc00">Fetching Build data...</span>`;
+    
+    initThree();
+    onPreviewResize();
+
+    // Clear previous build immediately
+    if (buildGroup) {
+        scene.remove(buildGroup);
+        buildGroup.traverse(child => {
+            if (child.geometry) child.geometry.dispose();
+            if (child.material) {
+                if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+                else child.material.dispose();
+            }
+        });
+    }
+    buildGroup = new THREE.Group();
+    scene.add(buildGroup);
+
+    try {
+        const res = await fetch(url);
+        const text = await res.text();
+        let decoded;
+        
+        // Aggressive parsing
+        try {
+            if (text.includes('BBH_ENCODED:VA:')) {
+                const match = text.match(/BBH_ENCODED:VA:(.*)/s);
+                if (match && match[1]) {
+                    const jsonStr = match[1].trim();
+                    const parsed = JSON.parse(jsonStr);
+                    decoded = (parsed.b && typeof parsed.b === 'object') ? parsed.b : parsed;
+                }
+            } 
+            if (!decoded) {
+                const cleaned = text.trim().replace(/^[^\[\{]*/, '').replace(/[^\]\}]*$/, '');
+                decoded = JSON.parse(cleaned);
+            }
+        } catch (e) {
+            console.error("JSON Parse Error:", e);
+            throw new Error("Invalid build file format");
+        }
+
+        // Normalize structure
+        if (Array.isArray(decoded) && decoded.length === 2) {
+            if (typeof decoded[1] === 'object' && !Array.isArray(decoded[1])) decoded = decoded[1];
+            else if (Array.isArray(decoded[1])) decoded = { "AllBlocks": decoded[1] };
+        } else if (decoded && decoded.data) {
+            if (typeof decoded.data === 'object' && !Array.isArray(decoded.data)) decoded = decoded.data;
+            else if (Array.isArray(decoded.data)) decoded = { "AllBlocks": decoded.data };
+        }
+
+        let blockCount = 0;
+        for (const [blockName, blockList] of Object.entries(decoded)) {
+            if (!Array.isArray(blockList)) continue;
+            for (const block of blockList) {
+                const position = parseVecShort(block.p || block.Position);
+                const sizeStr = block.sz || block.z || block.Size;
+                const size = sizeStr === "DB" ? DEFAULT_BLOCK_SIZE : parseVecShort(sizeStr);
+                const rotation = stringToRotationCFrame(block.r || block.Rotation);
+                const color = parseColor(block.cl || block.x || block.Color, 0x888888);
+                const transparency = block.tr || block.Transparency || 0;
+                
+                const geometry = new THREE.BoxGeometry(size.x * 2, size.y * 2, size.z * 2);
+                const material = new THREE.MeshPhongMaterial({ 
+                    color: color, 
+                    transparent: transparency > 0, 
+                    opacity: 1 - transparency, 
+                    shininess: 10 
+                });
+                
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(position.x * 2, position.y * 2, position.z * 2);
+                mesh.quaternion.copy(rotation);
+                buildGroup.add(mesh);
+                
+                blockCount++;
+                if (blockCount % 1000 === 0) statusEl.innerHTML = `<span style="color:#00ffcc">Building... (${blockCount} blocks)</span>`;
+            }
+        }
+
+        if (blockCount === 0) throw new Error("No blocks found in file");
+
+        // Finalize scene
+        const box = new THREE.Box3().setFromObject(buildGroup);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        
+        buildGroup.position.x = -center.x;
+        buildGroup.position.z = -center.z;
+        buildGroup.position.y = -box.min.y;
+
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = camera.fov * (Math.PI / 180);
+        let cameraDist = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
+        camera.position.set(cameraDist, cameraDist, cameraDist);
+        camera.lookAt(0, 0, 0);
+        if (controls) {
+            controls.target.set(0, 0, 0);
+            controls.update();
+        }
+
+        statusEl.innerHTML = `<span style="color:#00ff88">✓ ${blockCount} blocks loaded.</span>`;
+    } catch (e) {
+        statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
+        console.error(e);
+    }
+}
+
+function closePreview() {
+    document.getElementById('previewModalBg').classList.remove('show');
+}
+
+// ================== ORIGINAL WEBSITE LOGIC ==================
 
 //  TOP PROFILE 
 function renderTopProfile(){
@@ -482,32 +643,18 @@ async function confirmBan(){
     try{
         const ex=getBanRec(pendingBanEmail);
         let res;
-        if(ex){
-            res = await sb.from('banned_users').update({expires_at:exp,reason,banned_date:new Date().toISOString(),banned_by:user.email}).eq('id',ex.id);
-        } else {
-            res = await sb.from('banned_users').insert([{email:pendingBanEmail,name:pendingBanName,banned_date:new Date().toISOString(),banned_by:user.email,expires_at:exp,reason}]);
-        }
-        
+        if(ex) res = await sb.from('banned_users').update({expires_at:exp,reason,banned_date:new Date().toISOString(),banned_by:user.email}).eq('id',ex.id);
+        else res = await sb.from('banned_users').insert([{email:pendingBanEmail,name:pendingBanName,banned_date:new Date().toISOString(),banned_by:user.email,expires_at:exp,reason}]);
         if(res.error) throw res.error;
-
-        // Automatically delete their builds after banning
         const { data: userBuilds } = await sb.from('builds').select('id, data').eq('owner_email', pendingBanEmail);
-        if(userBuilds && userBuilds.length > 0) {
-            for(const b of userBuilds) {
-                await delItemLogic(b.id, b.data?.previewImage);
-            }
-        }
-
+        if(userBuilds && userBuilds.length > 0) for(const b of userBuilds) await delItemLogic(b.id, b.data?.previewImage);
         await loadBanned();
         toast(`${pendingBanName} banned ${dur==='permanent'?'permanently':'for '+dur}`,'ok');
         closeBanModal();
         await Promise.all([loadBuilds(), loadSells(), loadTrades()]);
         renderBanList();
         updateForms();
-    }catch(e){
-        console.error('Ban error:', e);
-        toast(e.message||e,'err');
-    }
+    }catch(e){console.error('Ban error:', e);toast(e.message||e,'err')}
 }
 async function unbanUser(id){if(!isAdmin()||!confirm('Unban?'))return;try{await sb.from('banned_users').delete().eq('id',id);await loadBanned();toast('Unbanned','ok');renderBanList();updateForms()}catch(e){toast(e.message||e,'err')}}
 function renderBanList(){const el=document.getElementById('banList');if(!el||!isAdmin())return;el.innerHTML=bannedList.length?bannedList.map(b=>{const exp=b.expires_at?new Date(b.expires_at):null,active=!exp||exp>new Date();return`<div class="ban-list-item"><div class="ban-info"><div class="ban-name">${esc(b.name)}</div><div class="ban-detail">${esc(b.email)} - ${b.reason||'No reason'}</div></div><div class="ban-status ${active?(b.expires_at?'temp':'perm'):'expired'}">${active?(b.expires_at?'Temp':'Perm'):'Expired'}</div><button class="btn btn-s" onclick="unbanUser('${b.id}')">Unban</button></div>`}).join(''):'<div class="empty">No bans</div>'}
@@ -552,7 +699,6 @@ async function dlFile(id,url){
 
 //  DATA 
 async function loadExecs(){try{const{data}=await sb.from('executions').select('count').order('count',{ascending:false}).limit(1);const f=(data?.[0]?.count||0).toLocaleString();['sExec','hExec','scExec'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=f})}catch(e){console.error(e)}}
-
 async function initAuth(){
     await loadBanned();
     const{data}=await sb.auth.getSession();if(data?.session?.user)user=data.session.user;
@@ -560,24 +706,17 @@ async function initAuth(){
     sb.auth.onAuthStateChange((_,s)=>{user=s?.user||null;renderAuth();updateForms()});
     renderAuth();updateForms();
 }
-
 function openLoginModal(){document.getElementById('loginModal').classList.add('show')}
 function closeLoginModal(){document.getElementById('loginModal').classList.remove('show')}
-
 async function login(provider){
     closeLoginModal();
     const{error}=await sb.auth.signInWithOAuth({
         provider: provider,
-        options: {
-            redirectTo: location.origin + location.pathname,
-            scopes: provider === 'discord' ? 'identify email' : 'email profile'
-        }
+        options: { redirectTo: location.origin + location.pathname, scopes: provider === 'discord' ? 'identify email' : 'email profile' }
     });
     if(error) toast(error.message,'err');
 }
-
 async function logout(){await sb.auth.signOut();user=null;renderAuth();updateForms();toast('Logged out')}
-
 function updateForms(){
     const loggedIn=!!user,banned=loggedIn&&isBanned(user.email),ok=loggedIn&&!banned;
     ['build','sell','trade'].forEach(t=>{
@@ -592,14 +731,8 @@ function updateForms(){
     renderBanList();
     if(allBuilds.length)renderBuilds();
 }
-
-function getAv(u){
-    return u?.user_metadata?.avatar_url || u?.user_metadata?.picture || null;
-}
-function getNm(u){
-    return localStorage.getItem('lh_name') || u?.user_metadata?.full_name || u?.user_metadata?.name || u?.user_metadata?.custom_claims?.global_name || null;
-}
-
+function getAv(u){ return u?.user_metadata?.avatar_url || u?.user_metadata?.picture || null; }
+function getNm(u){ return localStorage.getItem('lh_name') || u?.user_metadata?.full_name || u?.user_metadata?.name || u?.user_metadata?.custom_claims?.global_name || null; }
 function renderAuth(){
     const auth=document.getElementById('authArea'),ua=document.getElementById('userArea');
     if(user){
@@ -615,9 +748,7 @@ function renderAuth(){
     }
     renderTopProfile();setTimeout(obsAll,50);
 }
-
 function saveName(){const v=document.getElementById('nameIn').value.trim().slice(0,20);if(!v){toast('Enter a name','err');return}localStorage.setItem('lh_name',v);document.getElementById('pName').textContent=v;renderTopProfile();toast('Saved','ok')}
-
 async function cloud(f){
     if(f.size>5*1024*1024)throw'Max 5MB';
     const fd=new FormData();
@@ -628,53 +759,36 @@ async function cloud(f){
     if(!r.ok)throw j.error?.message||'Upload failed';
     return j.secure_url;
 }
-
-async function deleteFromCloudinary(url) {
-    if(!url || !url.includes('cloudinary.com')) return;
-    console.log('Requesting deletion of:', url);
-}
-
 async function ins(r){const{data,error}=await sb.from('builds').insert([r]).select().single();if(error)throw error;return data}
-async function loadDB(t,s='new'){const{data,error}=await sb.from('builds').select('*').eq('type',t).order('upload_date',{ascending:s==='old'});if(error)throw error;return data||[]}
-
+async function loadDB(t,s='new'){const{data,error}=await sb.from('builds').select('*').eq('type',t).order('upload_date',{ascending:s==='old'});if(error)throw error;return data}
 async function delItemLogic(id, imageUrl) {
     const { error } = await sb.from('builds').delete().eq('id', id);
     if (error) throw error;
-    if (imageUrl) await deleteFromCloudinary(imageUrl);
 }
-
-async function del(id, imageUrl){
-    await delItemLogic(id, imageUrl);
-}
-
 function preCheck(){
     if(!user){toast('Login first','warn');go('profile');return false}
     if(isBanned(user.email)){toast(getBanMsg(user.email),'err');return false}
     if(!canUpload())return false;
     return true;
 }
-
 async function upBuild(e){
     e.preventDefault();if(!preCheck())return false;
     const btn=document.getElementById('bBtn');btn.disabled=true;btn.textContent='Uploading...';
     try{const img=document.getElementById('bImg').files[0],file=document.getElementById('bFile').files[0],title=document.getElementById('bTitle').value.trim(),cat=document.getElementById('bCat').value;if(!img)throw'Image required';if(!file?.name.toLowerCase().endsWith('.build'))throw'Need .build file';if(!title)throw'Title required';if(!cat)throw'Category required';const[iu,fu]=await Promise.all([cloud(img),cloud(file)]);await ins({type:'build',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,downloads:0});document.getElementById('buildForm').reset();resetFile('bIB','bIT','Choose image...');startCooldown();toast('Uploaded','ok');loadBuilds();updateCounts()}catch(err){toast(err.message||err,'err')}
     btn.disabled=false;btn.textContent='Upload';return false;
 }
-
 async function upSell(e){
     e.preventDefault();if(!preCheck())return false;
     const btn=document.getElementById('sBtn');btn.disabled=true;btn.textContent='Uploading...';
     try{const img=document.getElementById('sImg').files[0];if(!img)throw'Image required';const iu=await cloud(img);await ins({type:'sell',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title:document.getElementById('sTitle').value.trim(),description:document.getElementById('sDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),price:parseInt(document.getElementById('sPrice').value),downloads:0});document.getElementById('sellForm').reset();resetFile('sIB','sIT','Choose image...');startCooldown();toast('Listed','ok');loadSells()}catch(err){toast(err.message||err,'err')}
     btn.disabled=false;btn.textContent='List Item';return false;
 }
-
 async function upTrade(e){
     e.preventDefault();if(!preCheck())return false;
     const btn=document.getElementById('tBtn');btn.disabled=true;btn.textContent='Uploading...';
     try{const img=document.getElementById('tImg').files[0];if(!img)throw'Image required';const iu=await cloud(img);await ins({type:'trade',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title:document.getElementById('tTitle').value.trim(),description:document.getElementById('tDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),downloads:0});document.getElementById('tradeForm').reset();resetFile('tIB','tIT','Choose image...');startCooldown();toast('Posted','ok');loadTrades()}catch(err){toast(err.message||err,'err')}
     btn.disabled=false;btn.textContent='Post Trade';return false;
 }
-
 async function savePfp(){
     const f=document.getElementById('pfpIn').files[0];if(!f){toast('Choose image','err');return}
     const btn=document.getElementById('pfpBtn');btn.disabled=true;btn.textContent='Updating...';
@@ -687,22 +801,18 @@ async function savePfp(){
     }catch(e){toast(e.message||e,'err')}
     btn.disabled=false;btn.textContent='Update';
 }
-
 function card(item,canDel=false){
     const admin=isAdmin(),on=esc(item.owner_name)||'Unknown',oe=esc(item.owner_email)||'',oa=item.owner_avatar||'',cat=item.data?.category,dl=item.downloads||0;
-    const img = item.data?.previewImage;
-    const desc = item.data?.description;
-    return`<div class="card reveal"><div class="card-img${img?'':' empty'}">${img?`<img src="${img}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}<div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}', '${img}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}', '${img}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button>`:''}</div></div></div>`}
-
+    const img = item.data?.previewImage, desc = item.data?.description;
+    return`<div class="card reveal"><div class="card-img${img?'':' empty'}">${img?`<img src="${img}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}<div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button><button class="btn btn-s" onclick="openPreview('${item.build_file_url}','${esc(item.data?.title)}')">Preview Build</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}', '${img}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}', '${img}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button>`:''}</div></div></div>`}
 async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();renderTopProfile()}catch(e){console.error(e)}}
 function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new';let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found</div>';obsAll()}
 async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){console.error(e)}}
 async function loadTrades(){try{const i=await loadDB('trade',document.getElementById('tSort')?.value);document.getElementById('tCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No trades</div>';obsAll()}catch(e){console.error(e)}}
 async function loadMy(){if(!user)return;try{const{data}=await sb.from('builds').select('*').eq('owner_email',user.email).order('upload_date',{ascending:false});document.getElementById('myCards').innerHTML=data?.length?data.map(i=>card(i,true)).join(''):'<div class="empty">No uploads</div>';obsAll()}catch(e){console.error(e)}}
-async function delItem(id, img){if(!confirm('Delete?'))return;try{await del(id, img);toast('Deleted','ok');loadMy();loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
-async function adminDel(id, img){if(!isAdmin()||!confirm('Delete?'))return;try{await del(id, img);toast('Deleted','ok');loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
+async function delItem(id, img){if(!confirm('Delete?'))return;try{await delItemLogic(id, img);toast('Deleted','ok');loadMy();loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
+async function adminDel(id, img){if(!isAdmin()||!confirm('Delete?'))return;try{await delItemLogic(id, img);toast('Deleted','ok');loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
 async function updateCounts(){try{const{count}=await sb.from('builds').select('*',{count:'exact',head:true}).eq('type','build');document.getElementById('sBuilds').textContent=count||0}catch(e){console.error(e)}}
-
 function showOwner(n,e,a){document.getElementById('mName').textContent=n||'Unknown';document.getElementById('mEmail').textContent=e?e.slice(0,3)+'**********************':'Hidden';document.getElementById('mAv').innerHTML=a?`<img src="${a}" onerror="this.parentElement.textContent='?'">`:'?';document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openDiscord(){window.open(DISCORD,'_blank')}
@@ -710,9 +820,7 @@ function copyCode(){navigator.clipboard.writeText(document.getElementById('codeT
 
 window.addEventListener('load',async()=>{
     const a=localStorage.getItem('lh_accent');if(a)setAccent(a);initAP();pickTheme(localStorage.getItem('lh_theme')||'dark');obsAll();
-    loadExecs();
-    loadBuilds();
-    updateCounts();
+    loadExecs(); loadBuilds(); updateCounts();
     await initAuth();
     await Promise.all([loadSells(),loadTrades()]);
 });
