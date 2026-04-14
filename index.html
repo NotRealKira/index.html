@@ -329,9 +329,9 @@
             <form id="buildForm" onsubmit="return upBuild(event)"><div class="form-row">
                 <div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="bIB"><span></span><span id="bIT">Choose image...</span><input type="file" id="bImg" accept="image/*" required onchange="fileChg(this,'bIB','bIT')"></div></div>
                 <div class="field"><label>Build File <span class="req">*</span></label><div class="file-box" id="bFB"><span></span><span id="bFT">Choose .build file...</span><input type="file" id="bFile" accept=".build" required onchange="fileChg(this,'bFB','bFT')"></div></div>
-                <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" required></div>
+                <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" maxlength="15" required></div>
                 <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Anime</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
-                <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="bDesc" placeholder="Optional"></textarea></div>
+                <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="bDesc" placeholder="Optional" maxlength="25"></textarea></div>
             </div><button type="submit" class="btn btn-p btn-full" id="bBtn">Upload</button>
             <div id="cooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:0.82em;color:var(--warning)"></div></form>
         </div>
@@ -991,11 +991,21 @@ function openLoginModal(){document.getElementById('loginModal').classList.add('s
 function closeLoginModal(){document.getElementById('loginModal').classList.remove('show')}
 async function login(provider){
     closeLoginModal();
-    const{error}=await sb.auth.signInWithOAuth({
-        provider: provider,
-        options: { redirectTo: location.origin + location.pathname, scopes: provider === 'discord' ? 'identify email' : 'email profile' }
-    });
-    if(error) toast(error.message,'err');
+    try{
+        const{data,error}=await sb.auth.signInWithOAuth({
+            provider: provider,
+            options: { redirectTo: location.origin + location.pathname, scopes: provider === 'discord' ? 'identify email' : 'email profile' }
+        });
+        if(error){
+            if(error.message.includes('not allowed') || error.message.includes('disabled')){
+                toast('Login temporarily unavailable. Try again later.','err');
+            }else{
+                toast(error.message,'err');
+            }
+        }
+    }catch(e){
+        toast('Login error: '+e.message,'err');
+    }
 }
 async function logout(){await sb.auth.signOut();user=null;renderAuth();updateForms();toast('Logged out')}
 function updateForms(){
@@ -1134,4 +1144,3 @@ window.addEventListener('load',async()=>{
 });
 </script>
 </body>
-</html>
