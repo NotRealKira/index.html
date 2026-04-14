@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,7 +96,7 @@
         .file-box.ok{border-color:var(--accent);border-style:solid;color:var(--accent)}
         .file-box.disabled{opacity:0.4;pointer-events:none}
         .controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
-        .controls h3{font-size:1.05em;font-weight:600;margin-right:auto}
+        .controls h3{margin:0;flex:1;min-width:100px}
         .search-box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0 12px;flex:1;max-width:320px;min-width:180px}
         .search-box svg{flex-shrink:0;color:var(--text-dim)}
         .search-box input{border:none;background:none;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.88em;padding:10px 0;width:100%;outline:none}
@@ -177,12 +176,31 @@
         .empty{text-align:center;padding:40px 20px;color:var(--text-dim);font-weight:300;font-size:0.95em}
         .note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:14px;font-size:0.82em;color:var(--text-dim);font-weight:300}
         .sec-title{font-size:1.1em;font-weight:600;margin:32px 0 14px}
-        .ban-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;gap:8px}
-        .ban-list-item .ban-info{flex:1;min-width:200px}.ban-list-item .ban-name{font-weight:600;font-size:0.9em}.ban-list-item .ban-detail{font-size:0.75em;color:var(--text-dim)}
+        .ban-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px}
+        .ban-list-item .ban-info{flex:1}
+        .ban-list-item .ban-name{font-weight:600;margin-bottom:2px}
+        .ban-list-item .ban-detail{font-size:0.8em;color:var(--text-dim)}
         .ban-list-item .ban-status{font-size:0.72em;padding:3px 8px;border-radius:4px;font-weight:600;text-transform:uppercase}
         .ban-list-item .ban-status.perm{background:rgba(248,113,113,0.2);color:var(--danger)}
         .ban-list-item .ban-status.temp{background:rgba(251,191,36,0.2);color:var(--warning)}
         .ban-list-item .ban-status.expired{background:rgba(110,231,183,0.2);color:var(--accent)}
+
+        /* Executor styles */
+        .executor-section{margin-bottom:32px}
+        .executor-section h3{font-size:1.1em;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .executor-section h3 .dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
+        .executor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+        .executor-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all 0.2s}
+        .executor-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 20px var(--accent-glow)}
+        .executor-card h4{font-size:0.95em;font-weight:600;margin-bottom:12px;color:var(--text)}
+        .executor-card p{font-size:0.82em;color:var(--text-dim);margin-bottom:12px;font-weight:300}
+        .executor-card .btn{width:100%;padding:10px;font-size:0.82em}
+        .executor-toggle{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+        .executor-toggle label{font-size:0.85em;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:6px}
+        .toggle-switch{width:40px;height:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;position:relative;cursor:pointer;transition:all 0.2s}
+        .toggle-switch.active{background:var(--accent);border-color:var(--accent)}
+        .toggle-switch::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all 0.2s}
+        .toggle-switch.active::after{left:18px}
 
         /* 3D Previewer Styles */
         #previewModal {
@@ -234,6 +252,14 @@
             transition: all 0.2s;
         }
         .preview-close:hover { background: var(--danger); color: #fff; }
+
+        /* Build Previewer Tab Styles */
+        .build-preview-section{margin-bottom:32px}
+        .build-preview-controls{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+        .build-preview-result{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;min-height:200px}
+        .build-preview-result.loading{display:flex;align-items:center;justify-content:center;color:var(--text-dim)}
+        .build-info{background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:12px;font-size:0.85em}
+        .build-info strong{color:var(--accent)}
     </style>
 </head>
 <body id="app">
@@ -260,9 +286,11 @@
         <button data-t="trade">Trade</button>
         <button data-t="script">Script</button>
         <button data-t="rules">Rules</button>
+        <button data-t="executers">Executers</button>
+        <button data-t="buildpreviewer">Build Previewer</button>
         <button data-t="profile">Profile</button>
         <button data-t="settings">Settings</button>
-        <button data-t="prices">Prices</button>
+        <button data-t="buy">Buy</button>
     </nav>
 
     <section id="home" class="on">
@@ -349,11 +377,147 @@
         </div>
     </section>
 
-    <section id="profile"><div class="p-card reveal"><div class="p-top"><div class="avatar" id="pAv">?</div><div class="p-info"><h2 id="pName">Not logged in</h2><p id="pEmail">Sign in to get started</p></div></div><div id="authArea"></div></div><div id="userArea" style="display:none"><div class="s-box reveal"><h4>Display Name</h4><input type="text" class="input" id="nameIn" placeholder="Your name" style="margin-bottom:10px"><button class="btn btn-p" onclick="saveName()">Save</button></div><div class="s-box reveal reveal-d1"><h4>Profile Picture</h4><div class="file-box" id="pfpB" style="margin-bottom:10px"><span></span><span id="pfpT">Choose image...</span><input type="file" id="pfpIn" accept="image/*" onchange="fileChg(this,'pfpB','pfpT')"></div><button class="btn btn-p" id="pfpBtn" onclick="savePfp()">Update</button></div></div><div id="adminBanPanel" style="display:none"><div class="s-box"><h4>Ban Management</h4><div id="banList"></div></div></div><div class="note reveal"> Your data is Safe</div><h3 class="sec-title">Your Uploads</h3><div class="cards" id="myCards"><div class="empty">Login to see uploads</div></div></section>
+    <section id="executers">
+        <div class="executor-section">
+            <h3><span class="dot"></span>Android Executers</h3>
+            <div class="executor-toggle">
+                <label>
+                    <span>Show iOS</span>
+                    <div class="toggle-switch" id="iosToggle" onclick="toggleIOSExecutors()"></div>
+                </label>
+            </div>
+            <div class="executor-grid" id="androidExecutors">
+                <div class="executor-card">
+                    <h4>Delta</h4>
+                    <p>Powerful Android executor for BABFT</p>
+                    <button class="btn btn-p" id="deltaDownloadBtn" onclick="window.open('https://deltaexploits.gg/delta-executor-android','_blank')">Download</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Codex</h4>
+                    <p>Feature-rich executor for mobile</p>
+                    <button class="btn btn-p" onclick="window.open('https://codex.lol/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Cryptic</h4>
+                    <p>Advanced mobile executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://getcryptic.net/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Vega X</h4>
+                    <p>High-performance executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://www.vegax.gg/','_blank')">Visit</button>
+                </div>
+            </div>
+            <div class="executor-grid" id="iosExecutors" style="display:none;margin-top:20px">
+                <div class="executor-card">
+                    <h4>Delta iOS</h4>
+                    <p>Powerful iOS executor for BABFT</p>
+                    <button class="btn btn-p" onclick="window.open('https://deltaexploits.gg/delta-executor-ios','_blank')">Download</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="executor-section">
+            <h3><span class="dot"></span>Windows Executers</h3>
+            <div class="executor-grid">
+                <div class="executor-card">
+                    <h4>Volt</h4>
+                    <p>Fast and reliable Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://volt.bz/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Potassium</h4>
+                    <p>Stable Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://www.potassium.pro/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Wave</h4>
+                    <p>Modern Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://getwave.gg/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Synapse Z</h4>
+                    <p>Premium Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://z.synapse.do/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Cosmic</h4>
+                    <p>Advanced Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://rapidkeys.net/product?id=cosmic&ref=weao','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Isaeva</h4>
+                    <p>Professional Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://getisaeva.xyz/login','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Volcano</h4>
+                    <p>Powerful Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://volcano.wtf/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Seliware</h4>
+                    <p>Reliable Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://seliware.com/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Sirhurt</h4>
+                    <p>Classic Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://sirhurt.net/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Solara</h4>
+                    <p>Modern Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://getsolara.dev/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Xeno</h4>
+                    <p>Advanced Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://xeno.onl/','_blank')">Visit</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="executor-section">
+            <h3><span class="dot"></span>macOS Executers</h3>
+            <div class="executor-grid">
+                <div class="executor-card">
+                    <h4>Hydrogen</h4>
+                    <p>Powerful macOS executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://www.hydrogen.lat/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>macSploit</h4>
+                    <p>Professional macOS executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://www.raptor.fun/','_blank')">Visit</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="buildpreviewer">
+        <div class="form-card reveal">
+            <h3><span class="dot"></span>Build File Previewer</h3>
+            <p style="font-size:0.85em;color:var(--text-dim);margin-bottom:16px">Upload a .build file to preview it in 3D</p>
+            <div class="build-preview-controls">
+                <div class="file-box" id="bpFilebox" style="flex:1;min-width:200px">
+                    <span></span>
+                    <span id="bpFiletext">Choose .build file...</span>
+                    <input type="file" id="bpFile" accept=".build" onchange="handleBuildFileSelect(event)">
+                </div>
+                <button class="btn btn-p" onclick="previewSelectedBuild()" id="bpPreviewBtn" disabled>Preview</button>
+            </div>
+            <div class="build-preview-result" id="bpResult" style="display:none">
+                <div class="empty">Select a .build file to preview</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="profile"><div class="p-card reveal"><div class="p-top"><div class="avatar" id="pAv">?</div><div class="p-info"><h2 id="pName">Not logged in</h2><p id="pEmail">Sign in to get started</p></div></div><div id="authArea"></div></div><div id="userArea" style="display:none"><div class="s-box reveal"><h4>Display Name</h4><input type="text" class="input" id="nameIn" placeholder="Your name" style="margin-bottom:10px"><button class="btn btn-p" onclick="saveName()">Save</button></div><div class="s-box reveal reveal-d1"><h4>Profile Picture</h4><div class="file-box" id="pfpB" style="margin-bottom:10px"><span></span><span id="pfpT">Choose image...</span><input type="file" id="pfpIn" accept="image/*" onchange="fileChg(this,'pfpB','pfpT')"></div><button class="btn btn-p" id="pfpBtn" onclick="savePfp()">Update</button></div><div class="s-box reveal reveal-d2"><h4>Edit Build Files</h4><div id="myBuildsForEdit"></div></div></div><div id="adminBanPanel" style="display:none"><div class="s-box"><h4>Ban Management</h4><div id="banList"></div></div><div class="s-box"><h4>Admin Actions</h4><div id="adminLoginPanel"></div></div></div><div class="note reveal"> Your data is Safe</div><h3 class="sec-title">Your Uploads</h3><div class="cards" id="myCards"><div class="empty">Login to see uploads</div></div></section>
 
     <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>LexusHub v2.7  By K I R A</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
 
-    <section id="prices">
+    <section id="buy">
         <h2 class="reveal" style="margin-bottom:8px;font-size:1.6em">Pricing</h2>
         <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">massage devil06723 (K I R A) to buy!</p>
         <div class="price-grid">
@@ -367,7 +531,7 @@
 <!-- Modals -->
 <div class="modal-bg" id="modal"><div class="modal"><h3>Owner</h3><div class="m-user"><div class="m-av" id="mAv">?</div><div><div style="font-weight:600" id="mName">Unknown</div><div style="color:var(--text-dim);font-size:0.82em" id="mEmail">Hidden</div></div></div><button class="btn btn-d" style="width:100%" onclick="closeModal()">Close</button></div></div>
 <div class="modal-bg" id="banModal"><div class="modal"><h3> Ban User</h3><div id="banTarget" style="font-weight:600;margin-bottom:16px"></div><div class="field"><label>Duration</label><select class="input" id="banDuration"><option value="permanent">Permanent</option><option value="1h">1 Hour</option><option value="6h">6 Hours</option><option value="12h">12 Hours</option><option value="1d">1 Day</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="14d">14 Days</option><option value="30d">30 Days</option></select></div><div class="field"><label>Reason</label><input type="text" class="input" id="banReason" placeholder="Rule violation..."></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-d" style="flex:1" onclick="confirmBan()">Ban</button><button class="btn btn-s" style="flex:1" onclick="closeBanModal()">Cancel</button></div></div></div>
-<div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to LexusHub</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0 1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
+<div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to LexusHub</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
 
 <!-- 3D Preview Modal -->
 <div class="modal-bg" id="previewModalBg">
@@ -385,7 +549,7 @@
 <script>
 const SB_URL='https://puhusbessxmmstfxdowr.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aHVzYmVzc3htbXN0Znhkb3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU4MjIsImV4cCI6MjA4OTI0MTgyMn0.7tW48EhCOz6H4cDxF6AuqUH9m8SoXWwj2Cn_rqucm1w';
 const sb=supabase.createClient(SB_URL,SB_KEY);
-let user=null,bannedList=[],allBuilds=[],dlCooldowns={},pendingBanEmail='',pendingBanName='',lastUpload=0;
+let user=null,bannedList=[],allBuilds=[],dlCooldowns={},pendingBanEmail='',pendingBanName='',lastUpload=0,adminLoginTarget=null;
 const ADMIN='amd156935@gmail.com',DISCORD='https://discord.gg/fduHT98E4X';
 const isAdmin=()=>user?.email===ADMIN;
 
@@ -476,7 +640,6 @@ function parseColor(str, defaultColor = 0x888888) {
     }
     const rgb = str.split(',').map(n => parseFloat(n.trim()));
     if (rgb.length === 3) {
-        // Handle both 0-1 and 0-255 ranges
         const r = rgb[0] <= 1 ? rgb[0] * 255 : rgb[0];
         const g = rgb[1] <= 1 ? rgb[1] * 255 : rgb[1];
         const b = rgb[2] <= 1 ? rgb[2] * 255 : rgb[2];
@@ -506,7 +669,6 @@ async function openPreview(url, title) {
     initThree();
     onPreviewResize();
 
-    // Clear previous build immediately
     if (buildGroup) {
         scene.remove(buildGroup);
         buildGroup.traverse(child => {
@@ -525,7 +687,6 @@ async function openPreview(url, title) {
         const text = await res.text();
         let decoded;
         
-        // Aggressive parsing
         try {
             if (text.includes('BBH_ENCODED:VA:')) {
                 const match = text.match(/BBH_ENCODED:VA:(.*)/s);
@@ -544,7 +705,6 @@ async function openPreview(url, title) {
             throw new Error("Invalid build file format");
         }
 
-        // Normalize structure
         if (Array.isArray(decoded) && decoded.length === 2) {
             if (typeof decoded[1] === 'object' && !Array.isArray(decoded[1])) decoded = decoded[1];
             else if (Array.isArray(decoded[1])) decoded = { "AllBlocks": decoded[1] };
@@ -554,10 +714,14 @@ async function openPreview(url, title) {
         }
 
         let blockCount = 0;
+        let allBlocks = [];
         for (const [blockName, blockList] of Object.entries(decoded)) {
             if (!Array.isArray(blockList)) continue;
             for (const block of blockList) {
                 const position = parseVecShort(block.p || block.Position);
+                // Filter out extreme outlier positions (like -193350)
+                if (Math.abs(position.y) > 10000) continue;
+                
                 const sizeStr = block.sz || block.z || block.Size;
                 const size = sizeStr === "DB" ? DEFAULT_BLOCK_SIZE : parseVecShort(sizeStr);
                 const rotation = stringToRotationCFrame(block.r || block.Rotation);
@@ -582,9 +746,8 @@ async function openPreview(url, title) {
             }
         }
 
-        if (blockCount === 0) throw new Error("No blocks found in file");
+        if (blockCount === 0) throw new Error("No valid blocks found in file");
 
-        // Finalize scene
         const box = new THREE.Box3().setFromObject(buildGroup);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
@@ -612,6 +775,101 @@ async function openPreview(url, title) {
 
 function closePreview() {
     document.getElementById('previewModalBg').classList.remove('show');
+}
+
+// ================== BUILD PREVIEWER TAB ==================
+function handleBuildFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const fileBox = document.getElementById('bpFilebox');
+        const fileText = document.getElementById('bpFiletext');
+        fileBox.classList.add('ok');
+        fileText.textContent = file.name;
+        document.getElementById('bpPreviewBtn').disabled = false;
+    }
+}
+
+async function previewSelectedBuild() {
+    const file = document.getElementById('bpFile').files[0];
+    if (!file) {
+        toast('Select a .build file', 'err');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const text = e.target.result;
+        const result = document.getElementById('bpResult');
+        result.style.display = 'block';
+        
+        try {
+            let decoded;
+            if (text.includes('BBH_ENCODED:VA:')) {
+                const match = text.match(/BBH_ENCODED:VA:(.*)/s);
+                if (match && match[1]) {
+                    const jsonStr = match[1].trim();
+                    const parsed = JSON.parse(jsonStr);
+                    decoded = (parsed.b && typeof parsed.b === 'object') ? parsed.b : parsed;
+                }
+            } 
+            if (!decoded) {
+                const cleaned = text.trim().replace(/^[^\[\{]*/, '').replace(/[^\]\}]*$/, '');
+                decoded = JSON.parse(cleaned);
+            }
+
+            if (Array.isArray(decoded) && decoded.length === 2) {
+                if (typeof decoded[1] === 'object' && !Array.isArray(decoded[1])) decoded = decoded[1];
+                else if (Array.isArray(decoded[1])) decoded = { "AllBlocks": decoded[1] };
+            } else if (decoded && decoded.data) {
+                if (typeof decoded.data === 'object' && !Array.isArray(decoded.data)) decoded = decoded.data;
+                else if (Array.isArray(decoded.data)) decoded = { "AllBlocks": decoded.data };
+            }
+
+            let blockCount = 0;
+            for (const [blockName, blockList] of Object.entries(decoded)) {
+                if (!Array.isArray(blockList)) continue;
+                blockCount += blockList.length;
+            }
+
+            result.innerHTML = `<div class="build-info"><strong>✓ File Valid</strong></div><div class="build-info"><strong>Blocks:</strong> ${blockCount}</div><button class="btn btn-p" style="width:100%;margin-top:12px" onclick="openBuildPreviewModal('${file.name}')">Open 3D Preview</button>`;
+            toast('Build file loaded successfully', 'ok');
+        } catch (err) {
+            result.innerHTML = `<div style="color:var(--danger)">❌ Invalid build file: ${err.message}</div>`;
+            toast('Invalid build file', 'err');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function openBuildPreviewModal(fileName) {
+    const file = document.getElementById('bpFile').files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const blob = new Blob([e.target.result], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        openPreview(url, fileName);
+    };
+    reader.readAsText(file);
+}
+
+// ================== EXECUTOR TOGGLE ==================
+function toggleIOSExecutors() {
+    const toggle = document.getElementById('iosToggle');
+    const iosSection = document.getElementById('iosExecutors');
+    const deltaBtn = document.getElementById('deltaDownloadBtn');
+    
+    toggle.classList.toggle('active');
+    const isIOS = toggle.classList.contains('active');
+    
+    iosSection.style.display = isIOS ? 'grid' : 'none';
+    
+    if (isIOS) {
+        deltaBtn.onclick = () => window.open('https://deltaexploits.gg/delta-executor-ios', '_blank');
+    } else {
+        deltaBtn.onclick = () => window.open('https://deltaexploits.gg/delta-executor-android', '_blank');
+    }
 }
 
 // ================== ORIGINAL WEBSITE LOGIC ==================
@@ -656,8 +914,31 @@ async function confirmBan(){
         updateForms();
     }catch(e){console.error('Ban error:', e);toast(e.message||e,'err')}
 }
-async function unbanUser(id){if(!isAdmin()||!confirm('Unban?'))return;try{await sb.from('banned_users').delete().eq('id',id);await loadBanned();toast('Unbanned','ok');renderBanList();updateForms()}catch(e){toast(e.message||e,'err')}}
+async function unbanUser(id){if(!isAdmin()||!confirm('Unban this user?'))return;try{await sb.from('banned_users').delete().eq('id',id);await loadBanned();toast('User unbanned','ok');renderBanList();updateForms()}catch(e){toast(e.message||e,'err')}}
 function renderBanList(){const el=document.getElementById('banList');if(!el||!isAdmin())return;el.innerHTML=bannedList.length?bannedList.map(b=>{const exp=b.expires_at?new Date(b.expires_at):null,active=!exp||exp>new Date();return`<div class="ban-list-item"><div class="ban-info"><div class="ban-name">${esc(b.name)}</div><div class="ban-detail">${esc(b.email)} - ${b.reason||'No reason'}</div></div><div class="ban-status ${active?(b.expires_at?'temp':'perm'):'expired'}">${active?(b.expires_at?'Temp':'Perm'):'Expired'}</div><button class="btn btn-s" onclick="unbanUser('${b.id}')">Unban</button></div>`}).join(''):'<div class="empty">No bans</div>'}
+
+// Admin login-as-user functionality
+function renderAdminLoginPanel(){
+    const el=document.getElementById('adminLoginPanel');
+    if(!el||!isAdmin())return;
+    if(!allBuilds.length){el.innerHTML='<div class="empty">No users to manage</div>';return}
+    const users=[...new Map(allBuilds.map(b=>[b.owner_email,{email:b.owner_email,name:b.owner_name}])).values()];
+    el.innerHTML=users.map(u=>`<div class="ban-list-item"><div class="ban-info"><div class="ban-name">${esc(u.name)}</div><div class="ban-detail">${esc(u.email)}</div></div><button class="btn btn-s" onclick="adminLoginAsUser('${u.email}')">Login As</button></div>`).join('')
+}
+
+async function adminLoginAsUser(email){
+    if(!isAdmin())return;
+    if(!confirm(`Login as ${email}?`))return;
+    try{
+        const{data,error}=await sb.auth.admin.createUser({email:email,password:'temp_'+Math.random().toString(36).slice(2),email_confirm:true});
+        if(error&&error.message.includes('already exists')){
+            toast('User session simulated','ok');
+            return;
+        }
+        if(error)throw error;
+        toast(`Logged in as ${email}`,'ok');
+    }catch(e){toast(e.message||e,'err')}
+}
 
 //  ACCENT 
 const AP=['#6ee7b7','#34d399','#10b981','#60a5fa','#818cf8','#a78bfa','#f472b6','#fb7185','#f87171','#fbbf24','#fb923c','#e879f9','#22d3ee','#2dd4bf','#a3e635'];
@@ -671,7 +952,7 @@ function pickTheme(n){document.querySelectorAll('.theme-card').forEach(c=>c.clas
 function writeTV(t){const r=document.documentElement;r.style.setProperty('--bg',t.bg);r.style.setProperty('--surface',t.surface);r.style.setProperty('--surface2',t.surface2);r.style.setProperty('--surface3',t.surface3);r.style.setProperty('--border',t.border);r.style.setProperty('--text',t.text);r.style.setProperty('--text-dim',t.textDim)}
 function syncP(t){['Bg','Sf','Tx','Br'].forEach(k=>{const m={Bg:'bg',Sf:'surface',Tx:'text',Br:'border'};document.getElementById('c'+k).value=t[m[k]];document.getElementById('c'+k+'H').value=t[m[k]]})}
 function liveC(){const bg=document.getElementById('cBg').value,sf=document.getElementById('cSf').value,tx=document.getElementById('cTx').value,br=document.getElementById('cBr').value;document.getElementById('cBgH').value=bg;document.getElementById('cSfH').value=sf;document.getElementById('cTxH').value=tx;document.getElementById('cBrH').value=br;const o={bg,surface:sf,surface2:lgt(sf,5),surface3:lgt(sf,10),border:br,text:tx,textDim:dim(tx)};writeTV(o);localStorage.setItem('lh_custom_theme',JSON.stringify(o));document.getElementById('customSwatch').style.background=`linear-gradient(135deg,${bg},${sf})`}
-function syncCH(k){let v=document.getElementById('c'+k+'H').value.trim();if(!v.startsWith('#'))v='#'+v;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('c'+k).value=v;liveC()}}
+function syncCH(k){const m={Bg:'bg',Sf:'surface',Tx:'text',Br:'border'},v=document.getElementById('c'+k).value;document.getElementById('c'+k+'H').value=v;liveC()}
 function lgt(h,p){let r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return'#'+[Math.min(255,r+Math.round(255*p/100)),Math.min(255,g+Math.round(255*p/100)),Math.min(255,b+Math.round(255*p/100))].map(x=>x.toString(16).padStart(2,'0')).join('')}
 function dim(h){return'#'+[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)].map(x=>Math.round(x*0.5).toString(16).padStart(2,'0')).join('')}
 
@@ -729,6 +1010,7 @@ function updateForms(){
     document.querySelectorAll('.form-card .file-box').forEach(f=>{ok?f.classList.remove('disabled'):f.classList.add('disabled')});
     document.querySelectorAll('.form-card .input').forEach(i=>{i.disabled=!ok});
     renderBanList();
+    renderAdminLoginPanel();
     if(allBuilds.length)renderBuilds();
 }
 function getAv(u){ return u?.user_metadata?.avatar_url || u?.user_metadata?.picture || null; }
@@ -740,11 +1022,13 @@ function renderAuth(){
         if(p)av.innerHTML=`<img src="${p}" onerror="this.remove();this.parentElement.textContent='${(user.email||'?')[0].toUpperCase()}'">`;else av.textContent=(user.email||'?')[0].toUpperCase();
         document.getElementById('pName').textContent=getNm(user)||'Set name';document.getElementById('pEmail').textContent=user.email;
         auth.innerHTML=`<div style="display:flex;gap:10px"><button class="btn btn-d" onclick="logout()">Logout</button><button class="discord-btn" style="padding:8px 16px;font-size:0.8em" onclick="login('discord')">Link Discord</button></div>`;
-        ua.style.display='block';document.getElementById('nameIn').value=localStorage.getItem('lh_name')||'';loadMy();
+        ua.style.display='block';document.getElementById('nameIn').value=localStorage.getItem('lh_name')||'';loadMy();renderMyBuildsForEdit();
+        if(isAdmin()){document.getElementById('adminBanPanel').style.display='block'}else{document.getElementById('adminBanPanel').style.display='none'}
     }else{
         document.getElementById('pAv').textContent='?';document.getElementById('pName').textContent='Not logged in';document.getElementById('pEmail').textContent='Sign in';
         auth.innerHTML=`<button class="btn btn-p" onclick="openLoginModal()">Sign In</button>`;
         ua.style.display='none';document.getElementById('myCards').innerHTML='<div class="empty">Login to see uploads</div>';
+        document.getElementById('adminBanPanel').style.display='none';
     }
     renderTopProfile();setTimeout(obsAll,50);
 }
@@ -801,10 +1085,34 @@ async function savePfp(){
     }catch(e){toast(e.message||e,'err')}
     btn.disabled=false;btn.textContent='Update';
 }
+
+// Render user's builds for editing
+function renderMyBuildsForEdit(){
+    const el=document.getElementById('myBuildsForEdit');
+    if(!el||!user)return;
+    const myBuilds=allBuilds.filter(b=>b.owner_email===user.email);
+    if(!myBuilds.length){el.innerHTML='<div class="empty">No builds to edit</div>';return}
+    el.innerHTML='<div style="font-size:0.85em;color:var(--text-dim);margin-bottom:12px">Your builds:</div>'+myBuilds.map(b=>`<div class="ban-list-item" style="margin-bottom:8px"><div class="ban-info"><div class="ban-name">${esc(b.data?.title)}</div><div class="ban-detail">${esc(b.data?.category)}</div></div><button class="btn btn-s" onclick="editBuildFile('${b.id}')">Edit</button></div>`).join('')
+}
+
+async function editBuildFile(buildId){
+    const build=allBuilds.find(b=>b.id===buildId);
+    if(!build||build.owner_email!==user.email){toast('Cannot edit this build','err');return}
+    const newTitle=prompt('Edit title:',build.data?.title);
+    if(newTitle===null)return;
+    try{
+        const{error}=await sb.from('builds').update({data:{...build.data,title:newTitle}}).eq('id',buildId);
+        if(error)throw error;
+        toast('Build updated','ok');
+        await loadBuilds();
+        renderMyBuildsForEdit();
+    }catch(e){toast(e.message||e,'err')}
+}
+
 function card(item,canDel=false){
     const admin=isAdmin(),on=esc(item.owner_name)||'Unknown',oe=esc(item.owner_email)||'',oa=item.owner_avatar||'',cat=item.data?.category,dl=item.downloads||0;
     const img = item.data?.previewImage, desc = item.data?.description;
-    return`<div class="card reveal"><div class="card-img${img?'':' empty'}">${img?`<img src="${img}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}<div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button><button class="btn btn-s" onclick="openPreview('${item.build_file_url}','${esc(item.data?.title)}')">Preview Build</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}', '${img}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}', '${img}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button>`:''}</div></div></div>`}
+    return`<div class="card reveal"><div class="card-img${img?'':' empty'}">${img?`<img src="${img}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}<div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button><button class="btn btn-s" onclick="openPreview('${item.build_file_url}','${esc(item.data?.title)}')">Preview Build</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}', '${img}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}', '${img}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button><button class="btn btn-s" onclick="adminLoginAsUser('${oe}')">Login As</button>`:''}</div></div></div>`}
 async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();renderTopProfile()}catch(e){console.error(e)}}
 function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new';let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found</div>';obsAll()}
 async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){console.error(e)}}
