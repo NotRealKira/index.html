@@ -14,7 +14,8 @@
             --bg:#09090b;--surface:#131316;--surface2:#1c1c21;--surface3:#26262c;
             --border:#2a2a30;--text:#eeeef0;--text-dim:#6e6e7a;
             --accent:#6ee7b7;--accent-dim:rgba(110,231,183,0.15);--accent-glow:rgba(110,231,183,0.08);
-            --danger:#f87171;--warning:#fbbf24
+            --danger:#f87171;--warning:#fbbf24;
+            --card-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
         body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden}
         .bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
@@ -110,146 +111,106 @@
         .card:hover .card-img img{transform:scale(1.03)}
         .card-img.empty{display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:0.82em}
         .card-body{padding:16px}.card-title{font-weight:600;font-size:1em;margin-bottom:2px}
-        .card-cat{font-size:0.72em;color:var(--accent);font-weight:500;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-        .card-price{color:var(--accent);font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:6px;font-size:0.95em}
-        .card-owner{display:flex;align-items:center;gap:6px;font-size:0.8em;color:var(--text-dim);margin-bottom:6px;cursor:pointer;transition:color 0.15s}
-        .card-owner:hover{color:var(--accent)}
-        .card-owner img{width:18px;height:18px;border-radius:50%;object-fit:cover}
-        .card-desc{font-size:0.8em;color:var(--text-dim);margin-bottom:6px;font-weight:300}
-        .card-meta{display:flex;justify-content:space-between;font-size:0.72em;color:var(--text-dim);margin-bottom:12px}
-        .card-actions{display:flex;flex-direction:column;gap:5px}.card-actions .btn{width:100%;padding:9px;font-size:0.82em}
-        .p-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px}
-        .p-top{display:flex;align-items:center;gap:20px;margin-bottom:20px}
-        .avatar{width:68px;height:68px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:1.5em;font-weight:700;color:var(--accent);overflow:hidden;flex-shrink:0;border:2px solid var(--accent-dim)}
-        .avatar img{width:100%;height:100%;object-fit:cover;display:block}
-        .p-info h2{font-size:1.3em;font-weight:700}.p-info p{color:var(--text-dim);font-size:0.85em}
-        .gmail-btn{display:inline-flex;align-items:center;gap:10px;background:#ea4335;color:#fff;padding:12px 24px;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.9em;font-weight:600;cursor:pointer;transition:all 0.15s}
-        .gmail-btn:hover{background:#d33426;transform:translateY(-1px)}
-        .discord-btn{display:inline-flex;align-items:center;gap:10px;background:#5865F2;color:#fff;padding:12px 24px;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:0.9em;font-weight:600;cursor:pointer;transition:all 0.15s}
-        .discord-btn:hover{background:#4752c4;transform:translateY(-1px)}
-        .s-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px}
-        .s-box h4{font-size:0.92em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-        .s-box p{font-size:0.85em;color:var(--text-dim);margin-bottom:10px;font-weight:300}
-        .rules-list{list-style:none;display:flex;flex-direction:column;gap:10px}
-        .rules-list li{background:var(--surface2);padding:12px 16px;border-radius:8px;border-left:3px solid var(--accent);font-size:0.9em}
-        .rules-list li.policy{border-left-color:var(--danger);background:rgba(248,113,113,0.05)}
-        .picker-label{font-size:0.72em;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;font-weight:500}
-        .color-presets{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
-        .color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all 0.15s;position:relative}
-        .color-dot:hover{transform:scale(1.15)}.color-dot.active{border-color:var(--text)}
-        .color-dot.active::after{content:'';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.65em;font-weight:700;color:#000}
-        .picker-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-        .picker-row input[type="color"]{width:40px;height:40px;border:2px solid var(--border);border-radius:8px;cursor:pointer;background:var(--surface2);padding:2px}
-        .picker-row input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
-        .picker-row input[type="color"]::-webkit-color-swatch{border:none;border-radius:5px}
-        .hex-input{font-family:'JetBrains Mono',monospace;font-size:0.85em;color:var(--text);background:var(--surface2);padding:7px 12px;border-radius:8px;border:1px solid var(--border);width:95px;outline:none}
-        .hex-input:focus{border-color:var(--accent)}
-        .theme-preview{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-        .theme-card{width:90px;padding:10px;border-radius:10px;cursor:pointer;border:2px solid var(--border);transition:all 0.15s;text-align:center}
-        .theme-card:hover{border-color:var(--accent)}.theme-card.on{border-color:var(--accent)}
-        .theme-card .swatch{height:28px;border-radius:5px;margin-bottom:6px}.theme-card .name{font-size:0.7em;font-weight:600}
-        .theme-custom-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
-        .theme-custom-row label{font-size:0.72em;color:var(--text-dim);min-width:72px}
-        .sc-grid{display:grid;grid-template-columns:1fr 260px;gap:28px;align-items:start}
-        .sc-box h2{font-size:1.8em;letter-spacing:-0.5px;margin-bottom:10px}.sc-box p{color:var(--text-dim);margin-bottom:14px;font-weight:300;font-size:0.95em}
-        .code-block{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:0.8em;color:var(--accent);word-break:break-all;position:relative;margin:20px 0;line-height:1.7}
-        .code-block .copy{position:absolute;top:8px;right:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:5px;font-size:0.85em;cursor:pointer;font-family:'Outfit',sans-serif}
-        .code-block .copy:hover{background:var(--surface3)}
-        .sc-img{border-radius:12px;overflow:hidden;border:1px solid var(--border)}.sc-img img{width:100%;display:block}
-        .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
-        .price-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;transition:all 0.2s}
-        .price-card:hover{border-color:var(--accent);transform:translateY(-3px)}
-        .price-card .ico{font-size:2em;margin-bottom:12px}.price-card h4{margin-bottom:6px;font-weight:600;font-size:0.95em}.price-card p{font-size:0.82em;color:var(--text-dim);font-weight:300}
-        .toast-area{position:fixed;top:20px;right:20px;z-index:9999}
-        .toast{background:var(--surface);border:1px solid var(--border);padding:12px 18px;border-radius:10px;margin-bottom:8px;font-size:0.85em;transform:translateX(120%);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1);max-width:320px;backdrop-filter:blur(10px);line-height:1.5}
-        .toast.show{transform:translateX(0)}.toast.ok{border-left:3px solid var(--accent)}.toast.err{border-left:3px solid var(--danger)}.toast.warn{border-left:3px solid var(--warning)}
-        .toast a{color:var(--accent);text-decoration:underline}
-        .warn-box{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:0.88em;color:var(--warning)}
-        .ban-box{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);padding:14px;border-radius:10px;margin-bottom:14px;font-size:0.88em;color:var(--danger);line-height:1.6}
-        .ban-box a{color:var(--accent)}
-        .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:5000;display:none;align-items:center;justify-content:center}
-        .modal-bg.show{display:flex}
-        .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:420px;width:90%}
-        .modal h3{margin-bottom:16px;font-size:1.05em}.modal .field{margin-bottom:12px}
-        .m-user{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-        .m-av{width:48px;height:48px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);overflow:hidden}.m-av img{width:100%;height:100%;object-fit:cover}
-        .empty{text-align:center;padding:40px 20px;color:var(--text-dim);font-weight:300;font-size:0.95em}
-        .note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:14px;font-size:0.82em;color:var(--text-dim);font-weight:300}
-        .sec-title{font-size:1.1em;font-weight:600;margin:32px 0 14px}
-        .ban-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px}
-        .ban-list-item .ban-info{flex:1}
-        .ban-list-item .ban-name{font-weight:600;margin-bottom:2px}
-        .ban-list-item .ban-detail{font-size:0.8em;color:var(--text-dim)}
-        .ban-list-item .ban-status{font-size:0.72em;padding:3px 8px;border-radius:4px;font-weight:600;text-transform:uppercase}
-        .ban-list-item .ban-status.perm{background:rgba(248,113,113,0.2);color:var(--danger)}
-        .ban-list-item .ban-status.temp{background:rgba(251,191,36,0.2);color:var(--warning)}
-        .ban-list-item .ban-status.expired{background:rgba(110,231,183,0.2);color:var(--accent)}
-
-        /* Executor styles */
-        .executor-section{margin-bottom:32px}
-        .executor-section h3{font-size:1.1em;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-        .executor-section h3 .dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
-        .executor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-        .executor-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all 0.2s}
-        .executor-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 4px 20px var(--accent-glow)}
-        .executor-card h4{font-size:0.95em;font-weight:600;margin-bottom:12px;color:var(--text)}
-        .executor-card p{font-size:0.82em;color:var(--text-dim);margin-bottom:12px;font-weight:300}
-        .executor-card .btn{width:100%;padding:10px;font-size:0.82em}
-        .executor-toggle{display:flex;align-items:center;gap:8px;margin-bottom:16px}
-        .executor-toggle label{font-size:0.85em;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;gap:6px}
-        .toggle-switch{width:40px;height:24px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;position:relative;cursor:pointer;transition:all 0.2s}
-        .toggle-switch.active{background:var(--accent);border-color:var(--accent)}
-        .toggle-switch::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:2px;left:2px;transition:all 0.2s}
-        .toggle-switch.active::after{left:18px}
-
-        /* 3D Previewer Styles */
-        #previewModal {
-            max-width: 95vw;
-            width: 1000px;
-            height: 80vh;
-            padding: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        #previewContainer {
-            flex: 1;
-            width: 100%;
-            background: #0a0a14;
-            position: relative;
-        }
-        #previewUI {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(20, 20, 40, 0.85);
-            padding: 12px 18px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-            pointer-events: none;
-        }
-        #previewUI h4 { margin-bottom: 4px; color: var(--accent); }
-        #previewStatus { font-size: 0.8em; color: var(--text-dim); }
-        .preview-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 20;
-            background: rgba(248, 113, 113, 0.2);
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
+        .card-cat{font-size:0.72em;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+        .card-price{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--warning);font-size:0.9em;margin-bottom:8px}
+        .card-owner{display:flex;align-items:center;gap:6px;font-size:0.78em;color:var(--text-dim);margin-bottom:10px;cursor:pointer}
+        .card-owner:hover{color:var(--text)}
+        .card-owner img{width:18px;height:18px;border-radius:50%;background:var(--surface2)}
+        .card-desc{font-size:0.82em;color:var(--text-dim);margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:300}
+        .card-meta{display:flex;justify-content:space-between;font-size:0.68em;color:var(--text-dim);padding-top:12px;border-top:1px solid var(--border);margin-bottom:14px}
+        .card-actions{display:flex;gap:8px;flex-direction:column}
+        .empty{grid-column:1/-1;text-align:center;padding:48px;color:var(--text-dim);font-size:0.9em;background:var(--surface);border:1px dashed var(--border);border-radius:12px}
+        .toast-area{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;gap:10px}
+        .toast{background:var(--surface);border:1px solid var(--border);padding:12px 20px;border-radius:10px;font-size:0.88em;box-shadow:0 10px 30px rgba(0,0,0,0.5);transform:translateX(120%);transition:all 0.3s cubic-bezier(0.16,1,0.3,1);display:flex;align-items:center;gap:10px}
+        .toast.show{transform:translateX(0)}
+        .toast.err{border-left:4px solid var(--danger)}
+        .toast.ok{border-left:4px solid var(--accent)}
+        .toast.warn{border-left:4px solid var(--warning)}
+        .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
+        .modal-bg.show{opacity:1;pointer-events:all}
+        .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;width:100%;max-width:400px;transform:scale(0.9);transition:transform 0.2s}
+        .modal-bg.show .modal{transform:scale(1)}
+        .modal h3{margin-bottom:20px;font-size:1.2em}
+        .m-user{display:flex;align-items:center;gap:16px;background:var(--surface2);padding:16px;border-radius:12px;margin-bottom:24px}
+        .m-av{width:48px;height:48px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:1.2em;font-weight:700;color:var(--accent);overflow:hidden}
+        .m-av img{width:100%;height:100%;object-fit:cover}
+        .discord-btn{background:#5865F2;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;transition:opacity 0.15s}
+        .gmail-btn{background:#ea4335;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;transition:opacity 0.15s}
+        .discord-btn:hover,.gmail-btn:hover{opacity:0.9}
+        .p-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:32px}
+        .p-top{display:flex;align-items:center;gap:24px;margin-bottom:32px}
+        .avatar{width:80px;height:80px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:2em;font-weight:800;color:var(--accent);border:2px solid var(--border);overflow:hidden}
+        .avatar img{width:100%;height:100%;object-fit:cover}
+        .p-info h2{font-size:1.5em;margin-bottom:4px}
+        .p-info p{color:var(--text-dim);font-size:0.9em}
+        .s-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+        .s-box h4{font-size:0.85em;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+        .note{font-size:0.75em;color:var(--text-dim);text-align:center;margin:32px 0}
+        .sec-title{font-size:1.1em;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+        .ban-box{background:rgba(248,113,113,0.1);border:1px solid var(--danger);color:var(--danger);padding:16px;border-radius:10px;margin-bottom:24px;font-size:0.9em}
+        .warn-box{background:rgba(251,191,36,0.1);border:1px solid var(--warning);color:var(--warning);padding:16px;border-radius:10px;margin-bottom:24px;font-size:0.9em}
+        .ban-list-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;border:1px solid var(--border)}
+        .ban-info{display:flex;flex-direction:column;gap:2px}
+        .ban-name{font-weight:600;font-size:0.9em}
+        .ban-detail{font-size:0.75em;color:var(--text-dim)}
+        .ban-status{font-size:0.65em;padding:2px 8px;border-radius:4px;font-weight:700;text-transform:uppercase}
+        .ban-status.perm{background:var(--danger);color:#fff}
+        .ban-status.temp{background:var(--warning);color:#000}
+        .ban-status.expired{background:var(--surface3);color:var(--text-dim)}
+        .color-presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+        .color-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform 0.15s}
+        .color-dot:hover{transform:scale(1.15)}
+        .color-dot.active{border-color:#fff;transform:scale(1.1)}
+        .picker-row{display:flex;align-items:center;gap:12px}
+        .hex-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.85em;width:100px}
+        .picker-label{font-size:0.7em;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase}
+        .theme-preview{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin-top:12px}
+        .theme-card{background:var(--surface2);border:1px solid var(--border);padding:12px;border-radius:10px;cursor:pointer;text-align:center;transition:all 0.15s}
+        .theme-card:hover{border-color:var(--accent)}
+        .theme-card.on{border-color:var(--accent);background:var(--accent-glow)}
+        .theme-card .swatch{width:100%;aspect-ratio:2/1;border-radius:6px;margin-bottom:8px}
+        .theme-card .name{font-size:0.75em;font-weight:600}
+        .theme-custom-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+        .theme-custom-row label{flex:1;font-size:0.8em;color:var(--text-dim)}
+        .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+        .price-card{background:var(--surface);border:1px solid var(--border);padding:32px;border-radius:16px;text-align:center;transition:all 0.2s}
+        .price-card:hover{border-color:var(--accent);transform:translateY(-4px)}
+        .price-card h4{font-size:1.2em;margin-bottom:8px}
+        .price-card p{color:var(--text-dim);font-size:0.9em}
+        .price-card .ico{font-size:2.5em;margin-bottom:16px;color:var(--accent)}
+        .rules-list{list-style:none;padding:0}
+        .rules-list li{padding:12px;border-bottom:1px solid var(--border);font-size:0.9em;display:flex;gap:12px}
+        .rules-list li::before{content:'•';color:var(--accent);font-weight:bold}
+        .rules-list li:last-child{border:none}
+        .sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+        .sc-box h2{font-size:2em;margin-bottom:12px}
+        .sc-box p{color:var(--text-dim);margin-bottom:24px}
+        .code-block{background:#000;padding:20px;border-radius:12px;border:1px solid var(--border);position:relative;font-family:'JetBrains Mono',monospace;font-size:0.85em;overflow-x:auto}
+        .code-block code{color:var(--accent);white-space:pre}
+        .code-block .copy{position:absolute;top:12px;right:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;font-size:0.7em;cursor:pointer;transition:all 0.15s}
+        .code-block .copy:hover{background:var(--accent);color:#000}
+        .sc-img img{width:100%;border-radius:12px;border:1px solid var(--border);box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+        .executor-section{margin-bottom:48px}
+        .executor-section h3{font-size:1.1em;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+        .executor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+        .executor-card{background:var(--surface);border:1px solid var(--border);padding:20px;border-radius:12px;transition:all 0.2s}
+        .executor-card:hover{border-color:var(--accent);background:var(--accent-glow)}
+        .executor-card h4{margin-bottom:6px}
+        .executor-card p{font-size:0.8em;color:var(--text-dim);margin-bottom:16px}
+        
+        /* 3D Preview Modal */
+        #previewModalBg { z-index: 2000; }
+        #previewModal { max-width: 90vw; width: 1000px; height: 80vh; padding: 0; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        #previewContainer { flex: 1; width: 100%; background: #000; position: relative; }
+        #previewUI { position: absolute; top: 20px; left: 20px; z-index: 10; pointer-events: none; }
+        #previewUI h4 { margin: 0 0 5px 0; font-size: 1.2em; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        #previewStatus { font-size: 0.85em; color: var(--accent); text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .preview-close { 
+            position: absolute; top: 15px; right: 15px; z-index: 20; 
+            width: 36px; height: 36px; background: rgba(0,0,0,0.5); 
+            border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; font-size: 24px; 
+            font-weight: bold; transition: all 0.2s; 
         }
         .preview-close:hover { background: var(--danger); color: #fff; }
 
@@ -260,6 +221,37 @@
         .build-preview-result.loading{display:flex;align-items:center;justify-content:center;color:var(--text-dim)}
         .build-info{background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:12px;font-size:0.85em}
         .build-info strong{color:var(--accent)}
+
+        /* Custom Check/Cross Icons */
+        .circle-icon {
+            width: 20px; height: 20px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: bold; flex-shrink: 0;
+        }
+        .circle-check { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent); }
+        .circle-cross { background: rgba(248,113,113,0.1); color: var(--danger); border: 1px solid var(--danger); }
+
+        /* Script Tab Features Layout */
+        .script-features { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+        .script-feature-item { 
+            background: var(--surface2); border: 1px solid var(--border); 
+            padding: 14px 20px; border-radius: 10px; display: flex; 
+            align-items: center; justify-content: space-between; 
+            font-size: 0.95em; font-weight: 500; transition: all 0.2s;
+        }
+        .script-feature-item:hover { border-color: var(--accent); background: var(--accent-glow); }
+        .script-feature-item.red { border-color: var(--danger); }
+
+        /* Leaderboard Styles */
+        .lb-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .lb-row { border-bottom: 1px solid var(--border); transition: background 0.2s; }
+        .lb-row:hover { background: var(--surface2); }
+        .lb-row.top3 { background: var(--accent-glow); }
+        .lb-cell { padding: 16px; text-align: left; font-size: 0.9em; }
+        .lb-rank { font-weight: 800; color: var(--accent); width: 60px; }
+        .lb-user { display: flex; align-items: center; gap: 12px; }
+        .lb-user img { width: 32px; height: 32px; border-radius: 50%; background: var(--surface3); }
+        .lb-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: right; }
     </style>
 </head>
 <body id="app">
@@ -284,6 +276,8 @@
         <button data-t="builds">Builds</button>
         <button data-t="sell">Sell</button>
         <button data-t="trade">Trade</button>
+        <button data-t="upload">Upload</button>
+        <button data-t="leaderboard">Leaderboard</button>
         <button data-t="script">Script</button>
         <button data-t="rules">Rules</button>
         <button data-t="executers">Executers</button>
@@ -298,26 +292,19 @@
             <div>
                 <h1>The <em>marketplace</em> for BABFT builds</h1>
                 <p>Upload, download, sell, and trade build files freely. Built by K I R A.</p>
-                <div class="exec-badge">
-                    <div class="pulse"></div>
-                    <div>
-                        <div class="num" id="hExec">0</div>
-                        <div class="lbl">Script Executions</div>
-                    </div>
-                </div>
                 <div class="btns">
-                    <button class="btn btn-p" onclick="go('script')">Get Script</button>
-                    <button class="btn btn-s" onclick="go('builds')">Browse Builds</button>
-                    <button class="btn btn-s" onclick="openDiscord()">Discord</button>
+                    <button class="btn btn-p" onclick="go('builds')">Browse Builds</button>
+                    <button class="btn btn-s" onclick="go('script')">Get Script</button>
                 </div>
             </div>
             <div class="hero-img">
-                <img src="https://i.imgur.com/ZkebzWz.png" alt="LexusHub">
+                <img src="https://i.imgur.com/ZkebzWz.png" alt="LexusHub Preview">
             </div>
         </div>
+
         <div class="feat-grid">
-            <div class="feat reveal"><div class="feat-ico">⚡︎</div><h4>Fast</h4><p>Files load instantly</p></div>
-            <div class="feat reveal reveal-d1"><div class="feat-ico">⛨</div><h4>Secure</h4><p>Your data is safe</p></div>
+            <div class="feat reveal"><div class="feat-ico">⚡</div><h4>Fast</h4><p>Instant downloads</p></div>
+            <div class="feat reveal reveal-d1"><div class="feat-ico">🛡️</div><h4>Secure</h4><p>Verified files</p></div>
             <div class="feat reveal reveal-d2"><div class="feat-ico">✪</div><h4>Free</h4><p>All free</p></div>
             <div class="feat reveal reveal-d3"><div class="feat-ico">✦</div><h4>Clean</h4><p>Minimal interface</p></div>
         </div>
@@ -325,23 +312,122 @@
 
     <section id="builds">
         <div id="buildBan" class="ban-box" style="display:none"></div><div id="buildWarn" class="warn-box" style="display:none"></div>
-        <div class="form-card reveal"><h3><span class="dot"></span>Upload Build</h3>
-            <form id="buildForm" onsubmit="return upBuild(event)"><div class="form-row">
-                <div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="bIB"><span></span><span id="bIT">Choose image...</span><input type="file" id="bImg" accept="image/*" required onchange="fileChg(this,'bIB','bIT')"></div></div>
-                <div class="field"><label>Build File <span class="req">*</span></label><div class="file-box" id="bFB"><span></span><span id="bFT">Choose .build file...</span><input type="file" id="bFile" accept=".build" required onchange="fileChg(this,'bFB','bFT')"></div></div>
-                <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" maxlength="15" required></div>
-                <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Anime</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
-                <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="bDesc" placeholder="Optional" maxlength="25"></textarea></div>
-            </div><button type="submit" class="btn btn-p btn-full" id="bBtn">Upload</button>
-            <div id="cooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:0.82em;color:var(--warning)"></div></form>
-        </div>
         <div class="controls"><h3>All Builds</h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Anime</option><option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="bCards"><div class="empty">Loading...</div></div></section>
 
-    <section id="sell"><div id="sellBan" class="ban-box" style="display:none"></div><div id="sellWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>List for Sale</h3><form id="sellForm" onsubmit="return upSell(event)"><div class="form-row"><div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="sIB"><span></span><span id="sIT">Choose image...</span><input type="file" id="sImg" accept="image/*" required onchange="fileChg(this,'sIB','sIT')"></div></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="sTitle" required></div><div class="field"><label>Price (R$) <span class="req">*</span></label><input type="number" class="input" id="sPrice" min="1" required></div><div class="field"><label>Description</label><textarea class="input" id="sDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="sBtn">List Item</button></form></div><div class="controls"><h3>For Sale</h3><select class="sel" id="sSort" onchange="loadSells()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="sCards"><div class="empty">Loading...</div></div></section>
+    <section id="sell"><div id="sellBan" class="ban-box" style="display:none"></div><div id="sellWarn" class="warn-box" style="display:none"></div><div class="controls"><h3>For Sale</h3><select class="sel" id="sSort" onchange="loadSells()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="sCards"><div class="empty">Loading...</div></div></section>
 
-    <section id="trade"><div id="tradeBan" class="ban-box" style="display:none"></div><div id="tradeWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>Post Trade</h3><form id="tradeForm" onsubmit="return upTrade(event)"><div class="form-row"><div class="field"><label>Image <span class="req">*</span></label><div class="file-box" id="tIB"><span></span><span id="tIT">Choose image...</span><input type="file" id="tImg" accept="image/*" required onchange="fileChg(this,'tIB','tIT')"></div></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="tTitle" required></div><div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="tDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="tBtn">Post Trade</button></form></div><div class="controls"><h3>Trades</h3><select class="sel" id="tSort" onchange="loadTrades()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="tCards"><div class="empty">Loading...</div></div></section>
+    <section id="trade"><div id="tradeBan" class="ban-box" style="display:none"></div><div id="tradeWarn" class="warn-box" style="display:none"></div><div class="controls"><h3>Trades</h3><select class="sel" id="tSort" onchange="loadTrades()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="tCards"><div class="empty">Loading...</div></div></section>
 
-    <section id="script"><div class="sc-grid"><div class="sc-box reveal"><h2>LexusHub Script</h2><p>Copy the loadstring and paste it into your executor.</p><div class="exec-badge"><div class="pulse"></div><div><div class="num" id="scExec">0</div><div class="lbl">Total Executions</div></div></div><div class="code-block"><button class="copy" onclick="copyCode()">Copy</button><code id="codeText">loadstring(game:HttpGet("https://raw.githubusercontent.com/amd156935-create/BoatbuilderhubIsShitLexusHubIsBestAlso/main/9b21a6b954470aed.lua.txt"))()</code></div></div><div class="sc-img reveal reveal-d1"><img src="https://i.imgur.com/ZkebzWz.png" alt="Preview"></div></div></section>
+    <section id="upload">
+        <div id="uploadBan" class="ban-box" style="display:none"></div>
+        <div id="uploadWarn" class="warn-box" style="display:none"></div>
+        <div class="form-card reveal">
+            <h3><span class="dot"></span>Upload Content</h3>
+            <form id="uploadForm" onsubmit="return handleUpload(event)">
+                <div class="form-row">
+                    <div class="field">
+                        <label>Type <span class="req">*</span></label>
+                        <select class="input" id="uType" required onchange="toggleUploadFields()">
+                            <option value="build">Build</option>
+                            <option value="sell">Sell</option>
+                            <option value="trade">Trade</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Title <span class="req">*</span></label>
+                        <input type="text" class="input" id="uTitle" placeholder="Max 15 letters" maxlength="15" required>
+                    </div>
+                    <div class="field" id="uPriceField" style="display:none">
+                        <label>Price (R$) <span class="req">*</span></label>
+                        <input type="number" class="input" id="uPrice" min="1">
+                    </div>
+                    <div class="field" id="uDiscordField" style="display:none">
+                        <label>Discord Username <span class="req">*</span></label>
+                        <input type="text" class="input" id="uDiscord" placeholder="e.g. user#0000">
+                    </div>
+                    <div class="field" id="uCatField">
+                        <label>Category <span class="req">*</span></label>
+                        <select class="input" id="uCat">
+                            <option value="">Select...</option>
+                            <option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Anime</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Preview Image <span class="req">*</span></label>
+                        <div class="file-box" id="uIB">
+                            <span></span><span id="uIT">Choose image...</span>
+                            <input type="file" id="uImg" accept="image/*" required onchange="fileChg(this,'uIB','uIT')">
+                        </div>
+                    </div>
+                    <div class="field" id="uFileField">
+                        <label>Build File (.build) <span class="req">*</span></label>
+                        <div class="file-box" id="uFB">
+                            <span></span><span id="uFT">Choose .build file...</span>
+                            <input type="file" id="uFile" accept=".build" onchange="fileChg(this,'uFB','uFT')">
+                        </div>
+                    </div>
+                    <div class="field" style="grid-column:1/-1">
+                        <label>Description</label>
+                        <textarea class="input" id="uDesc" placeholder="Max 25 letters" maxlength="25"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-p btn-full" id="uBtn">Upload</button>
+                <div id="cooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:0.82em;color:var(--warning)"></div>
+            </form>
+        </div>
+    </section>
+
+    <section id="leaderboard">
+        <div class="s-box reveal">
+            <h3><span class="dot"></span>Top Builders</h3>
+            <p style="color:var(--text-dim);font-size:0.85em;margin-bottom:20px">Ranked by total downloads across all builds.</p>
+            <div id="lbContainer">
+                <div class="empty">Loading leaderboard...</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="script">
+        <div class="sc-grid">
+            <div class="sc-box reveal">
+                <h2>LexusHub Script</h2>
+                <p>Copy the loadstring and paste it into your executor.</p>
+                <div class="exec-badge">
+                    <div class="pulse"></div>
+                    <div>
+                        <div class="num" id="scExec">0</div>
+                        <div class="lbl">Total Executions</div>
+                    </div>
+                </div>
+                <div class="code-block">
+                    <button class="copy" onclick="copyCode()">Copy</button>
+                    <code id="codeText">loadstring(game:HttpGet("https://raw.githubusercontent.com/amd156935-create/BoatbuilderhubIsShitLexusHubIsBestAlso/main/9b21a6b954470aed.lua.txt"))()</code>
+                </div>
+                
+                <div class="script-features">
+                    <div class="script-feature-item"><span>Autobuilder</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>SaveBuilder</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Buildprevewer</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Text loader</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>shape loader</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>model loader</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>obj loader</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Autofarm 31.5k/h</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Player Ralated features</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>trolls</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>file manager</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Autoweld V4</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>ZeroLag V1</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Lister</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>BlockChanger</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Progress Shower</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item"><span>Much more</span><span class="circle-icon circle-check">✓</span></div>
+                    <div class="script-feature-item red"><span>Inf blocks</span><span class="circle-icon circle-cross">✕</span></div>
+                </div>
+            </div>
+            <div class="sc-img reveal reveal-d1"><img src="https://i.imgur.com/ZkebzWz.png" alt="Preview"></div>
+        </div>
+    </section>
 
     <section id="rules">
         <div class="s-box reveal">
@@ -379,23 +465,32 @@
 
     <section id="executers">
         <div class="executor-section">
-            <h3><span class="dot"></span>Android Executers</h3>
-            <div class="executor-toggle">
-                <label>
-                    <span>Show iOS</span>
-                    <div class="toggle-switch" id="iosToggle" onclick="toggleIOSExecutors()"></div>
-                </label>
-            </div>
-            <div class="executor-grid" id="androidExecutors">
+            <h3><span class="dot"></span>Mobile Executers</h3>
+            <div class="executor-grid">
                 <div class="executor-card">
                     <h4>Delta</h4>
-                    <p>Powerful Android executor</p>
-                    <button class="btn btn-p" id="deltaDownloadBtn" onclick="window.open('https://deltaexploits.gg/delta-executor-android','_blank')">Download</button>
+                    <p>Popular mobile executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://deltaexploits.gg/delta-executor-android','_blank')">Download</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Delta iOS</h4>
+                    <p>iOS executor </p>
+                    <button class="btn btn-p" onclick="window.open('https://deltaexploits.gg/delta-executor-ios','_blank')">Download</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Fluxus</h4>
+                    <p>Stable mobile executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://fluxusteam.net/','_blank')">Visit</button>
                 </div>
                 <div class="executor-card">
                     <h4>Codex</h4>
-                    <p>minimal keyless executer</p>
+                    <p>Fast mobile executor</p>
                     <button class="btn btn-p" onclick="window.open('https://codex.lol/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Arceus X</h4>
+                    <p>Well known executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://spdmteam.com/','_blank')">Visit</button>
                 </div>
                 <div class="executor-card">
                     <h4>Cryptic</h4>
@@ -406,13 +501,6 @@
                     <h4>Vega X</h4>
                     <p>High-performance executor</p>
                     <button class="btn btn-p" onclick="window.open('https://www.vegax.gg/','_blank')">Visit</button>
-                </div>
-            </div>
-            <div class="executor-grid" id="iosExecutors" style="display:none;margin-top:20px">
-                <div class="executor-card">
-                    <h4>Delta iOS</h4>
-                    <p>iOS executor </p>
-                    <button class="btn btn-p" onclick="window.open('https://deltaexploits.gg/delta-executor-ios','_blank')">Download</button>
                 </div>
             </div>
         </div>
@@ -498,7 +586,6 @@
     <section id="buildpreviewer">
         <div class="form-card reveal">
             <h3><span class="dot"></span>Build File Previewer</h3>
-            <p style="font-size:0.85em;color:var(--text-dim);margin-bottom:16px">Upload a .build file to preview it in 3D</p>
             <div class="build-preview-controls">
                 <div class="file-box" id="bpFilebox" style="flex:1;min-width:200px">
                     <span></span>
@@ -515,7 +602,7 @@
 
     <section id="profile"><div class="p-card reveal"><div class="p-top"><div class="avatar" id="pAv">?</div><div class="p-info"><h2 id="pName">Not logged in</h2><p id="pEmail">Sign in to get started</p></div></div><div id="authArea"></div></div><div id="userArea" style="display:none"><div class="s-box reveal"><h4>Display Name</h4><input type="text" class="input" id="nameIn" placeholder="Your name" style="margin-bottom:10px"><button class="btn btn-p" onclick="saveName()">Save</button></div><div class="s-box reveal reveal-d1"><h4>Profile Picture</h4><div class="file-box" id="pfpB" style="margin-bottom:10px"><span></span><span id="pfpT">Choose image...</span><input type="file" id="pfpIn" accept="image/*" onchange="fileChg(this,'pfpB','pfpT')"></div><button class="btn btn-p" id="pfpBtn" onclick="savePfp()">Update</button></div><div class="s-box reveal reveal-d2"><h4>Edit Build Files</h4><div id="myBuildsForEdit"></div></div></div><div id="adminBanPanel" style="display:none"><div class="s-box"><h4>Ban Management</h4><div id="banList"></div></div><div class="s-box"><h4>Admin Actions</h4><div id="adminLoginPanel"></div></div></div><div class="note reveal"> Your data is Safe</div><h3 class="sec-title">Your Uploads</h3><div class="cards" id="myCards"><div class="empty">Login to see uploads</div></div></section>
 
-    <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>LexusHub v2.7  By K I R A</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
+    <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>LexusHub IXPro v9.5  By K I R A</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
 
     <section id="buy">
         <h2 class="reveal" style="margin-bottom:8px;font-size:1.6em">Pricing</h2>
@@ -529,7 +616,7 @@
 </div>
 
 <!-- Modals -->
-<div class="modal-bg" id="modal"><div class="modal"><h3>Owner</h3><div class="m-user"><div class="m-av" id="mAv">?</div><div><div style="font-weight:600" id="mName">Unknown</div><div style="color:var(--text-dim);font-size:0.82em" id="mEmail">Hidden</div></div></div><button class="btn btn-d" style="width:100%" onclick="closeModal()">Close</button></div></div>
+<div class="modal-bg" id="modal"><div class="modal"><h3>Owner</h3><div class="m-user"><div class="m-av" id="mAv">?</div><div><div style="font-weight:600" id="mName">Unknown</div><div style="color:var(--text-dim);font-size:0.82em" id="mEmail">Hidden</div><div style="color:var(--accent);font-size:0.75em;font-weight:600;margin-top:4px" id="mTotalDl">0 Total Downloads</div></div></div><button class="btn btn-d" style="width:100%" onclick="closeModal()">Close</button></div></div>
 <div class="modal-bg" id="banModal"><div class="modal"><h3> Ban User</h3><div id="banTarget" style="font-weight:600;margin-bottom:16px"></div><div class="field"><label>Duration</label><select class="input" id="banDuration"><option value="permanent">Permanent</option><option value="1h">1 Hour</option><option value="6h">6 Hours</option><option value="12h">12 Hours</option><option value="1d">1 Day</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="14d">14 Days</option><option value="30d">30 Days</option></select></div><div class="field"><label>Reason</label><input type="text" class="input" id="banReason" placeholder="Rule violation..."></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-d" style="flex:1" onclick="confirmBan()">Ban</button><button class="btn btn-s" style="flex:1" onclick="closeBanModal()">Cancel</button></div></div></div>
 <div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to LexusHub</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
 
@@ -714,12 +801,10 @@ async function openPreview(url, title) {
         }
 
         let blockCount = 0;
-        let allBlocks = [];
         for (const [blockName, blockList] of Object.entries(decoded)) {
             if (!Array.isArray(blockList)) continue;
             for (const block of blockList) {
                 const position = parseVecShort(block.p || block.Position);
-                // Filter out extreme outlier positions (like -193350)
                 if (Math.abs(position.y) > 10000) continue;
                 
                 const sizeStr = block.sz || block.z || block.Size;
@@ -854,24 +939,6 @@ function openBuildPreviewModal(fileName) {
     reader.readAsText(file);
 }
 
-// ================== EXECUTOR TOGGLE ==================
-function toggleIOSExecutors() {
-    const toggle = document.getElementById('iosToggle');
-    const iosSection = document.getElementById('iosExecutors');
-    const deltaBtn = document.getElementById('deltaDownloadBtn');
-    
-    toggle.classList.toggle('active');
-    const isIOS = toggle.classList.contains('active');
-    
-    iosSection.style.display = isIOS ? 'grid' : 'none';
-    
-    if (isIOS) {
-        deltaBtn.onclick = () => window.open('https://deltaexploits.gg/delta-executor-ios', '_blank');
-    } else {
-        deltaBtn.onclick = () => window.open('https://deltaexploits.gg/delta-executor-android', '_blank');
-    }
-}
-
 // ================== ORIGINAL WEBSITE LOGIC ==================
 
 //  TOP PROFILE 
@@ -960,7 +1027,7 @@ function dim(h){return'#'+[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),p
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 function obsAll(){document.querySelectorAll('.reveal:not(.visible)').forEach(el=>obs.observe(el))}
 function toast(m,t=''){const el=document.createElement('div');el.className=`toast ${t}`;el.innerHTML=m;document.getElementById('toasts').appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),250)},4500)}
-function go(id){document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));document.getElementById(id)?.classList.add('on');document.querySelector(`[data-t="${id}"]`)?.classList.add('on');setTimeout(obsAll,50)}
+function go(id){document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('nav button').forEach(b=>b.classList.remove('on'));document.getElementById(id)?.classList.add('on');document.querySelector(`[data-t="${id}"]`)?.classList.add('on');if(id==='leaderboard')renderLeaderboard();setTimeout(obsAll,50)}
 document.getElementById('nav').addEventListener('click',e=>{if(e.target.tagName==='BUTTON')go(e.target.dataset.t)});
 function fileChg(i,b,t){const bx=document.getElementById(b),tx=document.getElementById(t);if(i.files?.[0]){const n=i.files[0].name;tx.textContent=n.length>18?n.slice(0,15)+'...':n;bx.classList.add('ok')}else bx.classList.remove('ok')}
 function resetFile(b,t,d){document.getElementById(b).classList.remove('ok');document.getElementById(t).textContent=d}
@@ -984,9 +1051,58 @@ async function initAuth(){
     await loadBanned();
     const{data}=await sb.auth.getSession();if(data?.session?.user)user=data.session.user;
     if(location.hash.includes('access_token')){history.replaceState({},'',location.pathname);await new Promise(r=>setTimeout(r,600));const{data:s}=await sb.auth.getSession();if(s?.session?.user)user=s.session.user}
-    sb.auth.onAuthStateChange((_,s)=>{user=s?.user||null;renderAuth();updateForms()});
+    
+    // Initial profile sync on login
+    if(user) await syncProfileWithOAuth();
+
+    sb.auth.onAuthStateChange(async (_,s)=>{
+        user=s?.user||null;
+        if(user) await syncProfileWithOAuth();
+        renderAuth();
+        updateForms();
+    });
     renderAuth();updateForms();
 }
+
+async function syncProfileWithOAuth() {
+    if(!user) return;
+    const meta = user.user_metadata;
+    const currentName = getNm(user);
+    const currentAv = getAv(user);
+    
+    // Check if OAuth data has changed compared to local storage
+    const oauthName = meta?.full_name || meta?.name || meta?.custom_claims?.global_name || null;
+    const oauthAv = meta?.avatar_url || meta?.picture || null;
+    
+    let changed = false;
+    if(oauthName && oauthName !== localStorage.getItem('lh_name')) {
+        localStorage.setItem('lh_name', oauthName);
+        changed = true;
+    }
+    
+    // If changed, update all user's uploads to match new profile
+    if(changed) {
+        await updateAllUserUploads(user.email, oauthName, oauthAv);
+    }
+}
+
+async function updateAllUserUploads(email, newName, newAv) {
+    try {
+        const updateData = { owner_name: newName };
+        if(newAv) updateData.owner_avatar = newAv;
+        
+        const { error } = await sb.from('builds').update(updateData).eq('owner_email', email);
+        if(error) throw error;
+        
+        // Refresh local data
+        await loadBuilds();
+        await loadSells();
+        await loadTrades();
+    } catch(e) {
+        console.error('Failed to sync uploads:', e);
+    }
+}
+
 function openLoginModal(){document.getElementById('loginModal').classList.add('show')}
 function closeLoginModal(){document.getElementById('loginModal').classList.remove('show')}
 async function login(provider){
@@ -997,11 +1113,7 @@ async function login(provider){
             options: { redirectTo: location.origin + location.pathname, scopes: provider === 'discord' ? 'identify email' : 'email profile' }
         });
         if(error){
-            if(error.message.includes('not allowed') || error.message.includes('disabled')){
-                toast('Login temporarily unavailable. Try again later.','err');
-            }else{
-                toast(error.message,'err');
-            }
+            toast(error.message,'err');
         }
     }catch(e){
         toast('Login error: '+e.message,'err');
@@ -1010,15 +1122,24 @@ async function login(provider){
 async function logout(){await sb.auth.signOut();user=null;renderAuth();updateForms();toast('Logged out')}
 function updateForms(){
     const loggedIn=!!user,banned=loggedIn&&isBanned(user.email),ok=loggedIn&&!banned;
-    ['build','sell','trade'].forEach(t=>{
-        const w=document.getElementById(t+'Warn'),bb=document.getElementById(t+'Ban'),btn=document.getElementById(t==='build'?'bBtn':t==='sell'?'sBtn':'tBtn');
+    ['upload'].forEach(t=>{
+        const w=document.getElementById(t+'Warn'),bb=document.getElementById(t+'Ban'),btn=document.getElementById('uBtn');
         if(bb)bb.style.display='none';if(w)w.style.display='none';
         if(!loggedIn&&w){w.textContent=' Login to upload';w.style.display='block'}
         else if(banned&&bb){bb.innerHTML=getBanMsg(user.email);bb.style.display='block'}
         if(btn)btn.disabled=!ok;
     });
-    document.querySelectorAll('.form-card .file-box').forEach(f=>{ok?f.classList.remove('disabled'):f.classList.add('disabled')});
-    document.querySelectorAll('.form-card .input').forEach(i=>{i.disabled=!ok});
+    document.querySelectorAll('#upload .file-box').forEach(f=>{ok?f.classList.remove('disabled'):f.classList.add('disabled')});
+    document.querySelectorAll('#upload .input').forEach(i=>{i.disabled=!ok});
+    
+    // Pre-fill discord username if available
+    if(user && user.app_metadata?.provider === 'discord') {
+        const dInput = document.getElementById('uDiscord');
+        if(dInput && !dInput.value) {
+            dInput.value = user.user_metadata?.full_name || user.user_metadata?.name || '';
+        }
+    }
+    
     renderBanList();
     renderAdminLoginPanel();
     if(allBuilds.length)renderBuilds();
@@ -1042,7 +1163,18 @@ function renderAuth(){
     }
     renderTopProfile();setTimeout(obsAll,50);
 }
-function saveName(){const v=document.getElementById('nameIn').value.trim().slice(0,20);if(!v){toast('Enter a name','err');return}localStorage.setItem('lh_name',v);document.getElementById('pName').textContent=v;renderTopProfile();toast('Saved','ok')}
+async function saveName(){
+    const v=document.getElementById('nameIn').value.trim().slice(0,20);
+    if(!v){toast('Enter a name','err');return}
+    localStorage.setItem('lh_name',v);
+    document.getElementById('pName').textContent=v;
+    
+    // Update all existing uploads with new name
+    await updateAllUserUploads(user.email, v, getAv(user));
+    
+    renderTopProfile();
+    toast('Saved and synced with uploads','ok');
+}
 async function cloud(f){
     if(f.size>5*1024*1024)throw'Max 5MB';
     const fd=new FormData();
@@ -1065,24 +1197,95 @@ function preCheck(){
     if(!canUpload())return false;
     return true;
 }
-async function upBuild(e){
-    e.preventDefault();if(!preCheck())return false;
-    const btn=document.getElementById('bBtn');btn.disabled=true;btn.textContent='Uploading...';
-    try{const img=document.getElementById('bImg').files[0],file=document.getElementById('bFile').files[0],title=document.getElementById('bTitle').value.trim(),cat=document.getElementById('bCat').value;if(!img)throw'Image required';if(!file?.name.toLowerCase().endsWith('.build'))throw'Need .build file';if(!title)throw'Title required';if(!cat)throw'Category required';const[iu,fu]=await Promise.all([cloud(img),cloud(file)]);await ins({type:'build',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,downloads:0});document.getElementById('buildForm').reset();resetFile('bIB','bIT','Choose image...');startCooldown();toast('Uploaded','ok');loadBuilds();updateCounts()}catch(err){toast(err.message||err,'err')}
-    btn.disabled=false;btn.textContent='Upload';return false;
+
+function toggleUploadFields() {
+    const type = document.getElementById('uType').value;
+    document.getElementById('uPriceField').style.display = type === 'sell' ? 'block' : 'none';
+    document.getElementById('uDiscordField').style.display = (type === 'sell' || type === 'trade') ? 'block' : 'none';
+    document.getElementById('uCatField').style.display = type === 'build' ? 'block' : 'none';
+    document.getElementById('uFileField').style.display = type === 'build' ? 'block' : 'none';
+    
+    // Set required attribute for discord username
+    const dInput = document.getElementById('uDiscord');
+    if(type === 'sell' || type === 'trade') dInput.setAttribute('required', '');
+    else dInput.removeAttribute('required');
 }
-async function upSell(e){
-    e.preventDefault();if(!preCheck())return false;
-    const btn=document.getElementById('sBtn');btn.disabled=true;btn.textContent='Uploading...';
-    try{const img=document.getElementById('sImg').files[0];if(!img)throw'Image required';const iu=await cloud(img);await ins({type:'sell',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title:document.getElementById('sTitle').value.trim(),description:document.getElementById('sDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),price:parseInt(document.getElementById('sPrice').value),downloads:0});document.getElementById('sellForm').reset();resetFile('sIB','sIT','Choose image...');startCooldown();toast('Listed','ok');loadSells()}catch(err){toast(err.message||err,'err')}
-    btn.disabled=false;btn.textContent='List Item';return false;
+
+async function handleUpload(e) {
+    e.preventDefault();
+    if(!preCheck()) return false;
+    
+    const type = document.getElementById('uType').value;
+    const btn = document.getElementById('uBtn');
+    btn.disabled = true;
+    btn.textContent = 'Uploading...';
+    
+    try {
+        const img = document.getElementById('uImg').files[0];
+        const title = document.getElementById('uTitle').value.trim();
+        const desc = document.getElementById('uDesc').value.trim();
+        
+        if(!img) throw 'Image required';
+        if(!title) throw 'Title required';
+        
+        let uploadData = {
+            type: type,
+            owner: user.id,
+            owner_email: user.email,
+            owner_name: getNm(user),
+            owner_avatar: getAv(user),
+            upload_date: new Date().toISOString(),
+            downloads: 0,
+            data: { title, description: desc }
+        };
+        
+        if(type === 'build') {
+            const file = document.getElementById('uFile').files[0];
+            const cat = document.getElementById('uCat').value;
+            if(!file?.name.toLowerCase().endsWith('.build')) throw 'Need .build file';
+            if(!cat) throw 'Category required';
+            
+            const [iu, fu] = await Promise.all([cloud(img), cloud(file)]);
+            uploadData.data.previewImage = iu;
+            uploadData.data.category = cat;
+            uploadData.build_file_url = fu;
+            uploadData.build_file_name = file.name;
+        } else if(type === 'sell' || type === 'trade') {
+            const discord = document.getElementById('uDiscord').value.trim();
+            if(!discord) throw 'Discord username required for Sell/Trade';
+            uploadData.data.discord = discord;
+            
+            if(type === 'sell') {
+                const price = parseInt(document.getElementById('uPrice').value);
+                if(isNaN(price) || price < 1) throw 'Valid price required';
+                uploadData.price = price;
+            }
+            
+            const iu = await cloud(img);
+            uploadData.data.previewImage = iu;
+        }
+        
+        await ins(uploadData);
+        document.getElementById('uploadForm').reset();
+        resetFile('uIB','uIT','Choose image...');
+        resetFile('uFB','uFT','Choose .build file...');
+        toggleUploadFields();
+        startCooldown();
+        toast('Uploaded successfully','ok');
+        
+        if(type === 'build') loadBuilds();
+        else if(type === 'sell') loadSells();
+        else if(type === 'trade') loadTrades();
+        
+        updateCounts();
+    } catch(err) {
+        toast(err.message || err, 'err');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Upload';
+    return false;
 }
-async function upTrade(e){
-    e.preventDefault();if(!preCheck())return false;
-    const btn=document.getElementById('tBtn');btn.disabled=true;btn.textContent='Uploading...';
-    try{const img=document.getElementById('tImg').files[0];if(!img)throw'Image required';const iu=await cloud(img);await ins({type:'trade',owner:user.id,owner_email:user.email,owner_name:getNm(user),owner_avatar:getAv(user),data:{title:document.getElementById('tTitle').value.trim(),description:document.getElementById('tDesc').value.trim(),previewImage:iu},upload_date:new Date().toISOString(),downloads:0});document.getElementById('tradeForm').reset();resetFile('tIB','tIT','Choose image...');startCooldown();toast('Posted','ok');loadTrades()}catch(err){toast(err.message||err,'err')}
-    btn.disabled=false;btn.textContent='Post Trade';return false;
-}
+
 async function savePfp(){
     const f=document.getElementById('pfpIn').files[0];if(!f){toast('Choose image','err');return}
     const btn=document.getElementById('pfpBtn');btn.disabled=true;btn.textContent='Updating...';
@@ -1090,7 +1293,11 @@ async function savePfp(){
         const url=await cloud(f);
         const { error } = await sb.auth.updateUser({ data: { avatar_url: url, picture: url } });
         if(error) throw error;
-        toast('Profile picture updated','ok');
+        
+        // Update all existing uploads with new avatar
+        await updateAllUserUploads(user.email, getNm(user), url);
+        
+        toast('Profile picture updated and synced','ok');
         renderAuth();
     }catch(e){toast(e.message||e,'err')}
     btn.disabled=false;btn.textContent='Update';
@@ -1107,7 +1314,8 @@ function renderMyBuildsForEdit(){
 
 async function editBuildFile(buildId){
     const build=allBuilds.find(b=>b.id===buildId);
-    if(!build||build.owner_email!==user.email){toast('Cannot edit this build','err');return}
+    if(!build) { toast('Build not found','err'); return; }
+    if(build.owner_email!==user.email && !isAdmin()){toast('Cannot edit this build','err');return}
     const newTitle=prompt('Edit title:',build.data?.title);
     if(newTitle===null)return;
     try{
@@ -1121,8 +1329,8 @@ async function editBuildFile(buildId){
 
 function card(item,canDel=false){
     const admin=isAdmin(),on=esc(item.owner_name)||'Unknown',oe=esc(item.owner_email)||'',oa=item.owner_avatar||'',cat=item.data?.category,dl=item.downloads||0;
-    const img = item.data?.previewImage, desc = item.data?.description;
-    return`<div class="card reveal"><div class="card-img${img?'':' empty'}">${img?`<img src="${img}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}<div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button><button class="btn btn-s" onclick="openPreview('${item.build_file_url}','${esc(item.data?.title)}')">Preview Build</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}', '${img}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}', '${img}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button><button class="btn btn-s" onclick="adminLoginAsUser('${oe}')">Login As</button>`:''}</div></div></div>`}
+    const img = item.data?.previewImage, desc = item.data?.description, discord = item.data?.discord;
+    return`<div class="card reveal"><div class="card-img${img?'':' empty'}">${img?`<img src="${img}" loading="lazy">`:'No image'}</div><div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}','${esc(oa)}')">${oa?`<img src="${oa}" onerror="this.style.display='none'">`:''} ${on}</div>${discord?`<div style="font-size:0.75em;color:var(--accent);margin-bottom:10px">Discord: ${esc(discord)}</div>`:''}${desc?`<div class="card-desc">${esc(desc)}</div>`:''}<div class="card-meta"><span> ${new Date(item.upload_date).toLocaleDateString()}</span><span> ${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button><button class="btn btn-s" onclick="openPreview('${item.build_file_url}','${esc(item.data?.title)}')">Preview Build</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}', '${img}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}', '${img}')">Del</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button><button class="btn btn-s" onclick="adminLoginAsUser('${oe}')">Login As</button>`:''}</div></div></div>`}
 async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();renderTopProfile()}catch(e){console.error(e)}}
 function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new';let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found</div>';obsAll()}
 async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){console.error(e)}}
@@ -1131,7 +1339,79 @@ async function loadMy(){if(!user)return;try{const{data}=await sb.from('builds').
 async function delItem(id, img){if(!confirm('Delete?'))return;try{await delItemLogic(id, img);toast('Deleted','ok');loadMy();loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
 async function adminDel(id, img){if(!isAdmin()||!confirm('Delete?'))return;try{await delItemLogic(id, img);toast('Deleted','ok');loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
 async function updateCounts(){try{const{count}=await sb.from('builds').select('*',{count:'exact',head:true}).eq('type','build');document.getElementById('sBuilds').textContent=count||0}catch(e){console.error(e)}}
-function showOwner(n,e,a){document.getElementById('mName').textContent=n||'Unknown';document.getElementById('mEmail').textContent=e?e.slice(0,3)+'**********************':'Hidden';document.getElementById('mAv').innerHTML=a?`<img src="${a}" onerror="this.parentElement.textContent='?'">`:'?';document.getElementById('modal').classList.add('show')}
+
+function showOwner(n,e,a){
+    document.getElementById('mName').textContent=n||'Unknown';
+    document.getElementById('mEmail').textContent=e?e.slice(0,3)+'**********************':'Hidden';
+    document.getElementById('mAv').innerHTML=a?`<img src="${a}" onerror="this.parentElement.textContent='?'">`:'?';
+    
+    // Calculate total downloads for this owner
+    let totalDl = 0;
+    allBuilds.filter(b => b.owner_email === e).forEach(b => totalDl += (b.downloads || 0));
+    document.getElementById('mTotalDl').textContent = `${totalDl.toLocaleString()} Total Downloads`;
+    
+    document.getElementById('modal').classList.add('show');
+}
+
+async function renderLeaderboard() {
+    const container = document.getElementById('lbContainer');
+    try {
+        // Fetch all builds to calculate total downloads per user
+        const { data, error } = await sb.from('builds').select('owner_email, owner_name, owner_avatar, downloads');
+        if (error) throw error;
+        
+        const userStats = {};
+        data.forEach(b => {
+            const email = b.owner_email;
+            if (!userStats[email]) {
+                userStats[email] = {
+                    name: b.owner_name || 'Unknown',
+                    avatar: b.owner_avatar,
+                    downloads: 0
+                };
+            }
+            userStats[email].downloads += (b.downloads || 0);
+        });
+        
+        const sortedUsers = Object.values(userStats).sort((a, b) => b.downloads - a.downloads).slice(0, 20);
+        
+        if (sortedUsers.length === 0) {
+            container.innerHTML = '<div class="empty">No data available</div>';
+            return;
+        }
+        
+        let html = `<table class="lb-table">
+            <thead>
+                <tr>
+                    <th class="lb-cell">Rank</th>
+                    <th class="lb-cell">User</th>
+                    <th class="lb-cell" style="text-align:right">Downloads</th>
+                </tr>
+            </thead>
+            <tbody>`;
+            
+        sortedUsers.forEach((u, i) => {
+            const isTop3 = i < 3;
+            html += `<tr class="lb-row ${isTop3 ? 'top3' : ''}">
+                <td class="lb-cell lb-rank">#${i + 1}</td>
+                <td class="lb-cell">
+                    <div class="lb-user">
+                        ${u.avatar ? `<img src="${u.avatar}" onerror="this.style.display='none'">` : '<div style="width:32px;height:32px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:0.8em">?</div>'}
+                        <span>${esc(u.name)}</span>
+                    </div>
+                </td>
+                <td class="lb-cell lb-val">${u.downloads.toLocaleString()}</td>
+            </tr>`;
+        });
+        
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    } catch (e) {
+        console.error(e);
+        container.innerHTML = '<div class="empty">Failed to load leaderboard</div>';
+    }
+}
+
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openDiscord(){window.open(DISCORD,'_blank')}
 function copyCode(){navigator.clipboard.writeText(document.getElementById('codeText').textContent).then(()=>toast('Copied','ok'))}
@@ -1144,3 +1424,4 @@ window.addEventListener('load',async()=>{
 });
 </script>
 </body>
+</html>
