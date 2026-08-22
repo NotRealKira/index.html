@@ -303,8 +303,8 @@
         <div id="buildBan" class="ban-box" style="display:none"></div><div id="buildWarn" class="warn-box" style="display:none"></div>
         <div class="form-card reveal"><h3><span class="dot"></span>Upload Build</h3>
             <form id="buildForm" onsubmit="return upBuild(event)"><div class="form-row">
-                <div class="field"><label>Build File <span class="req">*</span></label><div class="file-box" id="bFB"><span></span><span id="bFT">Choose .build file...</span><input type="file" id="bFile" accept=".build" required onchange="fileChg(this,'bFB','bFT')"></div></div>
-                <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" maxlength="15" required></div>
+                <div class="field"><label>Build File <span class="req">*</span></label><div class="file-box" id="bFB"><span></span><span id="bFT">Choose .build file...</span><input type="file" id="bFile" accept=".build" required onchange="fileChg(this,'bFB','bFT');autoFillBuildName(this)"></div></div>
+                <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" maxlength="15" required oninput="this.dataset.autofilled='false'"></div>
                 <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Anime</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
                 <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="bDesc" placeholder="Optional" maxlength="25"></textarea></div>
             </div><button type="submit" class="btn btn-p btn-full" id="bBtn">Upload</button>
@@ -1032,6 +1032,18 @@ function preCheck(){
     if(isBanned(user.email)){toast(getBanMsg(user.email),'err');return false}
     if(!canUpload())return false;
     return true;
+}
+function fileToDataUrl(file){
+    return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error||new Error('Could not read build file'));reader.readAsDataURL(file);});
+}
+let lastAutoBuildTitle='';
+function autoFillBuildName(input){
+    const file=input?.files?.[0],field=document.getElementById('bTitle');
+    if(!file||!field)return;
+    const generated=file.name.replace(/\.build$/i,'').trim().toLowerCase().slice(0,15);
+    if(!generated)return;
+    if(!field.value||field.dataset.autofilled==='true'||field.value===lastAutoBuildTitle){field.value=generated;field.dataset.autofilled='true';}
+    lastAutoBuildTitle=generated;
 }
 async function upBuild(e){
     e.preventDefault();if(!preCheck())return false;
