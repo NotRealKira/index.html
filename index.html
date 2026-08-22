@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1135,7 +1134,20 @@ async function loadLeaderboard(){
         obsAll();
     }catch(e){console.error(e);el.innerHTML='<div class="empty">Unable to load leaderboard</div>'}
 }
-async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();renderTopProfile()}catch(e){console.error(e)}}
+async function backfillBuildPreviews(){
+    const missing=allBuilds.filter(item=>!item.data?.previewImage&&item.build_file_url);
+    for(const item of missing){
+        try{
+            const previewImage=await captureBuildPreview(item.build_file_url,item.data?.title||item.build_file_name||'Build Preview');
+            if(!previewImage)continue;
+            item.data={...(item.data||{}),previewImage};
+            const{error}=await sb.from('builds').update({data:item.data}).eq('id',item.id);
+            if(error)console.warn('Preview saved locally only:',error);
+            renderBuilds();
+        }catch(e){console.warn('Preview backfill skipped:',e)}
+    }
+}
+async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();renderTopProfile();backfillBuildPreviews()}catch(e){console.error(e)}}
 function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new';let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found</div>';obsAll()}
 async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){console.error(e)}}
 async function loadTrades(){try{const i=await loadDB('trade',document.getElementById('tSort')?.value);document.getElementById('tCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No trades</div>';obsAll()}catch(e){console.error(e)}}
