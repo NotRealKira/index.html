@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -240,7 +241,7 @@
         .build-info{background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:12px;font-size:0.85em}
         .build-info strong{color:var(--accent)}
     
-        .hero-art,.sc-art{background:radial-gradient(circle at 30% 25%,rgba(110,231,183,.28),transparent 35%),linear-gradient(145deg,#17171d,#0e0e12);border:1px solid var(--border);border-radius:16px;min-height:300px;display:grid;place-items:center;position:relative;overflow:hidden}.sc-art{min-height:260px;border-radius:14px}.art-orbit{width:190px;height:190px;border-radius:50%;border:1px solid rgba(110,231,183,.5);box-shadow:0 0 0 18px rgba(110,231,183,.05),0 0 0 38px rgba(110,231,183,.03),0 0 45px rgba(110,231,183,.18);display:grid;place-items:center;position:relative}.art-orbit::before,.art-orbit::after{content:'';position:absolute;border:1px solid rgba(129,140,248,.45);border-radius:50%;transform:rotate(45deg)}.art-orbit::before{inset:22px}.art-orbit::after{inset:-22px;transform:rotate(-25deg)}.art-orbit span{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:2.8em;font-weight:700;letter-spacing:-.12em}.art-orbit-small{width:150px;height:150px}.art-orbit-small span{font-size:2em}.art-caption{position:absolute;bottom:18px;left:20px;font:500 .65em 'JetBrains Mono',monospace;letter-spacing:2px;color:var(--text-dim)}.card-art{aspect-ratio:16/10;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,231,183,.2),rgba(129,140,248,.14) 55%,#18181d);position:relative;overflow:hidden}.card-art::before,.card-art::after{content:'';position:absolute;border:1px solid rgba(110,231,183,.28);border-radius:50%;width:120px;height:120px}.card-art::before{transform:translate(-35px,-18px)}.card-art::after{transform:translate(35px,18px);border-color:rgba(129,140,248,.32)}.card-art span{position:relative;z-index:1;font:700 .7em 'JetBrains Mono',monospace;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase}.top-profile-text{display:flex;flex-direction:column;line-height:1.2}.top-profile-text strong{font-size:.82em}.top-profile-text span{font-size:.65em;color:var(--text-dim)}
+        .hero-art,.sc-art{background:radial-gradient(circle at 30% 25%,rgba(110,231,183,.28),transparent 35%),linear-gradient(145deg,#17171d,#0e0e12);border:1px solid var(--border);border-radius:16px;min-height:300px;display:grid;place-items:center;position:relative;overflow:hidden}.sc-art{min-height:260px;border-radius:14px}.art-orbit{width:190px;height:190px;border-radius:50%;border:1px solid rgba(110,231,183,.5);box-shadow:0 0 0 18px rgba(110,231,183,.05),0 0 0 38px rgba(110,231,183,.03),0 0 45px rgba(110,231,183,.18);display:grid;place-items:center;position:relative}.art-orbit::before,.art-orbit::after{content:'';position:absolute;border:1px solid rgba(129,140,248,.45);border-radius:50%;transform:rotate(45deg)}.art-orbit::before{inset:22px}.art-orbit::after{inset:-22px;transform:rotate(-25deg)}.art-orbit span{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:2.8em;font-weight:700;letter-spacing:-.12em}.art-orbit-small{width:150px;height:150px}.art-orbit-small span{font-size:2em}.art-caption{position:absolute;bottom:18px;left:20px;font:500 .65em 'JetBrains Mono',monospace;letter-spacing:2px;color:var(--text-dim)}.card-art{aspect-ratio:16/10;display:grid;place-items:center;background:linear-gradient(135deg,rgba(110,231,183,.2),rgba(129,140,248,.14) 55%,#18181d);position:relative;overflow:hidden}.card-art::before,.card-art::after{content:'';position:absolute;border:1px solid rgba(110,231,183,.28);border-radius:50%;width:120px;height:120px}.card-art::before{transform:translate(-35px,-18px)}.card-art::after{transform:translate(35px,18px);border-color:rgba(129,140,248,.32)}.card-art img{width:100%;height:100%;object-fit:contain;display:block}.card-art span{position:relative;z-index:1;font:700 .7em 'JetBrains Mono',monospace;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase}.top-profile-text{display:flex;flex-direction:column;line-height:1.2}.top-profile-text strong{font-size:.82em}.top-profile-text span{font-size:.65em;color:var(--text-dim)}
             .discord-help{display:block;margin-top:5px;color:var(--text-dim);font-size:.72em}
 
         .hero-img{width:100%;max-width:460px;aspect-ratio:4/3;background:var(--surface);border-radius:16px;overflow:hidden;border:1px solid var(--border);position:relative;justify-self:end}.hero-img::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent-glow),transparent);pointer-events:none}.hero-img img{display:block;width:100%;height:100%;object-fit:contain;max-width:100%;max-height:100%}.sc-img{width:100%;max-width:520px;aspect-ratio:4/3;background:var(--surface);border-radius:14px;overflow:hidden;border:1px solid var(--border);position:relative}.sc-img img{display:block;width:100%;height:100%;object-fit:contain;max-width:100%;max-height:100%}@media(max-width:768px){.hero-img,.sc-img{max-width:100%;justify-self:stretch}}
@@ -505,6 +506,8 @@
         <div class="leaderboard-list" id="leaderboardList"><div class="empty">Loading leaderboard...</div></div>
     </section>
 </div>
+<!-- One-time marketplace disclaimer -->
+<div class="modal-bg" id="scamModal"><div class="modal"><h3>Before you continue</h3><p style="color:var(--text-dim);margin-bottom:20px">We are not responsible for scams. Trade and purchase at your own risk. LexusHub is not responsible for transactions between users.</p><button class="btn btn-p btn-full" onclick="confirmScamTerms()">Confirm</button></div></div>
 <!-- Modals -->
 <div class="modal-bg" id="modal"><div class="modal"><h3>Owner</h3><div class="m-user"><div><div style="font-weight:600" id="mName">Unknown</div><div style="color:var(--text-dim);font-size:0.82em" id="mEmail">Hidden</div></div></div><button class="btn btn-d" style="width:100%" onclick="closeModal()">Close</button></div></div>
 <div class="modal-bg" id="banModal"><div class="modal"><h3> Ban User</h3><div id="banTarget" style="font-weight:600;margin-bottom:16px"></div><div class="field"><label>Duration</label><select class="input" id="banDuration"><option value="permanent">Permanent</option><option value="1h">1 Hour</option><option value="6h">6 Hours</option><option value="12h">12 Hours</option><option value="1d">1 Day</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="14d">14 Days</option><option value="30d">30 Days</option></select></div><div class="field"><label>Reason</label><input type="text" class="input" id="banReason" placeholder="Rule violation..."></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-d" style="flex:1" onclick="confirmBan()">Ban</button><button class="btn btn-s" style="flex:1" onclick="closeBanModal()">Cancel</button></div></div></div>
@@ -1045,6 +1048,33 @@ function autoFillBuildName(input){
     if(!field.value||field.dataset.autofilled==='true'||field.value===lastAutoBuildTitle){field.value=generated;field.dataset.autofilled='true';}
     lastAutoBuildTitle=generated;
 }
+function waitForImage(src){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=src;});}
+async function captureBuildPreview(buildDataUrl,title){
+    await openPreview(buildDataUrl,title||'Build Preview');
+    await new Promise(resolve=>setTimeout(resolve,220));
+    if(!renderer||!camera||!buildGroup){closePreview();return null;}
+    const view=renderer.domElement,box=new THREE.Box3().setFromObject(buildGroup),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
+    const maxDim=Math.max(size.x,size.y,size.z)||20,distance=Math.abs(maxDim/2/Math.tan(camera.fov*Math.PI/360))*1.75,targetY=center.y;
+    const renderView=(z)=>{camera.position.set(0,targetY+maxDim*.12,z);camera.lookAt(0,targetY,0);if(controls){controls.target.set(0,targetY,0);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/jpeg',.86);};
+    const front=renderView(distance),back=renderView(-distance);
+    const [frontImage,backImage]=await Promise.all([waitForImage(front),waitForImage(back)]);
+    const canvas=document.createElement('canvas'),w=view.width,h=view.height;canvas.width=w*2;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,canvas.width,h);ctx.drawImage(frontImage,0,0,w,h);ctx.drawImage(backImage,w,0,w,h);ctx.fillStyle='#00ffcc';ctx.font='600 22px Arial';ctx.fillText('FRONT VIEW',24,34);ctx.fillText('BACK VIEW',w+24,34);
+    closePreview();
+    return canvas.toDataURL('image/jpeg',.86);
+}
+let pendingTermsForm=null;
+function requireScamTerms(formId){
+    if(localStorage.getItem('lh_scam_terms_confirmed')==='1')return true;
+    pendingTermsForm=formId;
+    document.getElementById('scamModal').classList.add('show');
+    return false;
+}
+function confirmScamTerms(){
+    localStorage.setItem('lh_scam_terms_confirmed','1');
+    document.getElementById('scamModal').classList.remove('show');
+    const formId=pendingTermsForm;pendingTermsForm=null;
+    if(formId)document.getElementById(formId)?.requestSubmit();
+}
 async function upBuild(e){
     e.preventDefault();if(!preCheck())return false;
     const btn=document.getElementById('bBtn');btn.disabled=true;btn.textContent='Uploading...';
@@ -1052,13 +1082,13 @@ async function upBuild(e){
     btn.disabled=false;btn.textContent='Upload';return false;
 }
 async function upSell(e){
-    e.preventDefault();if(!preCheck())return false;
+    e.preventDefault();if(!requireScamTerms('sellForm'))return false;if(!preCheck())return false;
     const btn=document.getElementById('sBtn');btn.disabled=true;btn.textContent='Uploading...';
     try{const discordUsername=document.getElementById('sDiscord').value.trim();if(!discordUsername)throw'Discord username required';await ins({type:'sell',owner:user.id,owner_email:user.email,owner_name:getNm(user),data:{title:document.getElementById('sTitle').value.trim(),description:document.getElementById('sDesc').value.trim(),artKey:'sale',discordUsername},upload_date:new Date().toISOString(),price:parseInt(document.getElementById('sPrice').value),downloads:0});document.getElementById('sellForm').reset();startCooldown();syncDiscordFields();toast('Listed','ok');loadSells()}catch(err){toast(err.message||err,'err')}
     btn.disabled=false;btn.textContent='List Item';return false;
 }
 async function upTrade(e){
-    e.preventDefault();if(!preCheck())return false;
+    e.preventDefault();if(!requireScamTerms('tradeForm'))return false;if(!preCheck())return false;
     const btn=document.getElementById('tBtn');btn.disabled=true;btn.textContent='Uploading...';
     try{const discordUsername=document.getElementById('tDiscord').value.trim();if(!discordUsername)throw'Discord username required';await ins({type:'trade',owner:user.id,owner_email:user.email,owner_name:getNm(user),data:{title:document.getElementById('tTitle').value.trim(),description:document.getElementById('tDesc').value.trim(),artKey:'trade',discordUsername},upload_date:new Date().toISOString(),downloads:0});document.getElementById('tradeForm').reset();startCooldown();syncDiscordFields();toast('Posted','ok');loadTrades()}catch(err){toast(err.message||err,'err')}
     btn.disabled=false;btn.textContent='Post Trade';return false;
@@ -1088,6 +1118,7 @@ async function editBuildFile(buildId){
 }
 
 function artFor(item){
+    if(item.data?.previewImage)return `<div class="card-art"><img src="${item.data.previewImage}" alt="${esc(item.data?.title||'Build preview')}" loading="lazy"></div>`;
     const key=(item.data?.artKey||item.data?.category||'local').toLowerCase().replace(/[^a-z0-9]+/g,'-');
     return `<div class="card-art art-${key}"><span>${esc((item.data?.category||item.data?.artKey||'LOCAL').slice(0,10))}</span></div>`;
 }
