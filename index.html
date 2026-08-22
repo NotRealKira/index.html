@@ -1156,14 +1156,16 @@ function artFor(item){
     return `<div class="card-art art-${key}"><span>${esc((item.data?.category||item.data?.artKey||'LOCAL').slice(0,10))}</span></div>`;
 }
 function openBuildDetails(id,updateHash=true){
-    const item=allBuilds.find(build=>build.id===id);if(!item)return;
+    const modalEl=document.getElementById('buildDetailsModal');
+    if(modalEl)modalEl.classList.add('show');
+    const item=allBuilds.find(build=>build.id===id);if(!item){if(modalEl)modalEl.querySelector('#buildDetailsContent').innerHTML='<div class="empty">Build details are still loading. Please try again.</div>';return;}
     if(updateHash&&location.hash!==`#build-${id}`)history.pushState({},'',`#build-${id}`);
     const title=esc(item.data?.title||item.build_file_name||'Build'),desc=esc(item.data?.description||'No description provided.'),owner=esc(item.owner_name||'Unknown'),email=esc(item.owner_email||''),discord=esc(item.data?.discordUsername||''),category=esc(item.data?.category||'Uncategorized'),fileName=esc(item.build_file_name||'build.build');
     const preview=item.data?.previewImage?`<img src="${item.data.previewImage}" alt="${title} preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`:'<div class="empty">Preview will be generated after this build is processed.</div>';
     const admin=isAdmin(),ownerControls=user&&item.owner_email===user.email;
     document.getElementById('buildDetailsTitle').textContent=title;
     document.getElementById('buildDetailsContent').innerHTML=`<div style="margin:14px 0 18px">${preview}</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px"><div class="s-box"><small>Category</small><strong>${category}</strong></div><div class="s-box"><small>Downloads</small><strong>${Number(item.downloads)||0}</strong></div><div class="s-box"><small>File</small><strong>${fileName}</strong></div></div><p style="color:var(--text-dim);margin-bottom:16px">${desc}</p><div class="s-box" style="margin-bottom:16px"><h4 style="margin-bottom:8px">Uploader information</h4><div>${owner}</div><div style="color:var(--text-dim);font-size:.85em">${email}</div>${discord?`<div style="color:var(--accent);margin-top:6px">Discord: ${discord}</div>`:''}</div><div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}','${fileName}')">Download</button><button class="btn btn-s" onclick="closeBuildDetails();openPreview('${item.build_file_url}','${title}')">Open 3D Preview</button>${ownerControls?`<button class="btn btn-d" onclick="closeBuildDetails();delItem('${item.id}')">Delete</button>`:''}${admin&&!ownerControls?`<button class="btn btn-d" onclick="closeBuildDetails();adminDel('${item.id}')">Delete</button><button class="btn btn-warn" onclick="closeBuildDetails();openBanModal('${email}','${owner}')">Ban</button><button class="btn btn-s" onclick="closeBuildDetails();adminLoginAsUser('${email}')">Login As</button>`:''}</div>`;
-    document.getElementById('buildDetailsModal').classList.add('show');
+    if(modalEl)modalEl.classList.add('show');
 }
 function closeBuildDetails(updateHash=true){document.getElementById('buildDetailsModal').classList.remove('show');if(updateHash&&location.hash.startsWith('#build-'))history.pushState({},'', '#builds')}
 function card(item,canDel=false){
