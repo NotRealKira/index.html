@@ -1078,8 +1078,9 @@ async function captureBuildPreview(buildDataUrl,title){
     if(!renderer||!camera||!buildGroup){closePreview();return null;}
     const view=renderer.domElement,box=new THREE.Box3().setFromObject(buildGroup),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
     const maxDim=Math.max(size.x,size.y,size.z)||20,distance=Math.abs(maxDim/2/Math.tan(camera.fov*Math.PI/360))*1.18,targetY=center.y;
-    const renderView=(z)=>{camera.position.set(0,targetY+maxDim*.06,z);camera.lookAt(0,targetY,0);if(controls){controls.target.set(0,targetY,0);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/jpeg',.86);};
-    const front=renderView(distance),back=renderView(-distance);
+    const forwardAxis=size.x>=size.z?'x':'z';
+    const renderView=(sign)=>{const x=forwardAxis==='x'?sign*distance:0,z=forwardAxis==='z'?sign*distance:0;camera.position.set(x,targetY+maxDim*.06,z);camera.lookAt(0,targetY,0);if(controls){controls.target.set(0,targetY,0);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/jpeg',.86);};
+    const front=renderView(1),back=renderView(-1);
     const [frontImage,backImage]=await Promise.all([waitForImage(front),waitForImage(back)]);
     const canvas=document.createElement('canvas'),w=view.width,h=view.height;canvas.width=w*2;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,canvas.width,h);ctx.drawImage(frontImage,0,0,w,h);ctx.drawImage(backImage,w,0,w,h);ctx.fillStyle='#00ffcc';ctx.font='600 22px Arial';ctx.fillText('FRONT VIEW',24,34);ctx.fillText('BACK VIEW',w+24,34);
     closePreview();
@@ -1167,7 +1168,7 @@ function openBuildDetails(id,updateHash=true){
 function closeBuildDetails(updateHash=true){document.getElementById('buildDetailsModal').classList.remove('show');if(updateHash&&location.hash.startsWith('#build-'))history.pushState({},'', '#builds')}
 function card(item,canDel=false){
     const admin=isAdmin(),on=esc(item.owner_name)||'Unknown',oe=esc(item.owner_email)||'',cat=item.data?.category,dl=item.downloads||0,desc=item.data?.description,discord=esc(item.data?.discordUsername||'');
-    if(item.type==='build')return`<a class="card reveal build-card" href="#build-${item.id}" aria-label="Open ${esc(item.data?.title||'Build')} details">${artFor(item)}<div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}<div class="card-owner">${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${new Date(item.upload_date).toLocaleDateString()}</span><span>${dl} downloads</span></div></div></a>`;
+    if(item.type==='build')return`<a class="card reveal build-card" href="#build-${item.id}" aria-label="Open ${esc(item.data?.title||'Build')} details" onclick="openBuildDetails('${item.id}');return false;">${artFor(item)}<div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}<div class="card-owner">${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${new Date(item.upload_date).toLocaleDateString()}</span><span>${dl} downloads</span></div></div></a>`;
     return`<div class="card reveal">${artFor(item)}<div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}')">${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${new Date(item.upload_date).toLocaleDateString()}</span><span>${dl} downloads</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}')">Delete</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button><button class="btn btn-s" onclick="adminLoginAsUser('${oe}')">Login As</button>`:''}</div></div></div>`}
 async function loadLeaderboard(){
     const el=document.getElementById('leaderboardList');if(!el)return;
@@ -1180,12 +1181,12 @@ async function loadLeaderboard(){
     }catch(e){console.error(e);el.innerHTML='<div class="empty">Unable to load leaderboard</div>'}
 }
 async function backfillBuildPreviews(){
-    const missing=allBuilds.filter(item=>(!item.data?.previewImage||item.data?.previewVersion!==2)&&item.build_file_url);
+    const missing=allBuilds.filter(item=>(!item.data?.previewImage||item.data?.previewVersion!==3)&&item.build_file_url);
     for(const item of missing){
         try{
             const previewImage=await captureBuildPreview(item.build_file_url,item.data?.title||item.build_file_name||'Build Preview');
             if(!previewImage)continue;
-            item.data={...(item.data||{}),previewImage,previewVersion:2};
+            item.data={...(item.data||{}),previewImage,previewVersion:3};
             const{error}=await sb.from('builds').update({data:item.data}).eq('id',item.id);
             if(error)console.warn('Preview saved locally only:',error);
             renderBuilds();
