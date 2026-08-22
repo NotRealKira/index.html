@@ -282,7 +282,7 @@
         <div class="hero reveal visible">
             <div>
                 <h1>The <em>marketplace</em> for BABFT builds</h1>
-                <p>Upload, download, sell, and trade build files freely. Built by xploit.</p>
+                <p>Upload, download, sell, and trade build files freely. Built by K I R A.</p>
                 <div class="btns">
                     <button class="btn btn-p" onclick="go('script')">Get Script</button>
                     <button class="btn btn-s" onclick="go('builds')">Browse Builds</button>
@@ -490,11 +490,11 @@
 
     <section id="profile"><div class="p-card reveal"><div class="p-top"><div class="p-info"><h2 id="pName">Not logged in</h2><p id="pEmail">Sign in to get started</p></div></div><div id="authArea"></div></div><div id="userArea" style="display:none"><div class="s-box reveal"><h4>Display Name</h4><input type="text" class="input" id="nameIn" placeholder="Your name" style="margin-bottom:10px"><button class="btn btn-p" onclick="saveName()">Save</button></div><div class="s-box reveal reveal-d2"><h4>Edit Build Files</h4><div id="myBuildsForEdit"></div></div></div><div id="adminBanPanel" style="display:none"><div class="s-box"><h4>Ban Management</h4><div id="banList"></div></div><div class="s-box"><h4>Admin Actions</h4><div id="adminLoginPanel"></div></div></div><div class="note reveal"> Your data is Safe</div><h3 class="sec-title">Your Uploads</h3><div class="cards" id="myCards"><div class="empty">Login to see uploads</div></div></section>
 
-    <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>LexusHub v2.7  By xploit</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
+    <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>LexusHub v2.7  By K I R A</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
 
     <section id="buy">
         <h2 class="reveal" style="margin-bottom:8px;font-size:1.6em">Pricing</h2>
-        <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">Message zzzz107 (xploit) to buy.</p>
+        <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">Message devil06723 (K I R A) to buy.</p>
         <div class="price-grid">
             <div class="price-card reveal"><div class="ico">◆</div><h4>Lifetime</h4><p>$5</p></div>
         </div>
@@ -959,22 +959,22 @@ async function dlFile(id,url){
 
 function openLoginModal(){document.getElementById('loginModal').classList.add('show')}
 function closeLoginModal(){document.getElementById('loginModal').classList.remove('show')}
+function getAuthRedirectUrl(){
+    return location.protocol==='http:'||location.protocol==='https:' ? `${location.origin}${location.pathname}` : undefined;
+}
 async function login(provider){
     closeLoginModal();
     try{
-        const{data,error}=await sb.auth.signInWithOAuth({
-            provider: provider,
-            options: { redirectTo: location.origin + location.pathname, scopes: provider === 'discord' ? 'identify email' : 'email profile' }
-        });
-        if(error){
-            if(error.message.includes('not allowed') || error.message.includes('disabled')){
-                toast('Login temporarily unavailable. Try again later.','err');
-            }else{
-                toast(error.message,'err');
-            }
-        }
+        const options={scopes:provider==='discord'?'identify email':'email profile'};
+        const redirectTo=getAuthRedirectUrl();
+        if(redirectTo)options.redirectTo=redirectTo;
+        const{data,error}=await sb.auth.signInWithOAuth({provider,options});
+        if(error)throw error;
+        if(!data?.url)throw new Error('No login URL returned. Enable this provider in Supabase Authentication settings.');
+        if(data.url!==location.href)window.location.assign(data.url);
     }catch(e){
-        toast('Login error: '+e.message,'err');
+        console.error('Login error:',e);
+        toast(e?.message||'Login failed. Check the OAuth provider configuration.','err');
     }
 }
 async function logout(){await sb.auth.signOut();user=null;renderAuth();updateForms();toast('Logged out')}
@@ -1104,6 +1104,39 @@ function showOwner(n,e){document.getElementById('mName').textContent=n||'Unknown
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openDiscord(){window.open(DISCORD,'_blank')}
 function copyCode(){navigator.clipboard.writeText(document.getElementById('codeText').textContent).then(()=>toast('Copied','ok'))}
+
+async function initAuth(){
+    await loadBanned();
+    const params=new URLSearchParams(location.search);
+    const oauthError=params.get('error_description')||params.get('error');
+    if(oauthError){
+        history.replaceState({},'',location.pathname);
+        toast(`Login failed: ${decodeURIComponent(oauthError).replace(/\+/g,' ')}`,'err');
+    }
+    const code=params.get('code');
+    if(code){
+        const{error}=await sb.auth.exchangeCodeForSession(code);
+        if(error)toast(`Login failed: ${error.message}`,'err');
+        history.replaceState({},'',location.pathname);
+    }
+    const{data}=await sb.auth.getSession();
+    if(data?.session?.user)user=data.session.user;
+    if(location.hash.includes('access_token')){
+        history.replaceState({},'',location.pathname);
+        await new Promise(r=>setTimeout(r,300));
+        const{data:sessionData}=await sb.auth.getSession();
+        if(sessionData?.session?.user)user=sessionData.session.user;
+    }
+    sb.auth.onAuthStateChange((event,session)=>{
+        user=session?.user||null;
+        renderAuth();
+        updateForms();
+        if(event==='SIGNED_IN')closeLoginModal();
+    });
+    renderAuth();
+    updateForms();
+    syncDiscordFields();
+}
 
 window.addEventListener('load',async()=>{
     const a=localStorage.getItem('lh_accent');if(a)setAccent(a);initAP();pickTheme(localStorage.getItem('lh_theme')||'dark');obsAll();
