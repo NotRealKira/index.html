@@ -261,7 +261,7 @@
             <div id="topProfile"></div>
         </div>
         <div class="top-stats">
-            <div class="top-stat"><div class="val" id="sBuilds">0</div><div class="lbl">Builds</div></div>
+            <div class="top-stat"><div class="val" id="sBuilds">0</div><div class="lbl">Builds</div></div><div class="top-stat"><div class="val" id="sTokens">0</div><div class="lbl">Tokens</div></div>
         </div>
     </div>
 
@@ -311,7 +311,7 @@
             </div><button type="submit" class="btn btn-p btn-full" id="bBtn">Upload</button>
             <div id="cooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:0.82em;color:var(--warning)"></div></form>
         </div>
-        <div class="controls"><h3>All Builds</h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Anime</option><option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><label style="display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:.82em;white-space:nowrap">Max Parts: <output id="bPartsFilterOut">50000</output></label><input type="range" id="bPartsFilter" min="1" max="50000" value="50000" oninput="document.getElementById('bPartsFilterOut').value=this.value;renderBuilds()"><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="bCards"><div class="empty">Loading...</div></div></section>
+        <div class="controls"><h3>All Builds</h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Anime</option><option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><label style="display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:.82em;white-space:nowrap">Max Parts:</label><input class="input" style="width:120px;padding:8px" type="number" id="bPartsFilter" min="1" max="50000" step="1" value="50000" oninput="this.value=Math.max(1,Math.min(50000,Number(this.value)||1));renderBuilds()"><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="bCards"><div class="empty">Loading...</div></div></section>
 
     <section id="sell"><div id="sellBan" class="ban-box" style="display:none"></div><div id="sellWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>List for Sale</h3><form id="sellForm" onsubmit="return upSell(event)"><div class="form-row"><div class="field"><label>Discord Username <span class="req">*</span></label><input type="text" class="input" id="sDiscord" placeholder="username or @username" maxlength="40" required><small class="discord-help">Used so buyers can contact you on Discord.</small></div><div class="field"><label>Display Name <span class="req">*</span></label><input type="text" class="input" id="sDisplayName" maxlength="20" required><small class="discord-help">Shown on this listing.</small></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="sTitle" required></div><div class="field"><label>Price (R$) <span class="req">*</span></label><input type="number" class="input" id="sPrice" min="1" required></div><div class="field"><label>Description</label><textarea class="input" id="sDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="sBtn">List Item</button></form></div><div class="controls"><h3>For Sale</h3><select class="sel" id="sSort" onchange="loadSells()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="sCards"><div class="empty">Loading...</div></div></section>
 
@@ -495,10 +495,7 @@
 
     <section id="buy">
         <h2 class="reveal" style="margin-bottom:8px;font-size:1.6em">Pricing</h2>
-        <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">Message devil06723 (K I R A) to buy.</p>
-        <div class="price-grid">
-            <div class="price-card reveal"><div class="ico">◆</div><h4>Lifetime</h4><p>$5</p></div>
-        </div>
+        <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">Purchase tokens to use on LexusHub.</p><div class="price-grid"><div class="price-card reveal"><div class="ico">◆</div><h4>900 tokens</h4><p>Purchase</p><button class="btn btn-p btn-full" onclick="openTokenPurchase()">Buy 900 Tokens</button></div></div>
     </section>
 <section id="leaderboard">
         <div class="controls"><h3>Leaderboard</h3><button class="btn btn-s" onclick="loadLeaderboard()">Refresh</button></div>
@@ -508,6 +505,7 @@
 </div>
 <!-- One-time marketplace disclaimer -->
 <div class="modal-bg" id="scamModal"><div class="modal"><h3>Before you continue</h3><p style="color:var(--text-dim);margin-bottom:20px">We are not responsible for scams. Trade and purchase at your own risk. LexusHub is not responsible for transactions between users.</p><button class="btn btn-p btn-full" onclick="confirmScamTerms()">Confirm</button></div></div>
+<div class="modal-bg" id="tokenPurchaseModal"><div class="modal"><a class="preview-close" href="#buy" onclick="closeTokenPurchase(false)">×</a><h3>Buy 900 Tokens</h3><p style="color:var(--text-dim);margin-bottom:16px">Someone will send you the key. Please join the LexusHub server first.</p><button class="btn btn-s btn-full" style="margin-bottom:10px" onclick="copyInviteLink()">Copy invite link</button><div id="tokenPurchaseStep"><div style="display:flex;gap:8px"><button class="btn btn-s" style="flex:1" onclick="closeTokenPurchase()">Cancel</button><button class="btn btn-p" style="flex:1" onclick="showPurchaseDiscord()">Confirm</button></div></div><div id="tokenPurchaseDiscord" style="display:none"><label>Discord Username</label><input class="input" id="purchaseDiscord" placeholder="username" maxlength="40"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-s" style="flex:1" onclick="closeTokenPurchase()">Cancel</button><button class="btn btn-p" style="flex:1" onclick="submitTokenOrder()">Confirm</button></div></div></div></div>
 <!-- Build details dialog -->
 <div class="modal-bg" id="buildDetailsModal"><div class="modal" style="max-width:760px"><a class="preview-close" href="#builds" onclick="closeBuildDetails(false)">×</a><h3 id="buildDetailsTitle">Build Details</h3><div id="buildDetailsContent"></div></div></div>
 <div class="modal-bg" id="checklistModal"><div class="modal" style="max-width:620px"><a class="preview-close" href="#builds" onclick="closeChecklist(false)">×</a><h3 id="checklistTitle">Build Checklist</h3><div id="checklistContent"><div class="empty">Loading checklist...</div></div></div></div>
@@ -533,7 +531,7 @@
 const SB_URL='https://puhusbessxmmstfxdowr.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aHVzYmVzc3htbXN0Znhkb3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU4MjIsImV4cCI6MjA4OTI0MTgyMn0.7tW48EhCOz6H4cDxF6AuqUH9m8SoXWwj2Cn_rqucm1w';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 let user=null,bannedList=[],allBuilds=[],dlCooldowns={},pendingBanEmail='',pendingBanName='',lastUpload=0,adminLoginTarget=null;
-const ADMIN='amd156935@gmail.com',DISCORD='https://discord.gg/fduHT98E4X';
+const ADMIN='amd156935@gmail.com',DISCORD='https://discord.gg/5DUGs9KvE';
 const isAdmin=()=>user?.email?.toLowerCase()===ADMIN.toLowerCase();
 
 // ================== THREE.JS PREVIEWER LOGIC ==================
@@ -952,6 +950,15 @@ function esc(s){return(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>'
 function canUpload(){const left=30000-(Date.now()-lastUpload);if(left>0){toast(`Wait ${Math.ceil(left/1000)}s before uploading again`,'warn');return false}return true}
 function startCooldown(){lastUpload=Date.now();const msg=document.getElementById('cooldownMsg');if(!msg)return;msg.style.display='block';const tick=()=>{const l=30000-(Date.now()-lastUpload);if(l<=0){msg.style.display='none';return}msg.textContent=` Cooldown: ${Math.ceil(l/1000)}s`;requestAnimationFrame(tick)};tick()}
 
+function tokenUser(){return actingAsUser||user;}
+async function loadTokenBalance(){const el=document.getElementById('sTokens');if(!el)return;if(isAdmin()){el.textContent='INF';return}if(!user){el.textContent='0';return}try{const{data}=await sb.from('token_balances').select('tokens').eq('user_id',user.id).maybeSingle();el.textContent=(data?.tokens||0).toLocaleString();}catch(e){el.textContent='0';}}
+async function recordUniqueView(buildId){if(!user||String(buildId)===String(user.id))return;try{await sb.rpc('record_unique_build_view',{p_build_id:buildId});}catch(e){console.warn('Unique view tracking unavailable:',e)}}
+async function recordUniqueDownload(buildId){if(!user)return null;try{const{data,error}=await sb.rpc('record_unique_build_download',{p_build_id:buildId});if(error)throw error;await loadTokenBalance();return data;}catch(e){console.warn('Unique download tracking unavailable:',e);return null}}
+function openTokenPurchase(){document.getElementById('tokenPurchaseModal')?.classList.add('show');document.getElementById('tokenPurchaseStep').style.display='block';document.getElementById('tokenPurchaseDiscord').style.display='none'}
+function closeTokenPurchase(){document.getElementById('tokenPurchaseModal')?.classList.remove('show')}
+function showPurchaseDiscord(){document.getElementById('tokenPurchaseStep').style.display='none';document.getElementById('tokenPurchaseDiscord').style.display='block'}
+async function copyInviteLink(){try{await navigator.clipboard.writeText(DISCORD);toast('Invite link copied','ok')}catch(e){prompt('Copy this invite link:',DISCORD)}}
+async function submitTokenOrder(){if(!user){toast('Please log in first','warn');return}const discord=document.getElementById('purchaseDiscord').value.trim();if(!discord){toast('Discord username required','err');return}try{const{data:order,error}=await sb.from('token_orders').insert([{user_id:user.id,discord_username:discord,amount:900,status:'pending'}]).select('id').single();if(error)throw error;const{error:webhookError}=await sb.functions.invoke('token-order-webhook',{body:{orderId:order?.id,discordUsername:discord,tokens:900,purchasedAt:new Date().toISOString()}});if(webhookError)console.warn('Token order saved but webhook notification failed:',webhookError);closeTokenPurchase();toast(webhookError?'Request saved; notification will retry.':'Request submitted. Someone will send you the key.','ok')}catch(e){toast(e.message||'Could not submit token request','err')}}
 //  DOWNLOAD 
 async function dlFile(id,url,fileName='build.build'){
     if(dlCooldowns[id]&&Date.now()-dlCooldowns[id]<30000){toast('Wait 30s','warn');return}
@@ -959,7 +966,7 @@ async function dlFile(id,url,fileName='build.build'){
     try{
         const blob=await getBuildFileBlob(url),link=document.createElement('a');
         link.href=URL.createObjectURL(blob);link.download=fileName||'build.build';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
-        const{data:c}=await sb.from('builds').select('downloads').eq('id',id).single();await sb.from('builds').update({downloads:(c?.downloads||0)+1}).eq('id',id);const item=allBuilds.find(b=>b.id===id);if(item)item.downloads=(c?.downloads||0)+1;renderBuilds();renderTopProfile();
+        await recordUniqueDownload(id);const item=allBuilds.find(b=>String(b.id)===String(id));if(item){item.downloads=Number(item.downloads||0)+1;renderBuilds();}renderTopProfile();
     }catch(e){toast(e.message||'Download failed','err');console.error(e)}
 }
 
@@ -1110,6 +1117,7 @@ function confirmScamTerms(){
     const formId=pendingTermsForm;pendingTermsForm=null;
     if(formId)document.getElementById(formId)?.requestSubmit();
 }
+async function fileSha256(file){const buf=await file.arrayBuffer();const digest=await crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function upBuild(e){
     e.preventDefault();if(!preCheck())return false;
     const btn=document.getElementById('bBtn');btn.disabled=true;const actor=effectiveUser();
@@ -1117,10 +1125,11 @@ async function upBuild(e){
     try{
         const file=document.getElementById('bFile').files[0],title=document.getElementById('bTitle').value.trim(),cat=document.getElementById('bCat').value;
         if(!file?.name.toLowerCase().endsWith('.build'))throw new Error('Please choose a .build file.');
+        setProgress(2,'Checking file...');const fileHash=await fileSha256(file);const{data:duplicateRows,error:duplicateError}=await sb.from('builds').select('id').eq('type','build').eq('file_hash',fileHash).limit(1);if(duplicateError)throw duplicateError;if(duplicateRows?.length)throw new Error('The file is already uploaded by someone.');
         if(!title)throw new Error('Title required');if(!cat)throw new Error('Category required');
         setProgress(5,'Reading file...');const fu=await fileToCompressedDataUrl(file,setProgress);
-        setProgress(98,'Saving...');await withTimeout(ins({type:'build',owner:actor.id,owner_email:actor.email,owner_name:actingAsUser?.name||getNm(actor),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),artKey:cat,partsLimit:Number(document.getElementById('bPartsLimit')?.value||50000)},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,downloads:0}),60000,'Saving the build timed out. Check your connection and try again.');
-        document.getElementById('buildForm').reset();startCooldown();toast('Build uploaded successfully','ok');loadBuilds();updateCounts();
+        setProgress(98,'Saving...');const savedBuild=await withTimeout(ins({type:'build',owner:actor.id,owner_email:actor.email,owner_name:actingAsUser?.name||getNm(actor),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),artKey:cat,partsLimit:Number(document.getElementById('bPartsLimit')?.value||50000)},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,file_hash:fileHash,downloads:0}),60000,'Saving the build timed out. Check your connection and try again.');
+        try{if(!isAdmin()&&savedBuild?.id)await sb.rpc('award_upload_tokens',{p_build_id:savedBuild.id})}catch(rewardError){console.warn('Upload reward unavailable:',rewardError)}document.getElementById('buildForm').reset();startCooldown();toast('Build uploaded successfully','ok');loadBuilds();updateCounts();loadTokenBalance();
     }catch(err){console.error('Build upload failed:',err);toast(err?.message||'Build upload failed.','err');}
     finally{btn.disabled=false;btn.textContent='Upload';}
     return false;
@@ -1177,7 +1186,7 @@ function openBuildDetails(id,updateHash=true){
     const modalEl=document.getElementById('buildDetailsModal');
     if(modalEl)modalEl.classList.add('show');
     const item=allBuilds.find(build=>getBuildId(build)===String(id));if(!item){if(modalEl)modalEl.querySelector('#buildDetailsContent').innerHTML='<div class="empty">Build details are still loading. Please try again.</div>';return;}
-    if(updateHash&&location.hash!==`#build-${id}`)history.pushState({},'',`#build-${id}`);
+    if(updateHash&&location.hash!==`#build-${id}`)history.pushState({},'',`#build-${id}`);recordUniqueView(item.id);
     const title=esc(item.data?.title||item.build_file_name||'Build'),desc=esc(item.data?.description||'No description provided.'),owner=esc(item.owner_name||'Unknown'),rawEmail=String(item.owner_email||''),email=maskEmail(rawEmail),discord=esc(item.data?.discordUsername||''),category=esc(item.data?.category||'Uncategorized'),fileName=esc(item.build_file_name||'build.build');
     const preview=item.data?.previewImage?`<img src="${item.data.previewImage}" alt="${title} preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`:'<div class="empty">Preview will be generated after this build is processed.</div>';
     const admin=isAdmin(),ownerControls=user&&item.owner_email===user.email;
@@ -1188,8 +1197,8 @@ function openBuildDetails(id,updateHash=true){
 }
 function closeBuildDetails(updateHash=true){document.getElementById('buildDetailsModal').classList.remove('show');if(updateHash&&location.hash.startsWith('#build-'))history.pushState({},'', '#builds')}
 function card(item,canDel=false){
-    const admin=isAdmin(),on=esc(item.owner_name)||'Unknown',oe=esc(item.owner_email)||'',cat=item.data?.category,dl=item.downloads||0,desc=item.data?.description,discord=esc(item.data?.discordUsername||'');
-    if(item.type==='build')return`<a href="#build-${getBuildId(item)}" class="card reveal build-card" data-build-id="${getBuildId(item)}" role="button" tabindex="0" onclick="openBuildDetails('${getBuildId(item)}');return false;" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openBuildDetails('${getBuildId(item)}')} ">${artFor(item)}<div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}<div class="card-owner" style="display:flex;align-items:center;gap:8px">${avatarForUser(item.owner)}<span>${on}</span></div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${new Date(item.upload_date).toLocaleDateString()}</span><span>Downloads: ${dl}</span></div></div></a>`;
+    const admin=isAdmin(),on=esc(item.owner_name)||'Unknown',oe=esc(item.owner_email)||'',cat=item.data?.category,dl=item.downloads||0,desc=item.data?.description,discord=esc(item.data?.discordUsername||''),parts=Number(item.data?.partsCount)||0;
+    if(item.type==='build')return`<a href="#build-${getBuildId(item)}" class="card reveal build-card" data-build-id="${getBuildId(item)}" role="button" tabindex="0" onclick="openBuildDetails('${getBuildId(item)}');return false;" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openBuildDetails('${getBuildId(item)}')} ">${artFor(item)}<div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}<div class="card-owner" style="display:flex;align-items:center;gap:8px">${avatarForUser(item.owner)}<span>${on}</span></div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${new Date(item.upload_date).toLocaleDateString()}</span><span>Downloads: ${dl}</span><span>${parts?`Parts: ${parts.toLocaleString()}`:'Parts: —'}</span></div></div></a>`;
     return`<div class="card reveal">${artFor(item)}<div class="card-body"><div class="card-title">${esc(item.data?.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${item.price?`<div class="card-price">${item.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}')">${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${new Date(item.upload_date).toLocaleDateString()}</span><span>Downloads: ${dl}</span></div><div class="card-actions">${item.build_file_url?`<button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}')">Download</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${item.id}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${item.id}')">Delete</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button><button class="btn btn-s" onclick="adminLoginAsUser('${oe}')">Login As</button>`:''}</div></div></div>`}
 async function loadLeaderboard(){
     const el=document.getElementById('leaderboardList');if(!el)return;
@@ -1215,7 +1224,7 @@ async function backfillBuildPreviews(){
     }
 }
 async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();loadAllProfileAvatars();renderTopProfile();handleHash();backfillBuildPreviews()}catch(e){console.error(e)}}
-function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new',limit=Number(document.getElementById('bPartsFilter')?.value||50000);let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(limit<50000)f=f.filter(b=>{const n=Number(b.data?.partsCount);return Number.isFinite(n)&&n<=limit});if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found under this parts limit</div>';obsAll()}
+function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new',limit=Math.max(1,Math.min(50000,Number(document.getElementById('bPartsFilter')?.value||50000)));let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(limit<50000)f=f.filter(b=>{const n=Number(b.data?.partsCount);return Number.isFinite(n)&&n<=limit});if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found under this parts limit</div>';obsAll()}
 async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){console.error(e)}}
 async function loadTrades(){try{const i=await loadDB('trade',document.getElementById('tSort')?.value);document.getElementById('tCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No trades</div>';obsAll()}catch(e){console.error(e)}}
 async function loadMy(){if(!user)return;try{const{data}=await sb.from('builds').select('*').eq('owner_email',user.email).order('upload_date',{ascending:false});document.getElementById('myCards').innerHTML=data?.length?data.map(i=>card(i,true)).join(''):'<div class="empty">No uploads</div>';obsAll()}catch(e){console.error(e)}}
@@ -1253,10 +1262,12 @@ async function initAuth(){
         user=session?.user||null;
         renderAuth();
         updateForms();
+        loadTokenBalance();
         if(event==='SIGNED_IN')closeLoginModal();
     });
     renderAuth();
     updateForms();
+    loadTokenBalance();
     syncDiscordFields();
 }
 
