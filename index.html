@@ -192,12 +192,16 @@
             flex-direction: column;
             position: relative;
         }
-        #previewContainer {
+        #previewContainer, .inline-preview-container {
             flex: 1;
             width: 100%;
             background: #0a0a14;
             position: relative;
+            min-height: 360px;
+            border-radius: 10px;
+            overflow: hidden;
         }
+        .inline-preview-container canvas { display:block; width:100%; height:100%; }
         #previewUI {
             position: absolute;
             top: 15px;
@@ -208,10 +212,13 @@
             border: 1px solid var(--border);
             backdrop-filter: blur(8px);
             z-index: 10;
-            pointer-events: none;
+            pointer-events: auto;
         }
         #previewUI h4 { margin-bottom: 4px; color: var(--accent); }
         #previewStatus { font-size: 0.8em; color: var(--text-dim); }
+        .preview-direction-controls { display:flex; gap:6px; margin-top:8px; }
+        .preview-direction-controls button { padding:4px 8px; border:1px solid var(--border); border-radius:5px; background:var(--surface2); color:var(--text); cursor:pointer; font:600 .72em 'Outfit',sans-serif; }
+        .preview-direction-controls button:hover { border-color:var(--accent); color:var(--accent); }
         .preview-close {
             position: absolute;
             top: 15px;
@@ -481,10 +488,10 @@
                     <span id="bpFiletext">Choose .build file...</span>
                     <input type="file" id="bpFile" accept=".build" onchange="handleBuildFileSelect(event)">
                 </div>
-                <button class="btn btn-p" onclick="previewSelectedBuild()" id="bpPreviewBtn" disabled>Preview</button>
             </div>
             <div class="build-preview-result" id="bpResult" style="display:none">
-                <div class="empty">Select a .build file to preview</div>
+                <div id="bpPreviewStatus" class="build-info">Select a .build file to preview</div>
+                <div id="bpPreviewContainer" class="inline-preview-container"></div>
             </div>
         </div>
     </section>
@@ -522,6 +529,7 @@
             <div id="previewUI">
                 <h4 id="previewTitle">Build Preview</h4>
                 <div id="previewStatus">Ready</div>
+                <div class="preview-direction-controls"><button type="button" onclick="rotatePreview('left')">← Left</button><button type="button" onclick="rotatePreview('right')">Right →</button></div>
             </div>
         </div>
     </div>
@@ -536,12 +544,15 @@ const isAdmin=()=>user?.email?.toLowerCase()===ADMIN.toLowerCase();
 
 // ================== THREE.JS PREVIEWER LOGIC ==================
 let scene, camera, renderer, controls, buildGroup = null, grid = null;
+let activePreviewContainerId = 'previewContainer';
+let activePreviewStatusId = 'previewStatus';
 let DEFAULT_BLOCK_SIZE = { x: 2, y: 2, z: 2 };
 let isThreeInit = false;
 
-function initThree() {
-    if (isThreeInit) return;
-    const container = document.getElementById('previewContainer');
+function initThree(containerId = 'previewContainer') {
+    activePreviewContainerId = containerId;
+    if (isThreeInit) { const existing = document.getElementById(activePreviewContainerId); if (existing && renderer?.domElement.parentElement !== existing) existing.appendChild(renderer.domElement); onPreviewResize(); return; }
+    const container = document.getElementById(activePreviewContainerId);
     if (!container) return;
 
     scene = new THREE.Scene();
@@ -577,7 +588,7 @@ function initThree() {
 }
 
 function onPreviewResize() {
-    const container = document.getElementById('previewContainer');
+    const container = document.getElementById(activePreviewContainerId);
     if (!container || !renderer || !camera) return;
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
@@ -642,14 +653,16 @@ function stringToRotationCFrame(rotStr) {
 }
 
 async function openPreview(url, title, options={}) {
+    const inline = !!options.inline;
     const previewBg=document.getElementById('previewModalBg');
     previewBg.classList.toggle('capture-mode',!!options.silent);
-    previewBg.classList.add('show');
-    document.getElementById('previewTitle').textContent = title || 'Build Preview';
-    const statusEl = document.getElementById('previewStatus');
+    if (!inline) { previewBg.classList.add('show'); document.getElementById('previewTitle').textContent = title || 'Build Preview'; }
+    activePreviewContainerId = inline ? 'bpPreviewContainer' : 'previewContainer';
+    activePreviewStatusId = inline ? 'bpPreviewStatus' : 'previewStatus';
+    const statusEl = document.getElementById(activePreviewStatusId);
     statusEl.innerHTML = `<span style="color:#ffcc00">Fetching Build data...</span>`;
     
-    initThree();
+    initThree(activePreviewContainerId);
     onPreviewResize();
 
     if (buildGroup) {
@@ -761,78 +774,40 @@ function closePreview() {
 // ================== BUILD PREVIEWER TAB ==================
 function handleBuildFileSelect(event) {
     const file = event.target.files[0];
-    if (file) {
-        const fileBox = document.getElementById('bpFilebox');
-        const fileText = document.getElementById('bpFiletext');
-        fileBox.classList.add('ok');
-        fileText.textContent = file.name;
-        document.getElementById('bpPreviewBtn').disabled = false;
-    }
+    if (!file) return;
+    document.getElementById('bpFilebox').classList.add('ok');
+    document.getElementById('bpFiletext').textContent = file.name;
+    document.getElementById('bpResult').style.display = 'block';
+    previewSelectedBuild();
 }
 
 async function previewSelectedBuild() {
     const file = document.getElementById('bpFile').files[0];
-    if (!file) {
-        toast('Select a .build file', 'err');
-        return;
+    const status = document.getElementById('bpPreviewStatus');
+    if (!file) return;
+    document.getElementById('bpResult').style.display = 'block';
+    status.innerHTML = '<span style="color:#ffcc00">Loading build into the preview...</span>';
+    try {
+        const decoded = decodeBuildPayload(await file.text());
+        const blockCount = Object.values(decoded).reduce((n, list) => n + (Array.isArray(list) ? list.length : 0), 0);
+        if (!blockCount) throw new Error('No block data found');
+        const url = URL.createObjectURL(new Blob([await file.text()], {type:'text/plain'}));
+        await openPreview(url, file.name, {inline:true});
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        toast('Build preview updated in the GUI', 'ok');
+    } catch (err) {
+        status.innerHTML = `<span style="color:var(--danger)">Invalid build file: ${esc(err.message)}</span>`;
+        toast('Invalid build file', 'err');
     }
-    
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        const text = e.target.result;
-        const result = document.getElementById('bpResult');
-        result.style.display = 'block';
-        
-        try {
-            let decoded;
-            if (text.includes('BBH_ENCODED:VA:')) {
-                const match = text.match(/BBH_ENCODED:VA:(.*)/s);
-                if (match && match[1]) {
-                    const jsonStr = match[1].trim();
-                    const parsed = JSON.parse(jsonStr);
-                    decoded = (parsed.b && typeof parsed.b === 'object') ? parsed.b : parsed;
-                }
-            } 
-            if (!decoded) {
-                const cleaned = text.trim().replace(/^[^\[\{]*/, '').replace(/[^\]\}]*$/, '');
-                decoded = JSON.parse(cleaned);
-            }
-
-            if (Array.isArray(decoded) && decoded.length === 2) {
-                if (typeof decoded[1] === 'object' && !Array.isArray(decoded[1])) decoded = decoded[1];
-                else if (Array.isArray(decoded[1])) decoded = { "AllBlocks": decoded[1] };
-            } else if (decoded && decoded.data) {
-                if (typeof decoded.data === 'object' && !Array.isArray(decoded.data)) decoded = decoded.data;
-                else if (Array.isArray(decoded.data)) decoded = { "AllBlocks": decoded.data };
-            }
-
-            let blockCount = 0;
-            for (const [blockName, blockList] of Object.entries(decoded)) {
-                if (!Array.isArray(blockList)) continue;
-                blockCount += blockList.length;
-            }
-
-            result.innerHTML = `<div class="build-info"><strong>✓ File Valid</strong></div><div class="build-info"><strong>Blocks:</strong> ${blockCount}</div><button class="btn btn-p" style="width:100%;margin-top:12px" onclick="openBuildPreviewModal('${file.name}')">Open 3D Preview</button>`;
-            toast('Build file loaded successfully', 'ok');
-        } catch (err) {
-            result.innerHTML = `<div style="color:var(--danger)">❌ Invalid build file: ${err.message}</div>`;
-            toast('Invalid build file', 'err');
-        }
-    };
-    reader.readAsText(file);
 }
 
-function openBuildPreviewModal(fileName) {
-    const file = document.getElementById('bpFile').files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const blob = new Blob([e.target.result], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        openPreview(url, fileName);
-    };
-    reader.readAsText(file);
+function rotatePreview(direction) {
+    if (!camera || !controls) return;
+    const offset = camera.position.clone().sub(controls.target);
+    offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), direction === 'left' ? Math.PI / 12 : -Math.PI / 12);
+    camera.position.copy(controls.target).add(offset);
+    camera.lookAt(controls.target);
+    controls.update();
 }
 
 // ================== EXECUTOR TOGGLE ==================
@@ -1150,25 +1125,28 @@ async function upTrade(e){
 
 // Render user's builds for editing
 function renderMyBuildsForEdit(){
-    const el=document.getElementById('myBuildsForEdit');
-    if(!el||!user)return;
+    const el=document.getElementById('myBuildsForEdit'); if(!el||!user)return;
     const myBuilds=allBuilds.filter(b=>b.owner_email===user.email);
     if(!myBuilds.length){el.innerHTML='<div class="empty">No builds to edit</div>';return}
-    el.innerHTML='<div style="font-size:0.85em;color:var(--text-dim);margin-bottom:12px">Your builds:</div>'+myBuilds.map(b=>`<div class="ban-list-item" style="margin-bottom:8px"><div class="ban-info"><div class="ban-name">${esc(b.data?.title)}</div><div class="ban-detail">${esc(b.data?.category)}</div></div><button class="btn btn-s" onclick="editBuildFile('${b.id}')">Edit</button></div>`).join('')
+    el.innerHTML='<div style="font-size:.85em;color:var(--text-dim);margin-bottom:12px">Edit metadata without re-uploading. Choose a replacement file only when the build data changed.</div>'+myBuilds.map(b=>`<div class="s-box" style="margin-bottom:10px"><div class="ban-info"><div class="ban-name">${esc(b.data?.title)}</div><div class="ban-detail">${esc(b.data?.category)} · ${esc(b.build_file_name||'build.build')}</div></div><button class="btn btn-s" style="margin-top:10px" onclick="editBuildFile('${b.id}')">Edit build</button></div>`).join('')
 }
 
-async function editBuildFile(buildId){
-    const build=allBuilds.find(b=>b.id===buildId);
-    if(!build||build.owner_email!==user.email){toast('Cannot edit this build','err');return}
-    const newTitle=prompt('Edit title:',build.data?.title);
-    if(newTitle===null)return;
+function editBuildFile(buildId){
+    const build=allBuilds.find(b=>String(b.id)===String(buildId)); if(!build||build.owner_email!==user.email){toast('Cannot edit this build','err');return}
+    const d=build.data||{},el=document.getElementById('myBuildsForEdit');
+    el.innerHTML=`<div class="s-box"><h4>Edit ${esc(build.build_file_name||'build')}</h4><div class="field"><label>Title</label><input class="input" id="editTitle" maxlength="15" value="${esc(d.title||'')}"></div><div class="field"><label>Category</label><input class="input" id="editCategory" value="${esc(d.category||'')}"></div><div class="field"><label>Description</label><textarea class="input" id="editDescription" maxlength="25">${esc(d.description||'')}</textarea></div><div class="field"><label>Replace build file (optional)</label><input class="input" type="file" id="editFile" accept=".build"></div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-p" onclick="saveBuildEdits('${build.id}')">Save changes</button><button class="btn btn-s" onclick="renderMyBuildsForEdit()">Cancel</button></div></div>`;
+}
+
+async function saveBuildEdits(buildId){
+    const build=allBuilds.find(b=>String(b.id)===String(buildId)); if(!build||build.owner_email!==user.email){toast('Cannot edit this build','err');return}
+    const title=document.getElementById('editTitle').value.trim(),category=document.getElementById('editCategory').value.trim(),description=document.getElementById('editDescription').value.trim(),replacement=document.getElementById('editFile').files[0];
+    if(!title||!category){toast('Title and category are required','err');return}
     try{
-        const{error}=await sb.from('builds').update({data:{...build.data,title:newTitle}}).eq('id',buildId);
-        if(error)throw error;
-        toast('Build updated','ok');
-        await loadBuilds();
-        renderMyBuildsForEdit();
-    }catch(e){toast(e.message||e,'err')}
+        const nextData={...(build.data||{}),title,category,description,artKey:category},patch={data:nextData};
+        if(replacement){ if(!replacement.name.toLowerCase().endsWith('.build'))throw new Error('Replacement must be a .build file'); const hash=await fileSha256(replacement),dup=await sb.from('builds').select('id').eq('type','build').eq('file_hash',hash).neq('id',build.id).limit(1); if(dup.error)throw dup.error; if(dup.data?.length)throw new Error('That build file is already uploaded'); patch.build_file_url=await fileToCompressedDataUrl(replacement);patch.build_file_name=replacement.name;patch.file_hash=hash;nextData.partsCount=undefined; }
+        const {error}=await sb.from('builds').update(patch).eq('id',build.id).eq('owner_email',user.email); if(error)throw error;
+        toast('Build updated without creating a new upload','ok'); await loadBuilds(); renderMyBuildsForEdit();
+    }catch(e){toast(e.message||'Could not update build','err')}
 }
 
 function artFor(item){
