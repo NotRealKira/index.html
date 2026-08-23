@@ -1054,7 +1054,7 @@ function renderTopProfile(){
 }
 
 //  BAN 
-async function loadBanned(){try{const{data}=await sb.from('banned_users').select('*');bannedList=data||[]}catch(e){bannedList=[]}}
+async function loadBanned(){try{const{data}=await withTimeout(sb.from('banned_users').select('*'),12000,'Loading moderation data timed out.');bannedList=data||[]}catch(e){bannedList=[];console.warn('Moderation data unavailable:',e.message||e)}}
 function getBanRec(e){return e?bannedList.find(b=>b.email.toLowerCase()===e.toLowerCase()):null}
 function isBanned(e){const r=getBanRec(e);if(!r)return false;if(!r.expires_at)return true;return new Date(r.expires_at)>new Date()}
 function getBanMsg(e){const r=getBanRec(e);if(!r)return'';if(!r.expires_at)return` <strong>Permanently banned</strong>.${r.reason?' Reason: '+esc(r.reason):''}<br>Appeal: <a href="${DISCORD}" target="_blank">Discord</a>`;const x=new Date(r.expires_at);if(x>new Date())return` Banned for <strong>${fmtTime(x)}</strong>.${r.reason?' Reason: '+esc(r.reason):''}<br>Appeal: <a href="${DISCORD}" target="_blank">Discord</a>`;return''}
@@ -1235,7 +1235,7 @@ function canUpload(){const left=30000-(Date.now()-lastUpload);if(left>0){toast(`
 function startCooldown(){lastUpload=Date.now();const msg=document.getElementById('cooldownMsg');if(!msg)return;msg.style.display='block';const tick=()=>{const l=30000-(Date.now()-lastUpload);if(l<=0){msg.style.display='none';return}msg.textContent=` Cooldown: ${Math.ceil(l/1000)}s`;requestAnimationFrame(tick)};tick()}
 
 function tokenUser(){return actingAsUser||user;}
-async function loadTokenBalance(){const el=document.getElementById('sTokens');if(!el)return;if(isAdmin()){el.textContent='INF';return}if(!user){el.textContent='0';return}try{const{data}=await sb.from('token_balances').select('tokens').eq('user_id',user.id).maybeSingle();el.textContent=(data?.tokens||0).toLocaleString();}catch(e){el.textContent='0';}}
+async function loadTokenBalance(){const el=document.getElementById('sTokens');if(!el)return;if(isAdmin()){el.textContent='INF';return}if(!user){el.textContent='0';return}el.textContent='…';try{const{data}=await withTimeout(sb.from('token_balances').select('tokens').eq('user_id',user.id).maybeSingle(),12000,'Loading token balance timed out.');el.textContent=(data?.tokens||0).toLocaleString();}catch(e){el.textContent='—';console.warn('Token balance unavailable:',e.message||e)}}
 async function recordUniqueView(buildId){if(!user||String(buildId)===String(user.id))return;try{await sb.rpc('record_unique_build_view',{p_build_id:buildId});}catch(e){console.warn('Unique view tracking unavailable:',e)}}
 async function recordUniqueDownload(buildId){if(!user)return null;try{const{data,error}=await sb.rpc('record_unique_build_download',{p_build_id:buildId});if(error)throw error;await loadTokenBalance();return data;}catch(e){console.warn('Unique download tracking unavailable:',e);return null}}
 function closeTokenPurchase(){document.getElementById('tokenPurchaseModal')?.classList.remove('show')}
@@ -1287,12 +1287,14 @@ function updateForms(){
         else if(banned&&bb){bb.innerHTML=getBanMsg(user.email);bb.style.display='block'}
         if(btn)btn.disabled=!ok;
     });
-    document.querySelectorAll('.form-card .file-box').forEach(f=>{ok?f.classList.remove('disabled'):f.classList.add('disabled')});
-    document.querySelectorAll('.form-card .input').forEach(i=>{i.disabled=!ok});
+    // Only publishing forms require authentication. Build Previewer and GLB to build stay public.
+    document.querySelectorAll('#buildForm .file-box,#sellForm .file-box,#tradeForm .file-box').forEach(f=>{ok?f.classList.remove('disabled'):f.classList.add('disabled')});
+    document.querySelectorAll('#buildForm .input,#sellForm .input,#tradeForm .input').forEach(i=>{i.disabled=!ok});
     renderBanList();
     renderAdminLoginPanel();
     syncDiscordFields();syncSellTradeDisplayNames();
-    if(allBuilds.length)renderBuilds();updateStorageStatus();}
+    if(allBuilds.length)renderBuilds();updateStorageStatus();
+}
 function isDiscordUser(u){return !!(u?.app_metadata?.provider==='discord'||u?.app_metadata?.providers?.includes('discord')||u?.identities?.some(i=>i.provider==='discord'));}
 function getDiscordUsername(u){
     if(!isDiscordUser(u))return '';
@@ -1331,7 +1333,7 @@ async function loadAllProfileAvatars(){try{const{data,error}=await sb.from('prof
 async function saveAvatar(){if(!user){toast('Login first','warn');return}if(!currentAvatarPixels){toast('Choose an image first','warn');return}try{const{error}=await sb.from('profile_avatars').upsert({user_id:user.id,avatar_pixels:currentAvatarPixels,updated_at:new Date().toISOString()});if(error)throw error;profileAvatars[user.id]=currentAvatarPixels;renderProfileAvatar(currentAvatarPixels);toast('Pixel avatar saved','ok')}catch(e){toast(e.message||'Could not save pixel avatar. Run the supplied SQL first.','err')}}
 function saveName(){const v=document.getElementById('nameIn').value.trim().slice(0,20);if(!v){toast('Enter a name','err');return}localStorage.setItem('lh_name',v);document.getElementById('pName').textContent=v;renderTopProfile();toast('Saved','ok')}
 async function ins(r){const{data,error}=await sb.from('builds').insert([r]).select().single();if(error)throw error;return data}
-async function loadDB(t,s='new'){const{data,error}=await sb.from('builds').select('*').eq('type',t).order('upload_date',{ascending:s==='old'});if(error)throw error;return data}
+async function loadDB(t,s='new'){const result=await withTimeout(sb.from('builds').select('*').eq('type',t).order('upload_date',{ascending:s==='old'}),15000,`Loading ${t} data timed out.`);if(result.error)throw result.error;return result.data||[]}
 async function delItemLogic(id) {
     const { error } = await sb.from('builds').delete().eq('id', id);
     if (error) throw error;
@@ -1629,12 +1631,12 @@ function card(item,canDel=false){
 async function loadLeaderboard(){
     const el=document.getElementById('leaderboardList');if(!el)return;
     try{
-        const{data,error}=await sb.from('builds').select('owner_name,owner_email,downloads,data');if(error)throw error;
-        const totals=new Map();(data||[]).forEach(item=>{const key=item.owner_email||item.owner_name||'unknown';const row=totals.get(key)||{name:item.owner_name||'Unknown',email:key,total:0,uploads:0,discord:''};row.total+=Number(item.downloads)||0;row.uploads+=1;row.discord=row.discord||item.data?.discordUsername||'';totals.set(key,row)});
+        const result=await withTimeout(sb.from('builds').select('owner_name,owner_email,downloads,data'),15000,'Loading leaderboard timed out.');if(result.error)throw result.error;
+        const totals=new Map();(result.data||[]).forEach(item=>{const key=item.owner_email||item.owner_name||'unknown';const row=totals.get(key)||{name:item.owner_name||'Unknown',email:key,total:0,uploads:0,discord:''};row.total+=Number(item.downloads)||0;row.uploads+=1;row.discord=row.discord||item.data?.discordUsername||'';totals.set(key,row)});
         const ranked=[...totals.values()].sort((a,b)=>b.total-a.total||b.uploads-a.uploads||a.name.localeCompare(b.name)).slice(0,20);
         el.innerHTML=ranked.length?ranked.map((row,i)=>`<div class="leaderboard-row"><div class="leaderboard-rank">#${i+1}</div><div class="leaderboard-user"><strong>${esc(row.name)}</strong><span>${row.discord?`Discord: ${esc(row.discord)}`:esc(maskEmail(row.email))}</span></div><div class="leaderboard-downloads">${row.total.toLocaleString()}<small>downloads · ${row.uploads} upload${row.uploads===1?'':'s'}</small></div></div>`).join(''):'<div class="empty">No download data yet</div>';
         obsAll();
-    }catch(e){console.error(e);el.innerHTML='<div class="empty">Unable to load leaderboard</div>'}
+    }catch(e){console.warn('Leaderboard unavailable:',e);el.innerHTML='<div class="empty">Leaderboard is unavailable right now.</div>'}
 }
 async function persistBuildPreview(item,previewImage){
     item.data={...(item.data||{}),previewImage,previewVersion:5,previewFormat:'webp'};
@@ -1647,14 +1649,18 @@ async function backfillBuildPreviews(){
         try{const previewImage=await captureBuildPreview(item.build_file_url,item.data?.title||item.build_file_name||'Build Preview');if(!previewImage)continue;await persistBuildPreview(item,previewImage);renderBuilds();updateStorageStatus();}catch(e){console.warn('Preview backfill skipped:',e)}
     }
 }
-async function loadBuilds(){try{allBuilds=await loadDB('build','new');refreshStorageEstimate(true);updateStorageStatus();renderBuilds();loadAllProfileAvatars();renderTopProfile();handleHash();backfillBuildPreviews()}catch(e){console.error(e)}}
+async function loadBuilds(){
+    const el=document.getElementById('bCards');
+    try{allBuilds=await loadDB('build','new');refreshStorageEstimate(true);updateStorageStatus();renderBuilds();void loadAllProfileAvatars();renderTopProfile();handleHash();void backfillBuildPreviews();}
+    catch(e){allBuilds=[];refreshStorageEstimate(true);updateStorageStatus();if(el)el.innerHTML='<div class="empty">Builds are unavailable right now. You can still use Build Previewer and GLB to build.</div>';console.warn('Build list unavailable:',e.message||e);}
+}
 function renderBuilds(){const s=(document.getElementById('bSearch')?.value||'').toLowerCase(),cf=document.getElementById('bCatFilter')?.value||'',so=document.getElementById('bSort')?.value||'new',limit=Math.max(1,Math.min(50000,Number(document.getElementById('bPartsFilter')?.value||50000)));let f=[...allBuilds];if(s)f=f.filter(b=>(b.data?.title||'').toLowerCase().includes(s)||(b.data?.description||'').toLowerCase().includes(s)||(b.data?.category||'').toLowerCase().includes(s));if(cf)f=f.filter(b=>(b.data?.category||'')===cf);if(limit<50000)f=f.filter(b=>{const n=Number(b.data?.partsCount);return Number.isFinite(n)&&n<=limit});if(so==='old')f.reverse();document.getElementById('bCards').innerHTML=f.length?f.map(i=>card(i)).join(''):'<div class="empty">No builds found under this parts limit</div>';obsAll()}
-async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){console.error(e)}}
-async function loadTrades(){try{const i=await loadDB('trade',document.getElementById('tSort')?.value);document.getElementById('tCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No trades</div>';obsAll()}catch(e){console.error(e)}}
+async function loadSells(){try{const i=await loadDB('sell',document.getElementById('sSort')?.value);document.getElementById('sCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No items</div>';obsAll()}catch(e){document.getElementById('sCards').innerHTML='<div class="empty">Marketplace items are unavailable right now.</div>';console.warn('Sell list unavailable:',e.message||e)}}
+async function loadTrades(){try{const i=await loadDB('trade',document.getElementById('tSort')?.value);document.getElementById('tCards').innerHTML=i.length?i.map(x=>card(x)).join(''):'<div class="empty">No trades</div>';obsAll()}catch(e){document.getElementById('tCards').innerHTML='<div class="empty">Trades are unavailable right now.</div>';console.warn('Trade list unavailable:',e.message||e)}}
 async function loadMy(){if(!user)return;try{const{data}=await sb.from('builds').select('*').eq('owner_email',user.email).order('upload_date',{ascending:false});document.getElementById('myCards').innerHTML=data?.length?data.map(i=>card(i,true)).join(''):'<div class="empty">No uploads</div>';obsAll()}catch(e){console.error(e)}}
 async function delItem(id){if(!confirm('Delete?'))return;try{await delItemLogic(id);toast('Deleted','ok');loadMy();loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
 async function adminDel(id){if(!isAdmin()||!confirm('Delete?'))return;try{await delItemLogic(id);toast('Deleted','ok');loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
-async function updateCounts(){try{const{count}=await sb.from('builds').select('*',{count:'exact',head:true}).eq('type','build');document.getElementById('sBuilds').textContent=count||0}catch(e){console.error(e)}}
+async function updateCounts(){const el=document.getElementById('sBuilds');try{const result=await withTimeout(sb.from('builds').select('*',{count:'exact',head:true}).eq('type','build'),12000,'Loading build count timed out.');if(result.error)throw result.error;if(el)el.textContent=result.count||0}catch(e){if(el)el.textContent='—';console.warn('Build count unavailable:',e.message||e)}}
 function showOwner(n,e){document.getElementById('mName').textContent=n||'Unknown';document.getElementById('mEmail').textContent=e?e.slice(0,3)+'**********************':'Hidden';document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openDiscord(){window.open(DISCORD,'_blank')}
@@ -1662,46 +1668,23 @@ function copyCode(){navigator.clipboard.writeText(document.getElementById('codeT
 
 async function initAuth(){
     await loadBanned();
-    const params=new URLSearchParams(location.search);
-    const oauthError=params.get('error_description')||params.get('error');
-    if(oauthError){
-        history.replaceState({},'',location.pathname);
-        toast(`Login failed: ${decodeURIComponent(oauthError).replace(/\+/g,' ')}`,'err');
-    }
+    const params=new URLSearchParams(location.search),oauthError=params.get('error_description')||params.get('error');
+    if(oauthError){history.replaceState({},'',location.pathname);toast(`Login failed: ${decodeURIComponent(oauthError).replace(/\+/g,' ')}`,'err');}
     const code=params.get('code');
-    if(code){
-        const{error}=await sb.auth.exchangeCodeForSession(code);
-        if(error)toast(`Login failed: ${error.message}`,'err');
-        history.replaceState({},'',location.pathname);
-    }
-    const{data}=await sb.auth.getSession();
-    if(data?.session?.user)user=data.session.user;
-    if(location.hash.includes('access_token')){
-        history.replaceState({},'',location.pathname);
-        await new Promise(r=>setTimeout(r,300));
-        const{data:sessionData}=await sb.auth.getSession();
-        if(sessionData?.session?.user)user=sessionData.session.user;
-    }
-    sb.auth.onAuthStateChange((event,session)=>{
-        user=session?.user||null;
-        renderAuth();
-        updateForms();
-        loadTokenBalance();
-        if(event==='SIGNED_IN')closeLoginModal();
-    });
-    renderAuth();
-    updateForms();
-    loadTokenBalance();
-    syncDiscordFields();
+    if(code){try{const result=await withTimeout(sb.auth.exchangeCodeForSession(code),12000,'Login callback timed out.');if(result.error)toast(`Login failed: ${result.error.message}`,'err');}catch(e){console.warn('Login callback unavailable:',e.message||e)}history.replaceState({},'',location.pathname);}
+    try{const result=await withTimeout(sb.auth.getSession(),12000,'Session lookup timed out.');if(result.data?.session?.user)user=result.data.session.user;}catch(e){user=null;console.warn('Anonymous session fallback:',e.message||e)}
+    if(location.hash.includes('access_token')){history.replaceState({},'',location.pathname);await new Promise(r=>setTimeout(r,300));try{const result=await withTimeout(sb.auth.getSession(),8000,'Session lookup timed out.');if(result.data?.session?.user)user=result.data.session.user;}catch(e){console.warn('Implicit session unavailable:',e.message||e)}}
+    try{sb.auth.onAuthStateChange((event,session)=>{user=session?.user||null;renderAuth();updateForms();void loadTokenBalance();if(event==='SIGNED_IN')closeLoginModal();});}catch(e){console.warn('Auth listener unavailable:',e.message||e)}
+    renderAuth();updateForms();void loadTokenBalance();syncDiscordFields();
 }
 
-window.addEventListener('load',async()=>{
+window.addEventListener('load',()=>{
     initGlbPreview();
     handleHash();
     const a=localStorage.getItem('lh_accent');if(a)setAccent(a);initAP();pickTheme(localStorage.getItem('lh_theme')||'dark');obsAll();
-    loadBuilds(); updateCounts(); loadLeaderboard();
-    await initAuth();
-    await Promise.all([loadSells(),loadTrades()]);
+    void loadBuilds();void updateCounts();void loadLeaderboard();void loadSells();void loadTrades();
+    // Authentication is optional for public preview tools and cannot block the app shell.
+    void initAuth();
 });
 </script>
 </body>
