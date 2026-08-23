@@ -217,6 +217,25 @@
         }
         #previewUI h4 { margin-bottom: 4px; color: var(--accent); }
         #previewStatus { font-size: 0.8em; color: var(--text-dim); }
+        .preview-metrics {
+            position:absolute;
+            right:14px;
+            bottom:14px;
+            z-index:12;
+            display:none;
+            max-width:calc(100% - 28px);
+            padding:8px 10px;
+            border:1px solid rgba(110,231,183,.34);
+            border-radius:8px;
+            background:rgba(8,10,18,.78);
+            color:#d8fff1;
+            box-shadow:0 6px 20px rgba(0,0,0,.28);
+            backdrop-filter:blur(8px);
+            font:500 11px/1.45 'JetBrains Mono',monospace;
+            letter-spacing:.01em;
+            pointer-events:none;
+            white-space:nowrap;
+        }
         .preview-close {
             position: absolute;
             top: 15px;
@@ -490,7 +509,7 @@
             </div>
             <div class="build-preview-result" id="bpResult" style="display:none">
                 <div id="bpPreviewStatus" class="build-info">Select a .build file to preview</div>
-                <div id="bpPreviewContainer" class="inline-preview-container"></div>
+                <div id="bpPreviewContainer" class="inline-preview-container"><div id="bpPreviewMetrics" class="preview-metrics" aria-live="polite"></div></div>
             </div>
         </div>
     </section>
@@ -529,6 +548,7 @@
                 <h4 id="previewTitle">Build Preview</h4>
                 <div id="previewStatus">Ready</div>
             </div>
+            <div id="previewMetrics" class="preview-metrics" aria-live="polite"></div>
         </div>
     </div>
 </div>
@@ -544,6 +564,13 @@ const isAdmin=()=>user?.email?.toLowerCase()===ADMIN.toLowerCase();
 let scene, camera, renderer, controls, buildGroup = null, grid = null;
 let activePreviewContainerId = 'previewContainer';
 let activePreviewStatusId = 'previewStatus';
+let activePreviewMetricsId = 'previewMetrics';
+let fpsFrames = 0, fpsLastSample = performance.now(), fpsValue = 0, storageEstimateBytes = 0, storageEstimateAt = 0;
+const STORAGE_QUOTA_BYTES = 500 * 1024 * 1024;
+function formatMetricBytes(bytes){const n=Math.max(0,Number(bytes)||0);if(n>=1024**3)return `${(n/1024**3).toFixed(2)} GB`;if(n>=1024**2)return `${(n/1024**2).toFixed(1)} MB`;if(n>=1024)return `${(n/1024).toFixed(1)} KB`;return `${n.toFixed(0)} B`;}
+function refreshStorageEstimate(force=false){const now=Date.now();if(!force&&now-storageEstimateAt<5000)return;try{storageEstimateBytes=new Blob([JSON.stringify(allBuilds||[])]).size;}catch(e){storageEstimateBytes=0;}storageEstimateAt=now;}
+function updatePreviewMetrics(){const el=document.getElementById(activePreviewMetricsId);if(!el)return;refreshStorageEstimate();const left=Math.max(0,STORAGE_QUOTA_BYTES-storageEstimateBytes),pct=(storageEstimateBytes/STORAGE_QUOTA_BYTES)*100;el.textContent=`FPS ${Math.round(fpsValue||0)} · Storage ${(pct<1?pct.toFixed(2):pct.toFixed(1))}% used / ${formatMetricBytes(left)} left`;el.title='Estimated database size of loaded build rows; set STORAGE_QUOTA_BYTES to your Supabase database allowance.';}
+function setPreviewMetricsVisible(visible){document.querySelectorAll('.preview-metrics').forEach(el=>{el.style.display=visible&&el.id===activePreviewMetricsId?'block':'none';});if(visible){fpsFrames=0;fpsLastSample=performance.now();fpsValue=0;refreshStorageEstimate(true);updatePreviewMetrics();}}
 let DEFAULT_BLOCK_SIZE = { x: 2, y: 2, z: 2 };
 let isThreeInit = false;
 
@@ -597,6 +624,7 @@ function animate() {
     requestAnimationFrame(animate);
     if (controls) controls.update();
     if (renderer && scene && camera) renderer.render(scene, camera);
+    const now=performance.now();fpsFrames++;if(now-fpsLastSample>=500){fpsValue=fpsFrames*1000/(now-fpsLastSample);fpsFrames=0;fpsLastSample=now;const metric=document.getElementById(activePreviewMetricsId);if(metric&&metric.style.display!=='none')updatePreviewMetrics();}
 }
 
 function parseNum(str) {
@@ -654,6 +682,8 @@ async function openPreview(url, title, options={}) {
     const inline = !!options.inline;
     const previewBg=document.getElementById('previewModalBg');
     previewBg.classList.toggle('capture-mode',!!options.silent);
+    activePreviewMetricsId = inline ? 'bpPreviewMetrics' : 'previewMetrics';
+    setPreviewMetricsVisible(!options.silent);
     if (!inline) { previewBg.classList.add('show'); document.getElementById('previewTitle').textContent = title || 'Build Preview'; }
     activePreviewContainerId = inline ? 'bpPreviewContainer' : 'previewContainer';
     activePreviewStatusId = inline ? 'bpPreviewStatus' : 'previewStatus';
@@ -766,7 +796,7 @@ async function openPreview(url, title, options={}) {
 }
 
 function closePreview() {
-    const previewBg=document.getElementById('previewModalBg');previewBg.classList.remove('show','capture-mode');
+    const previewBg=document.getElementById('previewModalBg');previewBg.classList.remove('show','capture-mode');setPreviewMetricsVisible(false);
 }
 
 // ================== BUILD PREVIEWER TAB ==================
