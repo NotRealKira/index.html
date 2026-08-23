@@ -572,7 +572,7 @@
     <section id="glbtobuild">
         <div class="form-card reveal">
             <h3><span class="dot"></span>GLB to build</h3>
-            <p style="font-size:.85em;color:var(--text-dim);margin-bottom:16px">Import a .glb model, preview it, then voxelize it into real build blocks. The source texture is sampled and baked into per-block colors; texture files are not embedded in the .Build output.</p>
+            <p style="font-size:.85em;color:var(--text-dim);margin-bottom:16px">Import a .glb model, preview it, then turn the source mesh into full-fidelity build parts. The source texture is sampled and baked into per-block colors; texture files are not embedded in the .Build output.</p>
             <div class="glb-converter-grid">
                 <div class="glb-preview-shell"><div id="glbPreviewContainer"><div id="glbPreviewMetrics" class="preview-fps" aria-live="polite"></div></div></div>
                 <div class="glb-side">
@@ -584,7 +584,7 @@
                     <div class="s-box">
                         <h4>2. Choose block</h4>
                         <label class="field"><span class="picker-label">Block type</span><select class="input" id="glbBlockType"><option value="PlasticBlock" selected>PlasticBlock</option><option value="MetalBlock">MetalBlock</option><option value="IceBlock">IceBlock</option><option value="GlassBlock">GlassBlock</option></select></label>
-                        <p class="glb-help" style="margin-top:10px">Every generated part uses this block type. The visible colors are baked from the GLB's material and texture appearance.</p>
+                        <p class="glb-help" style="margin-top:10px">Every generated part uses this block type. Each source triangle becomes an oriented build part, and its material/texture appearance is baked into the part color.</p>
                         <button class="btn btn-p btn-full" id="glbConvertBtn" onclick="convertGlbToBuild()" disabled>Convert to .Build</button>
                     </div>
                     <div id="glbStatus" class="glb-status" aria-live="polite">Import a GLB to begin.</div>
@@ -1126,7 +1126,6 @@ function dim(h){return'#'+[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),p
 // ================== GLB TO BUILD CONVERTER ==================
 let glbFile = null, glbParsedSource = null, glbModel = null, glbScene = null, glbCamera = null, glbRenderer = null, glbControls = null;
 let glbTextureCanvases = new WeakMap();
-const GLB_MAX_BLOCKS = 18000;
 
 function setGlbStatus(text, type='') { const el=document.getElementById('glbStatus'); if(el){el.textContent=text;el.className=`glb-status ${type}`;} }
 function handleGlbFileSelect(event) {
@@ -1153,25 +1152,60 @@ async function importGlbFile(){
     try{const buffer=await glbFile.arrayBuffer(),loader=new THREE.GLTFLoader();glbParsedSource=await new Promise((resolve,reject)=>loader.parse(buffer,'',resolve,reject));clearGlbModel();glbModel=glbParsedSource.scene;glbScene.add(glbModel);frameGlbModel(glbModel);resizeGlbPreview();cb.disabled=false;setGlbStatus('GLB loaded. Choose a block type, then convert.','ok');}
     catch(e){console.error(e);setGlbStatus(`Could not import GLB: ${e.message||e}`,'err');}finally{ib.disabled=false;}
 }
-function getTextureCanvas(texture){if(!texture?.image)return null;if(glbTextureCanvases.has(texture))return glbTextureCanvases.get(texture);const image=texture.image,canvas=document.createElement('canvas');canvas.width=image.width||image.videoWidth||1;canvas.height=image.height||image.videoHeight||1;try{const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,0,0,canvas.width,canvas.height);const v={canvas,ctx};glbTextureCanvases.set(texture,v);return v;}catch(_){return null;}}
-function wrapUv(v,mode){if(mode===THREE.ClampToEdgeWrapping)return Math.max(0,Math.min(1,v));return((v%1)+1)%1;}
-function sampleTexture(material,uv){const texture=material?.map,cache=getTextureCanvas(texture);if(!cache)return null;let u=uv?.x||0,v=uv?.y||0;if(texture.offset){u+=texture.offset.x;v+=texture.offset.y;}if(texture.repeat){u*=texture.repeat.x;v*=texture.repeat.y;}u=wrapUv(u,texture.wrapS);v=wrapUv(v,texture.wrapT);if(texture.flipY!==false)v=1-v;const x=Math.max(0,Math.min(cache.canvas.width-1,Math.floor(u*cache.canvas.width))),y=Math.max(0,Math.min(cache.canvas.height-1,Math.floor(v*cache.canvas.height))),px=cache.ctx.getImageData(x,y,1,1).data;return{r:px[0],g:px[1],b:px[2],a:px[3]/255};}
-function getSurfaceColor(material,uv,vertexColor){const tex=sampleTexture(material,uv),base=tex||{r:(material?.color?.r??.55)*255,g:(material?.color?.g??.55)*255,b:(material?.color?.b??.55)*255,a:material?.opacity??1};if(vertexColor){base.r*=vertexColor.r;base.g*=vertexColor.g;base.b*=vertexColor.b;}return{r:Math.max(0,Math.min(255,Math.round(base.r))),g:Math.max(0,Math.min(255,Math.round(base.g))),b:Math.max(0,Math.min(255,Math.round(base.b))),a:base.a};}
-function voxelKey(x,y,z){return`${x}|${y}|${z}`;}
-function addVoxel(map,x,y,z,color){const key=voxelKey(x,y,z),old=map.get(key);if(old){old.r+=color.r;old.g+=color.g;old.b+=color.b;old.n++;}else map.set(key,{x,y,z,r:color.r,g:color.g,b:color.b,n:1});}
-function attrVec(attr,i,target){return target.fromBufferAttribute(attr,i);}
-function attrUv(attr,i,target){return attr?target.fromBufferAttribute(attr,i):target.set(0,0);}
-function attrColor(attr,i,target){return attr?target.fromBufferAttribute(attr,i):target.set(1,1,1);}
-function materialAt(mesh,index){const mats=Array.isArray(mesh.material)?mesh.material:[mesh.material];return mats[index]||mats[0]||null;}
-function bakeMesh(mesh,voxelSize,origin,voxels){const g=mesh.geometry,pos=g.getAttribute('position'),uvs=g.getAttribute('uv'),colors=g.getAttribute('color'),idx=g.index;if(!pos)return;mesh.updateWorldMatrix(true,false);const mat=mesh.matrixWorld,p0=new THREE.Vector3(),p1=new THREE.Vector3(),p2=new THREE.Vector3(),u0=new THREE.Vector2(),u1=new THREE.Vector2(),u2=new THREE.Vector2(),c0=new THREE.Color(),c1=new THREE.Color(),c2=new THREE.Color(),triangles=idx?idx.count/3:pos.count/3;
-    for(let t=0;t<triangles;t++){const ia=idx?idx.getX(t*3):t*3,ib=idx?idx.getX(t*3+1):t*3+1,ic=idx?idx.getX(t*3+2):t*3+2;attrVec(pos,ia,p0).applyMatrix4(mat);attrVec(pos,ib,p1).applyMatrix4(mat);attrVec(pos,ic,p2).applyMatrix4(mat);let group=0;for(const item of g.groups){const start=idx?ia:ia;if(start>=item.start&&start<item.start+item.count){group=item.materialIndex;break;}}const material=materialAt(mesh,group);attrUv(uvs,ia,u0);attrUv(uvs,ib,u1);attrUv(uvs,ic,u2);attrColor(colors,ia,c0);attrColor(colors,ib,c1);attrColor(colors,ic,c2);const longest=Math.max(p0.distanceTo(p1),p1.distanceTo(p2),p2.distanceTo(p0)),steps=Math.min(40,Math.max(1,Math.ceil(longest/voxelSize*1.5)));
-        for(let a=0;a<=steps;a++)for(let b=0;b<=steps-a;b++){const aa=a/steps,bb=b/steps,ww=1-aa-bb,point=p0.clone().multiplyScalar(ww).addScaledVector(p1,aa).addScaledVector(p2,bb),uv=u0.clone().multiplyScalar(ww).addScaledVector(u1,aa).addScaledVector(u2,bb),vc=c0.clone().multiplyScalar(ww);vc.r+=c1.r*aa+c2.r*bb;vc.g+=c1.g*aa+c2.g*bb;vc.b+=c1.b*aa+c2.b*bb;addVoxel(voxels,Math.round((point.x-origin.x)/voxelSize),Math.round((point.y-origin.y)/voxelSize),Math.round((point.z-origin.z)/voxelSize),getSurfaceColor(material,uv,vc));}
-    }
+function getTextureCanvas(texture){
+    if(!texture?.image)return null;if(glbTextureCanvases.has(texture))return glbTextureCanvases.get(texture);
+    const image=texture.image,canvas=document.createElement('canvas'),width=image.width||image.videoWidth||0,height=image.height||image.videoHeight||0;
+    if(!width||!height)return null;canvas.width=width;canvas.height=height;
+    try{const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(image,0,0,width,height);const value={canvas,ctx};glbTextureCanvases.set(texture,value);return value;}catch(error){console.warn('Could not read GLB texture:',error);return null;}
 }
-function fillVoxelColumns(voxels){const columns=new Map();for(const v of voxels.values()){const key=`${v.x}|${v.z}`,item=columns.get(key)||{min:v.y,max:v.y};item.min=Math.min(item.min,v.y);item.max=Math.max(item.max,v.y);columns.set(key,item);}for(const[key,item]of columns){if(item.max-item.min<2)continue;const[x,z]=key.split('|').map(Number);for(let y=item.min+1;y<item.max;y++)if(!voxels.has(voxelKey(x,y,z))){let near=null,best=Infinity;for(const c of voxels.values())if(c.x===x&&c.z===z){const d=Math.abs(c.y-y);if(d<best){best=d;near=c;}}if(near)voxels.set(voxelKey(x,y,z),{x,y,z,r:near.r,g:near.g,b:near.b,n:near.n});if(voxels.size>=GLB_MAX_BLOCKS)return;}}}
-function rgbInt(v){return(Math.max(0,Math.min(255,Math.round(v.r)))<<16)|(Math.max(0,Math.min(255,Math.round(v.g)))<<8)|Math.max(0,Math.min(255,Math.round(v.b)));}
-function buildRotation(){return[1,0,0,0,1,0,0,0,1];}
-async function convertGlbToBuild(){if(!glbModel||!glbParsedSource)return;const btn=document.getElementById('glbConvertBtn');btn.disabled=true;setGlbStatus('Sampling mesh surface and baking texture colors…');await new Promise(requestAnimationFrame);try{const box=new THREE.Box3().setFromObject(glbModel),extent=box.getSize(new THREE.Vector3()),largest=Math.max(extent.x,extent.y,extent.z)||1;let voxelSize=Math.max(largest/70,.05),estimate=Math.ceil(extent.x/voxelSize)*Math.ceil(extent.y/voxelSize)*Math.ceil(extent.z/voxelSize);if(estimate>GLB_MAX_BLOCKS*2)voxelSize*=Math.cbrt(estimate/(GLB_MAX_BLOCKS*1.4));const origin=box.getCenter(new THREE.Vector3()),voxels=new Map();glbModel.updateWorldMatrix(true,true);glbModel.traverse(o=>{if(o.isMesh)bakeMesh(o,voxelSize,origin,voxels);});fillVoxelColumns(voxels);if(!voxels.size)throw new Error('No mesh geometry was found in the GLB.');const type=document.getElementById('glbBlockType').value||'PlasticBlock',blocks=[];for(const v of voxels.values()){const color=rgbInt({r:v.r/v.n,g:v.g/v.n,b:v.b/v.n});const x=v.x,y=v.y,z=v.z;blocks.push({p:`${x},${y},${z}`,sz:'1,1,1',cl:color,r:buildRotation()});if(blocks.length>=GLB_MAX_BLOCKS)break;}const output=JSON.stringify({[type]:blocks},null,2),blob=new Blob([output],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a'),base=glbFile.name.replace(/\.glb$/i,'')||'converted-build';a.href=url;a.download=`${base}.Build`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);const result=document.getElementById('glbResult');result.style.display='block';result.textContent=`Created ${blocks.length.toLocaleString()} ${type} parts\nTexture colors baked into block colors\nVoxel size: ${voxelSize.toFixed(3)} model units\nOutput: ${base}.Build`;setGlbStatus(`✓ Converted ${blocks.length.toLocaleString()} blocks and downloaded ${base}.Build.`,'ok');}catch(e){console.error(e);setGlbStatus(`Conversion failed: ${e.message||e}`,'err');}finally{btn.disabled=false;}}
+function wrapUv(value,mode){if(mode===THREE.ClampToEdgeWrapping)return Math.max(0,Math.min(1,value));return((value%1)+1)%1;}
+function sampleTexture(material,uv){
+    const texture=material?.map,cache=getTextureCanvas(texture);if(!cache||!uv)return null;let u=uv.x||0,v=uv.y||0;
+    if(texture.offset){u+=texture.offset.x;v+=texture.offset.y;}if(texture.repeat){u*=texture.repeat.x;v*=texture.repeat.y;}
+    u=wrapUv(u,texture.wrapS);v=wrapUv(v,texture.wrapT);if(texture.flipY!==false)v=1-v;
+    const x=Math.max(0,Math.min(cache.canvas.width-1,Math.floor(u*cache.canvas.width))),y=Math.max(0,Math.min(cache.canvas.height-1,Math.floor(v*cache.canvas.height))),px=cache.ctx.getImageData(x,y,1,1).data;
+    return{r:px[0],g:px[1],b:px[2],a:px[3]/255};
+}
+function finiteColorComponent(value,fallback=1){return Number.isFinite(value)?Math.max(0,Math.min(1,value)):fallback;}
+function getSurfaceColor(material,uv,vertexColor){
+    const baseColor=material?.color||new THREE.Color(1,1,1),textureColor=sampleTexture(material,uv),base=textureColor||{r:255,g:255,b:255,a:1};
+    const color={r:base.r*finiteColorComponent(baseColor.r),g:base.g*finiteColorComponent(baseColor.g),b:base.b*finiteColorComponent(baseColor.b),a:base.a*(Number.isFinite(material?.opacity)?material.opacity:1)};
+    if(vertexColor){color.r*=finiteColorComponent(vertexColor.r);color.g*=finiteColorComponent(vertexColor.g);color.b*=finiteColorComponent(vertexColor.b);}
+    return{r:Math.max(0,Math.min(255,Math.round(color.r))),g:Math.max(0,Math.min(255,Math.round(color.g))),b:Math.max(0,Math.min(255,Math.round(color.b))),a:Math.max(0,Math.min(1,color.a))};
+}
+function attrVec(attr,index,target){return target.fromBufferAttribute(attr,index);}
+function attrUv(attr,index,target){return attr?target.fromBufferAttribute(attr,index):target.set(0,0);}
+function attrColor(attr,index,target){return attr?target.fromBufferAttribute(attr,index):target.setRGB(1,1,1);}
+function materialAt(mesh,index){const materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];return materials[index]||materials[0]||null;}
+function triangleMaterialIndex(geometry,triangleIndex){const offset=triangleIndex*3;for(const group of geometry.groups||[]){if(offset>=group.start&&offset<group.start+group.count)return group.materialIndex||0;}return 0;}
+function cframeArray(center,axisX,axisY,axisZ){const matrix=new THREE.Matrix4().makeBasis(axisX,axisY,axisZ),e=matrix.elements;return[center.x,center.y,center.z,e[0],e[4],e[8],e[1],e[5],e[9],e[2],e[6],e[10]];}
+function hexColor(color){return[rgbByte(color.r),rgbByte(color.g),rgbByte(color.b)].map(v=>v.toString(16).padStart(2,'0')).join('');}
+function rgbByte(value){return Math.max(0,Math.min(255,Math.round(Number(value)||0)));}
+function appendTrianglePart(parts,p0,p1,p2,material,uv0,uv1,uv2,vc0,vc1,vc2,scale){
+    const e01=p1.clone().sub(p0),e02=p2.clone().sub(p0),e12=p2.clone().sub(p1),lengths=[e01.lengthSq(),e02.lengthSq(),e12.lengthSq()];
+    if(Math.max(...lengths)<1e-10)return;
+    let start=p0,end=p1; if(lengths[1]>=lengths[0]&&lengths[1]>=lengths[2]){start=p0;end=p2;}else if(lengths[2]>=lengths[0]&&lengths[2]>=lengths[1]){start=p1;end=p2;}
+    const axisX=end.clone().sub(start).normalize(),normal=e01.clone().cross(e02);if(normal.lengthSq()<1e-10)return;normal.normalize();let axisY=normal.clone().cross(axisX).normalize();if(axisY.lengthSq()<1e-10)return;const axisZ=axisX.clone().cross(axisY).normalize();
+    const points=[p0,p1,p2],origin=start.clone(),coords=points.map(point=>{const d=point.clone().sub(origin);return{x:d.dot(axisX),y:d.dot(axisY)}}),minX=Math.min(...coords.map(v=>v.x)),maxX=Math.max(...coords.map(v=>v.x)),minY=Math.min(...coords.map(v=>v.y)),maxY=Math.max(...coords.map(v=>v.y)),width=Math.max(maxX-minX,scale*.005),height=Math.max(maxY-minY,scale*.005),center=origin.clone().addScaledVector(axisX,(minX+maxX)/2).addScaledVector(axisY,(minY+maxY)/2),thickness=Math.max(Math.min(width,height)*.12,scale*.008),uv=uv0.clone().add(uv1).add(uv2).multiplyScalar(1/3),vc=vc0.clone().multiplyScalar(1/3);vc.r+=(vc1.r+vc2.r)/3;vc.g+=(vc1.g+vc2.g)/3;vc.b+=(vc1.b+vc2.b)/3,color=getSurfaceColor(material,uv,vc);
+    parts.push({Anchored:true,CanCollide:true,CastShadow:true,Color:hexColor(color),CFrame:cframeArray(center,axisX,axisY,axisZ),Size:[width,height,thickness],Transparency:color.a<.999?Math.min(.9,1-color.a):0});
+}
+function collectTriangleParts(model,box){
+    const size=box.getSize(new THREE.Vector3()),largest=Math.max(size.x,size.y,size.z)||1,targetSize=80,scale=targetSize/largest,origin=box.getCenter(new THREE.Vector3()),parts=[];
+    model.updateWorldMatrix(true,true);model.traverse(mesh=>{if(!mesh.isMesh)return;const geometry=mesh.geometry,position=geometry.getAttribute('position'),uvs=geometry.getAttribute('uv'),colors=geometry.getAttribute('color'),index=geometry.index;if(!position)return;mesh.updateWorldMatrix(true,false);const matrix=mesh.matrixWorld,p0=new THREE.Vector3(),p1=new THREE.Vector3(),p2=new THREE.Vector3(),u0=new THREE.Vector2(),u1=new THREE.Vector2(),u2=new THREE.Vector2(),c0=new THREE.Color(),c1=new THREE.Color(),c2=new THREE.Color(),triangleCount=index?index.count/3:position.count/3;
+        for(let t=0;t<triangleCount;t++){const ia=index?index.getX(t*3):t*3,ib=index?index.getX(t*3+1):t*3+1,ic=index?index.getX(t*3+2):t*3+2;attrVec(position,ia,p0).applyMatrix4(matrix).sub(origin).multiplyScalar(scale);attrVec(position,ib,p1).applyMatrix4(matrix).sub(origin).multiplyScalar(scale);attrVec(position,ic,p2).applyMatrix4(matrix).sub(origin).multiplyScalar(scale);attrUv(uvs,ia,u0);attrUv(uvs,ib,u1);attrUv(uvs,ic,u2);attrColor(colors,ia,c0);attrColor(colors,ib,c1);attrColor(colors,ic,c2);appendTrianglePart(parts,p0,p1,p2,materialAt(mesh,triangleMaterialIndex(geometry,t)),u0,u1,u2,c0,c1,c2,targetSize);}
+    });
+    return{parts,scale};
+}
+async function downloadNativeBuild(parts,baseName){
+    const payload=JSON.stringify({Data:{[document.getElementById('glbBlockType').value||'PlasticBlock']:parts}}),input=new TextEncoder().encode(payload);
+    const archive=await runSevenZip(['a','-t7z','-m0=lzma2','-mx=5','-mmt=on','/out/build.7z','/in/build.build'],input,'build.build','build.7z');
+    const filename=`${String(baseName||'converted-build').replace(/\.(?:Build|build|json)$/i,'')||'converted-build'}.Build`,blob=new Blob([archive],{type:'application/octet-stream'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.setAttribute('download',filename);a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+async function convertGlbToBuild(){
+    if(!glbModel||!glbParsedSource)return;const btn=document.getElementById('glbConvertBtn');btn.disabled=true;setGlbStatus('Building full-fidelity parts and baking colors…');await new Promise(requestAnimationFrame);
+    try{const box=new THREE.Box3().setFromObject(glbModel),built=collectTriangleParts(glbModel,box);if(!built.parts.length)throw new Error('No usable mesh triangles were found in the GLB.');const type=document.getElementById('glbBlockType').value||'PlasticBlock',base=glbFile.name.replace(/\.glb$/i,'')||'converted-build';setGlbStatus(`Compressing ${built.parts.length.toLocaleString()} parts…`);await downloadNativeBuild(built.parts,base);const result=document.getElementById('glbResult');result.style.display='block';result.textContent=`Created ${built.parts.length.toLocaleString()} ${type} parts\nFull source triangle geometry preserved\nMaterial and texture colors baked into Color\nOutput: ${base}.Build`;setGlbStatus(`✓ Converted ${built.parts.length.toLocaleString()} parts and downloaded ${base}.Build.`,'ok');}
+    catch(e){console.error(e);setGlbStatus(`Conversion failed: ${e.message||e}`,'err');}finally{btn.disabled=false;}
+}
 
 //  UTILS 
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
