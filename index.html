@@ -272,6 +272,37 @@
     
         .leaderboard-list{display:flex;flex-direction:column;gap:8px;max-width:760px}.leaderboard-row{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}.leaderboard-rank{font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700;font-size:1.1em}.leaderboard-user strong{display:block;font-size:.95em}.leaderboard-user span{display:block;color:var(--text-dim);font-size:.75em;margin-top:2px}.leaderboard-downloads{text-align:right;font-family:'JetBrains Mono',monospace;color:var(--accent);font-weight:700}.leaderboard-downloads small{display:block;color:var(--text-dim);font-family:'Outfit',sans-serif;font-size:.68em;font-weight:400;margin-top:2px}@media(max-width:560px){.leaderboard-row{grid-template-columns:38px 1fr auto;gap:9px;padding:12px}.leaderboard-downloads{font-size:.85em}}
 .mini-avatar{display:inline-flex;width:28px;height:28px;border-radius:8px;overflow:hidden;flex:0 0 auto;background:var(--surface2)}.mini-avatar svg{width:100%;height:100%;display:block}.mini-avatar img{width:100%;height:100%;display:block;image-rendering:pixelated}.profile-avatar img{width:100%;height:100%;display:block;image-rendering:pixelated}.profile-avatar{width:76px;height:76px;border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--surface2);flex:0 0 auto}.profile-avatar svg{display:block;width:100%;height:100%}.avatar-editor-preview{display:block}
+
+        /* Structured build parser / inventory */
+        .bp-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0}
+        .bp-summary-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:12px 14px}
+        .bp-summary-card .value{font:700 1.15em 'JetBrains Mono',monospace;color:var(--accent)}
+        .bp-summary-card .label{display:block;color:var(--text-dim);font-size:.68em;text-transform:uppercase;letter-spacing:.7px;margin-top:3px}
+        .bp-parser-note{color:var(--text-dim);font-size:.78em;margin:0 0 12px}
+        .build-preview-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:14px;align-items:stretch}
+        .build-preview-layout .inline-preview-container{min-height:470px}
+        .bp-inspector{background:var(--surface2);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;min-height:470px;overflow:hidden}
+        .bp-inspector-head{padding:12px;border-bottom:1px solid var(--border)}
+        .bp-inspector-head h4{font-size:.9em;margin-bottom:9px}
+        .bp-search{width:100%;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text);font:500 .8em 'JetBrains Mono',monospace;outline:none}
+        .bp-search:focus{border-color:var(--accent)}
+        .bp-block-list{overflow:auto;flex:1;min-height:170px;padding:8px}
+        .bp-block-row{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:9px 10px;margin-bottom:5px;text-align:left;color:var(--text);background:var(--surface);border:1px solid transparent;border-radius:7px;cursor:pointer;font-family:'Outfit',sans-serif}
+        .bp-block-row:hover,.bp-block-row.active{border-color:var(--accent);background:var(--accent-glow)}
+        .bp-block-row .name{font-size:.8em;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .bp-block-row .meta{display:block;color:var(--text-dim);font:500 .68em 'JetBrains Mono',monospace;margin-top:2px}
+        .bp-block-row .count{flex:0 0 auto;color:var(--accent);font:700 .72em 'JetBrains Mono',monospace}
+        .bp-block-detail{border-top:1px solid var(--border);padding:12px;max-height:245px;overflow:auto}
+        .bp-block-detail h5{color:var(--accent);font-size:.8em;margin-bottom:7px;word-break:break-word}
+        .bp-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px;margin-bottom:8px}
+        .bp-detail-grid div{font:500 .67em 'JetBrains Mono',monospace;color:var(--text-dim);word-break:break-word}
+        .bp-detail-grid strong{color:var(--text);font-weight:500}
+        .bp-raw{margin:0;background:#0b0d14;border:1px solid var(--border);border-radius:6px;padding:8px;color:#b7ffe2;font:500 .64em/1.45 'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-word}
+        .bp-group-list{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}
+        .bp-group-chip{padding:4px 7px;border:1px solid var(--border);border-radius:999px;color:var(--text-dim);font:500 .66em 'JetBrains Mono',monospace;background:var(--surface2)}
+        .bp-group-chip strong{color:var(--accent)}
+        @media(max-width:900px){.build-preview-layout{grid-template-columns:1fr}.bp-inspector{min-height:360px}.build-preview-layout .inline-preview-container{min-height:380px}}
+
     </style>
 </head>
 <body id="app">
@@ -499,18 +530,28 @@
     <section id="buildpreviewer">
         <div class="form-card reveal">
             <h3><span class="dot"></span>Build File Previewer</h3>
-            <p style="font-size:0.85em;color:var(--text-dim);margin-bottom:16px">Upload a .build file to preview it in 3D</p>
+            <p style="font-size:0.85em;color:var(--text-dim);margin-bottom:16px">Upload a .build, .txt, or JSON build file to preview it in 3D</p>
             <div class="build-preview-controls">
                 <div class="file-box" id="bpFilebox" style="flex:1;min-width:200px">
                     <span></span>
                     <span id="bpFiletext">Choose .build file...</span>
-                    <input type="file" id="bpFile" accept=".build" onchange="handleBuildFileSelect(event)">
+                    <input type="file" id="bpFile" accept=".build,.txt,.json,application/json,text/plain" onchange="handleBuildFileSelect(event)">
                 </div>
                 <button class="btn btn-p" onclick="previewSelectedBuild()" id="bpPreviewBtn" disabled>Preview</button>
             </div>
             <div class="build-preview-result" id="bpResult" style="display:none">
-                <div id="bpPreviewStatus" class="build-info">Select a .build file to preview</div>
-                <div id="bpPreviewContainer" class="inline-preview-container"><div id="bpPreviewMetrics" class="preview-fps" aria-live="polite"></div></div>
+                <div id="bpPreviewStatus" class="build-info">Select a .build or .txt file to preview</div>
+                <div id="bpParserSummary" class="bp-summary-grid"></div>
+                <div id="bpParserGroups" class="bp-group-list"></div>
+                <p id="bpParserNote" class="bp-parser-note"></p>
+                <div class="build-preview-layout">
+                    <div id="bpPreviewContainer" class="inline-preview-container"><div id="bpPreviewMetrics" class="preview-fps" aria-live="polite"></div></div>
+                    <aside class="bp-inspector" aria-label="Parsed blocks">
+                        <div class="bp-inspector-head"><h4>Blocks and parts</h4><input id="bpBlockSearch" class="bp-search" type="search" placeholder="Filter group, ID, or property..." oninput="filterParsedBlocks(this.value)"></div>
+                        <div id="bpBlockList" class="bp-block-list"><div class="empty">Parse a file to list blocks</div></div>
+                        <div id="bpBlockDetail" class="bp-block-detail"><div class="empty">Select a block to inspect its properties</div></div>
+                    </aside>
+                </div>
             </div>
         </div>
     </section>
@@ -680,6 +721,52 @@ function stringToRotationCFrame(rotStr) {
     return new THREE.Quaternion().setFromEuler(new THREE.Euler(parts[0] * degToRad, parts[1] * degToRad, parts[2] * degToRad));
 }
 
+function createBatchedBlockModel(specs, statusEl) {
+    // One logical model root; render geometry is merged into a small number of meshes.
+    const root = new THREE.Group();
+    const cube = new THREE.BoxGeometry(1, 1, 1);
+    const basePositions = Array.from(cube.attributes.position.array);
+    const baseNormals = Array.from(cube.attributes.normal.array);
+    const baseIndices = cube.index ? Array.from(cube.index.array) : Array.from({length: basePositions.length / 3}, (_, i) => i);
+    cube.dispose();
+    const buckets = new Map();
+    const clamp = value => Math.max(0, Math.min(1, Number(value) || 0));
+    for (const spec of specs) {
+        const transparency = clamp(spec.transparency);
+        // Quantization caps draw calls while keeping the previous appearance visually equivalent.
+        const alphaBucket = Math.round(transparency * 50) / 50;
+        if (!buckets.has(alphaBucket)) buckets.set(alphaBucket, {positions:[], normals:[], colors:[], indices:[]});
+        const bucket = buckets.get(alphaBucket);
+        const offset = bucket.positions.length / 3;
+        const q = spec.rotation || new THREE.Quaternion();
+        const color = spec.color ?? 0x888888;
+        const rgb = [(color >> 16 & 255) / 255, (color >> 8 & 255) / 255, (color & 255) / 255];
+        for (let i = 0; i < basePositions.length; i += 3) {
+            const vertex = new THREE.Vector3(basePositions[i] * spec.size.x * 2, basePositions[i + 1] * spec.size.y * 2, basePositions[i + 2] * spec.size.z * 2).applyQuaternion(q);
+            vertex.x += spec.position.x * 2; vertex.y += spec.position.y * 2; vertex.z += spec.position.z * 2;
+            bucket.positions.push(vertex.x, vertex.y, vertex.z);
+            const normal = new THREE.Vector3(baseNormals[i], baseNormals[i + 1], baseNormals[i + 2]).applyQuaternion(q).normalize();
+            bucket.normals.push(normal.x, normal.y, normal.z);
+            bucket.colors.push(rgb[0], rgb[1], rgb[2]);
+        }
+        for (const index of baseIndices) bucket.indices.push(offset + index);
+    }
+    for (const [transparency, data] of buckets) {
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(data.positions, 3));
+        geometry.setAttribute('normal', new THREE.Float32BufferAttribute(data.normals, 3));
+        geometry.setAttribute('color', new THREE.Float32BufferAttribute(data.colors, 3));
+        geometry.setIndex(data.indices);
+        geometry.computeBoundingSphere();
+        const material = new THREE.MeshPhongMaterial({vertexColors:true, transparent:transparency > 0, opacity:1 - transparency, shininess:10, depthWrite:transparency < 0.5});
+        root.add(new THREE.Mesh(geometry, material));
+    }
+    root.userData.blockCount = specs.length;
+    root.userData.renderMeshCount = root.children.length;
+    if (statusEl) statusEl.innerHTML = `<span style="color:#00ffcc">Batched ${specs.length.toLocaleString()} blocks into ${root.children.length} render meshes.</span>`;
+    return root;
+}
+
 async function openPreview(url, title, options={}) {
     const inline = !!options.inline;
     const previewBg=document.getElementById('previewModalBg');
@@ -710,47 +797,17 @@ async function openPreview(url, title, options={}) {
 
     try {
         const text = await readBuildText(url);
-        let decoded;
-        
-        try {
-            if (text.includes('BBH_ENCODED:VA:')) {
-                const match = text.match(/BBH_ENCODED:VA:(.*)/s);
-                if (match && match[1]) {
-                    const jsonStr = match[1].trim();
-                    const parsed = JSON.parse(jsonStr);
-                    decoded = (parsed.b && typeof parsed.b === 'object') ? parsed.b : parsed;
-                }
-            } 
-            if (!decoded) {
-                const cleaned = text.trim().replace(/^[^\[\{]*/, '').replace(/[^\]\}]*$/, '');
-                decoded = JSON.parse(cleaned);
-            }
-        } catch (e) {
-            console.error("JSON Parse Error:", e);
-            throw new Error("Invalid build file format");
-        }
-
-        if (Array.isArray(decoded) && decoded.length === 2) {
-            if (typeof decoded[1] === 'object' && !Array.isArray(decoded[1])) decoded = decoded[1];
-            else if (Array.isArray(decoded[1])) decoded = { "AllBlocks": decoded[1] };
-        } else if (decoded && decoded.data) {
-            if (typeof decoded.data === 'object' && !Array.isArray(decoded.data)) decoded = decoded.data;
-            else if (Array.isArray(decoded.data)) decoded = { "AllBlocks": decoded.data };
-        }
-
-        const blockSpecs=[];
-        for(const[blockName,blockList]of Object.entries(decoded)){
-            if(!Array.isArray(blockList))continue;
-            for(const block of blockList){
-                const position=parseVecShort(block.p||block.Position);
-                if(!Number.isFinite(position.x)||!Number.isFinite(position.y)||!Number.isFinite(position.z))continue;
-                if(Math.max(Math.abs(position.x),Math.abs(position.y),Math.abs(position.z))>100000)continue;
-                const sizeStr=block.sz||block.z||block.Size;
-                const size=sizeStr==='DB'?DEFAULT_BLOCK_SIZE:parseVecShort(sizeStr);
-                if(Math.max(Math.abs(size.x),Math.abs(size.y),Math.abs(size.z))>1000)continue;
-                blockSpecs.push({block,position,size});
-            }
-        }
+        const parsed = parseBuildDocument(text);
+        const blockSpecs = parsed.blocks.map(entry => ({
+            block: entry.raw,
+            position: entry.position,
+            size: entry.size,
+            rotation: entry.rotation,
+            color: entry.color,
+            transparency: entry.transparency,
+            groupName: entry.groupName,
+            id: entry.id
+        })).filter(spec => spec.position && spec.size);
         if(!blockSpecs.length)throw new Error('No valid blocks found in file');
         const median=axis=>{const values=blockSpecs.map(v=>v.position[axis]).sort((a,b)=>a-b);return values[Math.floor(values.length/2)]||0};
         const seed={x:median('x'),y:median('y'),z:median('z')};
@@ -760,17 +817,10 @@ async function openPreview(url, title, options={}) {
         const mad=madValues[Math.floor(madValues.length/2)]||0;
         const outlierLimit=Math.max(40,medDist+Math.max(12,mad*6));
         const kept=blockSpecs.filter(v=>Math.hypot(v.position.x-seed.x,v.position.y-seed.y,v.position.z-seed.z)<=outlierLimit);
-        let blockCount=0;
-        for(const spec of kept){
-            const{block,position,size}=spec;
-            const rotation=stringToRotationCFrame(block.r||block.Rotation),color=parseColor(block.cl||block.x||block.Color,0x888888),transparency=block.tr||block.Transparency||0;
-            const geometry=new THREE.BoxGeometry(size.x*2,size.y*2,size.z*2);
-            const material=new THREE.MeshPhongMaterial({color,transparent:transparency>0,opacity:1-transparency,shininess:10});
-            const mesh=new THREE.Mesh(geometry,material);mesh.position.set(position.x*2,position.y*2,position.z*2);mesh.quaternion.copy(rotation);buildGroup.add(mesh);
-            blockCount++;if(blockCount%1000===0)statusEl.innerHTML=`<span style="color:#00ffcc">Building... (${blockCount} blocks)</span>`;
-        }
-
+        const blockCount = kept.length;
         if (blockCount === 0) throw new Error("No valid blocks found in file");
+        const batchedModel = createBatchedBlockModel(kept, statusEl);
+        buildGroup.add(batchedModel);
 
         const box = new THREE.Box3().setFromObject(buildGroup);
         const center = box.getCenter(new THREE.Vector3());
@@ -802,13 +852,116 @@ function closePreview() {
 }
 
 // ================== BUILD PREVIEWER TAB ==================
-function handleBuildFileSelect(event) {
+let bpParsedBuild = null;
+let bpBlockFilter = '';
+let bpSelectedBlock = -1;
+
+function formatParsedVector(v) {
+    if (!v) return '—';
+    return [v.x, v.y, v.z].map(n => Number(n || 0).toFixed(2)).join(', ');
+}
+
+function renderParsedSummary(parsed) {
+    const summary = document.getElementById('bpParserSummary');
+    const groups = document.getElementById('bpParserGroups');
+    const note = document.getElementById('bpParserNote');
+    if (!summary || !groups || !note) return;
+    summary.innerHTML = [
+        ['Total blocks', parsed.stats.total],
+        ['Block types', parsed.stats.types],
+        ['With IDs', parsed.stats.withIds],
+        ['With binds', parsed.stats.withBinds]
+    ].map(([label, value]) => `<div class="bp-summary-card"><div class="value">${Number(value).toLocaleString()}</div><span class="label">${esc(label)}</span></div>`).join('');
+    groups.innerHTML = parsed.stats.groups.map(group => `<span class="bp-group-chip">${esc(group.name)} <strong>${group.count.toLocaleString()}</strong></span>`).join('');
+    note.textContent = parsed.stats.skipped ? `${parsed.stats.skipped} entries were skipped because they were not block objects.` : `${parsed.stats.groups.length} block groups parsed from the uploaded file.`;
+}
+
+function renderParsedBlockList() {
+    const list = document.getElementById('bpBlockList');
+    if (!list || !bpParsedBuild) return;
+    const needle = bpBlockFilter.trim().toLowerCase();
+    const matches = bpParsedBuild.blocks.filter(entry => {
+        if (!needle) return true;
+        const haystack = `${entry.groupName} ${entry.id ?? ''} ${Object.keys(entry.raw || {}).join(' ')} ${JSON.stringify(entry.raw || {})}`.toLowerCase();
+        return haystack.includes(needle);
+    });
+    const visible = matches.slice(0, 1500);
+    if (!visible.length) {
+        list.innerHTML = '<div class="empty">No matching blocks</div>';
+        document.getElementById('bpBlockDetail').innerHTML = '<div class="empty">No block selected</div>';
+        return;
+    }
+    list.innerHTML = visible.map(entry => {
+        const index = bpParsedBuild.blocks.indexOf(entry);
+        const selected = index === bpSelectedBlock ? ' active' : '';
+        const id = entry.id === undefined || entry.id === null ? 'no ID' : `ID ${esc(String(entry.id))}`;
+        return `<button class="bp-block-row${selected}" type="button" data-bp-index="${index}"><span><span class="name">${esc(entry.groupName)}</span><span class="meta">${id} · ${esc(formatParsedVector(entry.position))}</span></span><span class="count">#${entry.index + 1}</span></button>`;
+    }).join('');
+    if (matches.length > visible.length) {
+        list.insertAdjacentHTML('beforeend', `<div class="bp-parser-note" style="padding:6px 4px">Showing first ${visible.length.toLocaleString()} of ${matches.length.toLocaleString()} matches.</div>`);
+    }
+    if (bpSelectedBlock < 0 || !bpParsedBuild.blocks[bpSelectedBlock]) selectParsedBlock(bpParsedBuild.blocks.indexOf(visible[0]));
+    else renderParsedBlockDetail(bpSelectedBlock);
+}
+
+function renderParsedBlockDetail(index) {
+    const detail = document.getElementById('bpBlockDetail');
+    const entry = bpParsedBuild?.blocks?.[index];
+    if (!detail || !entry) return;
+    const raw = entry.raw || {};
+    const safeJson = esc(JSON.stringify(raw, null, 2));
+    detail.innerHTML = `<h5>${esc(entry.groupName)}${entry.id === undefined ? '' : ` · ID ${esc(String(entry.id))}`}</h5><div class="bp-detail-grid"><div><strong>Position</strong><br>${esc(formatParsedVector(entry.position))}</div><div><strong>Size</strong><br>${esc(formatParsedVector(entry.size))}</div><div><strong>Transparency</strong><br>${Number(entry.transparency || 0).toFixed(3)}</div><div><strong>Color</strong><br>#${Number(entry.color || 0).toString(16).padStart(6, '0')}</div><div><strong>Anchored</strong><br>${raw.Anchored === undefined ? '—' : String(!!raw.Anchored)}</div><div><strong>Collidable</strong><br>${raw.CanCollide === undefined ? '—' : String(!!raw.CanCollide)}</div></div><details><summary style="cursor:pointer;color:var(--accent);font-size:.72em">Raw properties</summary><pre class="bp-raw">${safeJson}</pre></details>`;
+}
+
+function selectParsedBlock(index) {
+    bpSelectedBlock = Number(index);
+    renderParsedBlockList();
+    renderParsedBlockDetail(bpSelectedBlock);
+}
+
+function filterParsedBlocks(value) {
+    bpBlockFilter = value || '';
+    renderParsedBlockList();
+}
+
+function resetParsedPreviewState() {
+    bpParsedBuild = null;
+    bpBlockFilter = '';
+    bpSelectedBlock = -1;
+    const summary = document.getElementById('bpParserSummary');
+    const groups = document.getElementById('bpParserGroups');
+    const note = document.getElementById('bpParserNote');
+    if (summary) summary.innerHTML = '';
+    if (groups) groups.innerHTML = '';
+    if (note) note.textContent = '';
+    const list = document.getElementById('bpBlockList');
+    const detail = document.getElementById('bpBlockDetail');
+    if (list) list.innerHTML = '<div class="empty">Parse a file to list blocks</div>';
+    if (detail) detail.innerHTML = '<div class="empty">Select a block to inspect its properties</div>';
+}
+
+async function handleBuildFileSelect(event) {
     const file = event.target.files[0];
     if (!file) return;
     document.getElementById('bpFilebox').classList.add('ok');
     document.getElementById('bpFiletext').textContent = file.name;
     document.getElementById('bpResult').style.display = 'block';
-    document.getElementById('bpPreviewBtn').disabled = false;
+    document.getElementById('bpPreviewBtn').disabled = true;
+    const status = document.getElementById('bpPreviewStatus');
+    status.innerHTML = '<span style="color:#ffcc00">Reading and parsing file…</span>';
+    resetParsedPreviewState();
+    try {
+        const parsed = parseBuildDocument(await file.text());
+        if (!parsed.stats.total) throw new Error('No block data found');
+        bpParsedBuild = parsed;
+        renderParsedSummary(parsed);
+        renderParsedBlockList();
+        document.getElementById('bpPreviewBtn').disabled = false;
+        status.innerHTML = `<span style="color:#00ff88">✓ Parsed ${parsed.stats.total.toLocaleString()} blocks across ${parsed.stats.types} types. Click Preview to render.</span>`;
+    } catch (e) {
+        status.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message || e)}</span>`;
+        toast(e.message || 'Could not parse build file', 'err');
+    }
 }
 
 async function previewSelectedBuild() {
@@ -816,18 +969,21 @@ async function previewSelectedBuild() {
     const status = document.getElementById('bpPreviewStatus');
     if (!file) return;
     document.getElementById('bpResult').style.display = 'block';
-    status.innerHTML = '<span style="color:#ffcc00">Preparing preview… Preview will start soon.</span>';
+    status.innerHTML = '<span style="color:#ffcc00">Preparing 3D preview…</span>';
     try {
-        const decoded = decodeBuildPayload(await file.text());
-        const blockCount = Object.values(decoded).reduce((n, list) => n + (Array.isArray(list) ? list.length : 0), 0);
-        if (!blockCount) throw new Error('No block data found');
-        const url = URL.createObjectURL(new Blob([await file.text()], {type:'text/plain'}));
+        const text = await file.text();
+        const parsed = parseBuildDocument(text);
+        if (!parsed.stats.total) throw new Error('No block data found');
+        bpParsedBuild = parsed;
+        renderParsedSummary(parsed);
+        renderParsedBlockList();
+        const url = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
         await openPreview(url, file.name, {inline:true});
         setTimeout(() => URL.revokeObjectURL(url), 60000);
         toast('Build preview updated in the GUI', 'ok');
-    } catch (err) {
-        status.innerHTML = `<span style="color:var(--danger)">Invalid build file: ${esc(err.message)}</span>`;
-        toast('Invalid build file', 'err');
+    } catch (e) {
+        status.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message || e)}</span>`;
+        toast(e.message || 'Preview failed', 'err');
     }
 }
 
@@ -928,7 +1084,7 @@ const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.tar
 function obsAll(){document.querySelectorAll('.reveal:not(.visible)').forEach(el=>obs.observe(el))}
 function toast(m,t=''){const el=document.createElement('div');el.className=`toast ${t}`;el.innerHTML=m;document.getElementById('toasts').appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),250)},4500)}
 function go(id,updateHash=true){if(id!=='builds')closeBuildDetails(false);document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('nav a').forEach(b=>b.classList.remove('on'));document.getElementById(id)?.classList.add('on');document.querySelector(`[data-t="${id}"]`)?.classList.add('on');if(updateHash&&location.hash.slice(1)!==id)history.pushState({},'',`#${id}`);setTimeout(obsAll,50);if(id==='leaderboard')loadLeaderboard()}
-document.getElementById('nav').addEventListener('click',e=>{const link=e.target.closest('a[data-t]');if(link){e.preventDefault();go(link.dataset.t,true)}});document.addEventListener('click',e=>{const card=e.target.closest('.build-card');if(!card)return;if(e.target.closest('button,a,input,select,textarea'))return;const id=card.dataset.buildId||card.getAttribute('data-build-id');if(id){e.preventDefault();openBuildDetails(id,true)}});function handleHash(){const hash=location.hash.slice(1);if(hash.startsWith('build-')){const id=hash.slice(6);if(allBuilds.some(item=>getBuildId(item)===String(id))){go('builds',false);openBuildDetails(id,false);return}}go(hash||'home',false)}window.addEventListener('hashchange',handleHash);
+document.getElementById('nav').addEventListener('click',e=>{const link=e.target.closest('a[data-t]');if(link){e.preventDefault();go(link.dataset.t,true)}});document.addEventListener('click',e=>{const card=e.target.closest('.build-card');if(!card)return;if(e.target.closest('button,a,input,select,textarea'))return;const id=card.dataset.buildId||card.getAttribute('data-build-id');if(id){e.preventDefault();openBuildDetails(id,true)}});document.getElementById('bpBlockList')?.addEventListener('click',e=>{const row=e.target.closest('[data-bp-index]');if(row)selectParsedBlock(Number(row.dataset.bpIndex));});function handleHash(){const hash=location.hash.slice(1);if(hash.startsWith('build-')){const id=hash.slice(6);if(allBuilds.some(item=>getBuildId(item)===String(id))){go('builds',false);openBuildDetails(id,false);return}}go(hash||'home',false)}window.addEventListener('hashchange',handleHash);
 function fileChg(i,b,t){const bx=document.getElementById(b),tx=document.getElementById(t);if(i.files?.[0]){const n=i.files[0].name;tx.textContent=n.length>18?n.slice(0,15)+'...':n;bx.classList.add('ok')}else bx.classList.remove('ok')}
 function resetFile(b,t,d){document.getElementById(b).classList.remove('ok');document.getElementById(t).textContent=d}
 function esc(s){return(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -1165,8 +1321,145 @@ function artFor(item){
 }
 function getBuildId(build){return String(build?.id??build?.build_id??'')}
 function maskEmail(email){const value=String(email||'').trim();if(!value)return 'Hidden';const parts=value.split('@'),local=parts[0]||'',domain=parts[1]||'';const tld=(domain.split('.').pop()||'com').toLowerCase();return `${local.slice(0,7)}********.${tld}`;}
-function decodeBuildPayload(text){let decoded;try{if(text.includes('BBH_ENCODED:VA:')){const m=text.match(/BBH_ENCODED:VA:(.*)/s);if(m&&m[1]){const parsed=JSON.parse(m[1].trim());decoded=parsed.b&&typeof parsed.b==='object'?parsed.b:parsed;}}if(!decoded){decoded=JSON.parse(text.trim().replace(/^[^\[\{]*/, '').replace(/[^\]\}]*$/, ''));}if(Array.isArray(decoded)&&decoded.length===2){decoded=Array.isArray(decoded[1])?{AllBlocks:decoded[1]}:(decoded[1]||decoded);}else if(decoded?.data){decoded=Array.isArray(decoded.data)?{AllBlocks:decoded.data}:decoded.data;}return decoded||{};}catch(e){return {};}}
-async function getBuildInventory(url){const text=await readBuildText(url);const decoded=decodeBuildPayload(text),counts=[];for(const[name,list]of Object.entries(decoded)){if(Array.isArray(list)&&list.length)counts.push({name,count:list.length});}counts.sort((a,b)=>b.count-a.count);return{total:counts.reduce((n,x)=>n+x.count,0),counts};}
+function parseNumberValue(value) {
+    if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+    const text = String(value ?? '').trim();
+    if (!text) return 0;
+    const colon = text.indexOf(':');
+    if (colon > 0) {
+        const base = Number(text.slice(0, colon));
+        const exponent = Number(text.slice(colon + 1));
+        if (Number.isFinite(base) && Number.isFinite(exponent)) return base * Math.pow(10, exponent);
+    }
+    const valueNumber = Number(text);
+    return Number.isFinite(valueNumber) ? valueNumber : 0;
+}
+
+function toNumberArray(value) {
+    if (Array.isArray(value)) return value.map(parseNumberValue);
+    if (typeof value === 'string') return value.split(',').map(part => parseNumberValue(part));
+    if (value && typeof value === 'object') {
+        if (value.x !== undefined && value.y !== undefined && value.z !== undefined) return [parseNumberValue(value.x), parseNumberValue(value.y), parseNumberValue(value.z)];
+    }
+    return [];
+}
+
+function parseVecShort(str) {
+    const parts = toNumberArray(str);
+    return parts.length >= 3 ? {x:parts[0], y:parts[1], z:parts[2]} : {x:0, y:0, z:0};
+}
+
+function parseColor(str, defaultColor = 0x888888) {
+    if (str === undefined || str === null || str === '') return defaultColor;
+    if (typeof str === 'number') return Number.isFinite(str) ? str : defaultColor;
+    const value = String(str).trim().replace(/^#/, '');
+    if (/^[0-9a-fA-F]{6}$/.test(value)) return parseInt(value, 16);
+    const rgb = value.split(',').map(n => parseNumberValue(n));
+    if (rgb.length === 3) {
+        const r = rgb[0] <= 1 ? rgb[0] * 255 : rgb[0], g = rgb[1] <= 1 ? rgb[1] * 255 : rgb[1], b = rgb[2] <= 1 ? rgb[2] * 255 : rgb[2];
+        return (Math.floor(r) << 16) + (Math.floor(g) << 8) + Math.floor(b);
+    }
+    return defaultColor;
+}
+
+function parseCFrameRotation(values) {
+    if (!Array.isArray(values) || values.length < 12 || typeof THREE === 'undefined') return new THREE.Quaternion();
+    const matrix = new THREE.Matrix4().set(values[3], values[4], values[5], 0, values[6], values[7], values[8], 0, values[9], values[10], values[11], 0, 0, 0, 0, 1);
+    return new THREE.Quaternion().setFromRotationMatrix(matrix);
+}
+
+function stringToRotationCFrame(rotStr) {
+    if (!rotStr) return new THREE.Quaternion();
+    if (Array.isArray(rotStr)) {
+        const values = rotStr.map(parseNumberValue);
+        if (values.length >= 12) return parseCFrameRotation(values);
+        if (values.length >= 9) return parseCFrameRotation([0, 0, 0, ...values.slice(0, 9)]);
+        if (values.length >= 3) rotStr = {x:values[0], y:values[1], z:values[2]};
+    }
+    if (typeof rotStr === 'object' && rotStr.x !== undefined) {
+        const degToRad = Math.PI / 180;
+        return new THREE.Quaternion().setFromEuler(new THREE.Euler(parseNumberValue(rotStr.x) * degToRad, parseNumberValue(rotStr.y) * degToRad, parseNumberValue(rotStr.z) * degToRad));
+    }
+    const parts = toNumberArray(rotStr);
+    if (parts.length !== 3) return new THREE.Quaternion();
+    const degToRad = Math.PI / 180;
+    return new THREE.Quaternion().setFromEuler(new THREE.Euler(parts[0] * degToRad, parts[1] * degToRad, parts[2] * degToRad));
+}
+
+function unwrapBuildRoot(value) {
+    let current = value;
+    for (let depth = 0; depth < 5; depth++) {
+        if (Array.isArray(current)) {
+            if (current.length === 2 && current[1] && typeof current[1] === 'object') current = current[1];
+            else return {AllBlocks: current};
+            continue;
+        }
+        if (!current || typeof current !== 'object') return {};
+        const key = ['Data', 'data', 'b', 'Build', 'build', 'Blocks', 'blocks'].find(name => current[name] && typeof current[name] === 'object');
+        if (key) { current = current[key]; continue; }
+        return current;
+    }
+    return current && typeof current === 'object' && !Array.isArray(current) ? current : {};
+}
+
+function parseBuildDocument(text) {
+    let decoded;
+    const source = String(text || '').replace(/^\uFEFF/, '').trim();
+    if (!source) throw new Error('The file is empty');
+    try {
+        if (source.includes('BBH_ENCODED:VA:')) {
+            const marker = source.match(/BBH_ENCODED:VA:(.*)/s);
+            if (marker && marker[1]) {
+                const parsed = JSON.parse(marker[1].trim());
+                decoded = parsed?.b && typeof parsed.b === 'object' ? parsed.b : parsed;
+            }
+        }
+        if (!decoded) {
+            try { decoded = JSON.parse(source); }
+            catch (directError) {
+                const start = Math.min(...[source.indexOf('{'), source.indexOf('[')].filter(index => index >= 0));
+                const end = Math.max(source.lastIndexOf('}'), source.lastIndexOf(']'));
+                if (!Number.isFinite(start) || end <= start) throw directError;
+                decoded = JSON.parse(source.slice(start, end + 1));
+            }
+        }
+    } catch (error) {
+        throw new Error('Invalid JSON build file');
+    }
+    const root = unwrapBuildRoot(decoded);
+    const groups = {};
+    const blocks = [];
+    let skipped = 0;
+    for (const [groupName, groupValue] of Object.entries(root || {})) {
+        if (!Array.isArray(groupValue)) continue;
+        const valid = [];
+        groupValue.forEach((raw, index) => {
+            if (!raw || typeof raw !== 'object' || Array.isArray(raw)) { skipped++; return; }
+            const cframe = toNumberArray(raw.CFrame ?? raw.cframe);
+            const position = raw.p !== undefined ? parseVecShort(raw.p) : raw.Position !== undefined ? parseVecShort(raw.Position) : cframe.length >= 3 ? parseVecShort(cframe.slice(0, 3)) : {x:0,y:0,z:0};
+            const sizeValue = raw.sz ?? raw.z ?? raw.Size;
+            const size = sizeValue === 'DB' ? {...DEFAULT_BLOCK_SIZE} : parseVecShort(sizeValue);
+            if (!Number.isFinite(position.x) || !Number.isFinite(position.y) || !Number.isFinite(position.z)) { skipped++; return; }
+            const safeSize = {x:Math.abs(size.x || DEFAULT_BLOCK_SIZE.x), y:Math.abs(size.y || DEFAULT_BLOCK_SIZE.y), z:Math.abs(size.z || DEFAULT_BLOCK_SIZE.z)};
+            const rotation = raw.r !== undefined ? stringToRotationCFrame(raw.r) : raw.Rotation !== undefined ? stringToRotationCFrame(raw.Rotation) : cframe.length >= 12 ? parseCFrameRotation(cframe) : new THREE.Quaternion();
+            const transparencyRaw = raw.tr ?? raw.Transparency ?? raw.transparency ?? 0;
+            const transparency = Math.min(1, Math.max(0, parseNumberValue(transparencyRaw)));
+            const color = parseColor(raw.cl ?? raw.Color ?? raw.color ?? raw.x, 0x888888);
+            const entry = {raw, groupName, index, id:raw.ID ?? raw.id, position, size:safeSize, rotation, transparency, color};
+            valid.push(entry);
+            blocks.push(entry);
+        });
+        if (valid.length) groups[groupName] = valid;
+    }
+    const groupStats = Object.entries(groups).map(([name, list]) => ({name, count:list.length})).sort((a,b) => b.count - a.count || a.name.localeCompare(b.name));
+    return {root, groups, blocks, stats:{total:blocks.length, types:groupStats.length, withIds:blocks.filter(entry => entry.id !== undefined && entry.id !== null).length, withBinds:blocks.filter(entry => Array.isArray(entry.raw?.Binds) && entry.raw.Binds.length).length, skipped, groups:groupStats}};
+}
+
+function decodeBuildPayload(text) {
+    try { return parseBuildDocument(text).root || {}; }
+    catch (e) { return {}; }
+}
+async function getBuildInventory(url){const text=await readBuildText(url);const parsed=parseBuildDocument(text),counts=parsed.stats.groups.map(group=>({name:group.name,count:group.count}));return{total:parsed.stats.total,counts};}
 async function openBuildChecklist(id){const item=allBuilds.find(build=>getBuildId(build)===String(id));const modal=document.getElementById('checklistModal'),content=document.getElementById('checklistContent');if(!item||!modal||!content)return;modal.classList.add('show');document.getElementById('checklistTitle').textContent=`${item.data?.title||item.build_file_name||'Build'} — Check List`;content.innerHTML='<div class="empty">Loading checklist...</div>';try{const inv=await getBuildInventory(item.build_file_url);content.innerHTML=inv.counts.length?`<div class="s-box" style="margin-bottom:12px"><strong>Total parts: ${inv.total.toLocaleString()}</strong></div><div class="checklist-scroll"><div style="display:grid;gap:8px">${inv.counts.map(x=>`<div class="ban-list-item"><span>${esc(x.name)}</span><strong>${x.count.toLocaleString()}</strong></div>`).join('')}</div></div>`:'<div class="empty">No block data found</div>';}catch(e){content.innerHTML=`<div class="empty">Could not read the build checklist: ${esc(e.message||e)}</div>`;}}
 function closeChecklist(updateHash=true){document.getElementById('checklistModal')?.classList.remove('show');if(updateHash&&location.hash==='#checklist')history.pushState({},'', '#builds');}
 async function refreshBuildParts(id,item){if(!item?.build_file_url)return;try{const inv=await getBuildInventory(item.build_file_url);item.data={...(item.data||{}),partsCount:inv.total};const el=document.getElementById('buildPartsSummary');if(el)el.textContent=`Parts: ${inv.total.toLocaleString()}`;await sb.from('builds').update({data:item.data}).eq('id',item.id);renderBuilds();}catch(e){console.warn('Parts count unavailable',e)}}
