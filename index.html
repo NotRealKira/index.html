@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/7z-wasm@1.2.0/7zz.umd.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
@@ -212,13 +213,10 @@
             border: 1px solid var(--border);
             backdrop-filter: blur(8px);
             z-index: 10;
-            pointer-events: auto;
+            pointer-events: none;
         }
         #previewUI h4 { margin-bottom: 4px; color: var(--accent); }
         #previewStatus { font-size: 0.8em; color: var(--text-dim); }
-        .preview-direction-controls { display:flex; gap:6px; margin-top:8px; }
-        .preview-direction-controls button { padding:4px 8px; border:1px solid var(--border); border-radius:5px; background:var(--surface2); color:var(--text); cursor:pointer; font:600 .72em 'Outfit',sans-serif; }
-        .preview-direction-controls button:hover { border-color:var(--accent); color:var(--accent); }
         .preview-close {
             position: absolute;
             top: 15px;
@@ -488,6 +486,7 @@
                     <span id="bpFiletext">Choose .build file...</span>
                     <input type="file" id="bpFile" accept=".build" onchange="handleBuildFileSelect(event)">
                 </div>
+                <button class="btn btn-p" onclick="previewSelectedBuild()" id="bpPreviewBtn" disabled>Preview</button>
             </div>
             <div class="build-preview-result" id="bpResult" style="display:none">
                 <div id="bpPreviewStatus" class="build-info">Select a .build file to preview</div>
@@ -529,7 +528,6 @@
             <div id="previewUI">
                 <h4 id="previewTitle">Build Preview</h4>
                 <div id="previewStatus">Ready</div>
-                <div class="preview-direction-controls"><button type="button" onclick="rotatePreview('left')">← Left</button><button type="button" onclick="rotatePreview('right')">Right →</button></div>
             </div>
         </div>
     </div>
@@ -561,7 +559,7 @@ function initThree(containerId = 'previewContainer') {
     camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 5000);
     camera.position.set(50, 50, 50);
     
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
@@ -660,7 +658,7 @@ async function openPreview(url, title, options={}) {
     activePreviewContainerId = inline ? 'bpPreviewContainer' : 'previewContainer';
     activePreviewStatusId = inline ? 'bpPreviewStatus' : 'previewStatus';
     const statusEl = document.getElementById(activePreviewStatusId);
-    statusEl.innerHTML = `<span style="color:#ffcc00">Fetching Build data...</span>`;
+    statusEl.innerHTML = `<span style="color:#ffcc00">Beginning decompression… Preview will start soon.</span>`;
     
     initThree(activePreviewContainerId);
     onPreviewResize();
@@ -778,7 +776,7 @@ function handleBuildFileSelect(event) {
     document.getElementById('bpFilebox').classList.add('ok');
     document.getElementById('bpFiletext').textContent = file.name;
     document.getElementById('bpResult').style.display = 'block';
-    previewSelectedBuild();
+    document.getElementById('bpPreviewBtn').disabled = false;
 }
 
 async function previewSelectedBuild() {
@@ -786,7 +784,7 @@ async function previewSelectedBuild() {
     const status = document.getElementById('bpPreviewStatus');
     if (!file) return;
     document.getElementById('bpResult').style.display = 'block';
-    status.innerHTML = '<span style="color:#ffcc00">Loading build into the preview...</span>';
+    status.innerHTML = '<span style="color:#ffcc00">Preparing preview… Preview will start soon.</span>';
     try {
         const decoded = decodeBuildPayload(await file.text());
         const blockCount = Object.values(decoded).reduce((n, list) => n + (Array.isArray(list) ? list.length : 0), 0);
@@ -940,7 +938,7 @@ async function dlFile(id,url,fileName='build.build'){
     if(dlCooldowns[id]&&Date.now()-dlCooldowns[id]<30000){toast('Wait 30s','warn');return}
     dlCooldowns[id]=Date.now();
     try{
-        const blob=await getBuildFileBlob(url),link=document.createElement('a');
+        toast('Beginning download preparation…','warn');const blob=await getBuildFileBlob(url,(label)=>toast(label,'warn')),link=document.createElement('a');
         link.href=URL.createObjectURL(blob);link.download=fileName||'build.build';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
         await recordUniqueDownload(id);const item=allBuilds.find(b=>String(b.id)===String(id));if(item){item.downloads=Number(item.downloads||0)+1;renderBuilds();}renderTopProfile();
     }catch(e){toast(e.message||'Download failed','err');console.error(e)}
@@ -1035,27 +1033,25 @@ function preCheck(){
     return true;
 }
 function withTimeout(promise,ms,message){return Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),ms))]);}
-async function gzipArrayBuffer(buffer){
-    if(!window.CompressionStream)return null;
-    const stream=new Blob([buffer]).stream().pipeThrough(new CompressionStream('gzip'));
-    return await new Response(stream).arrayBuffer();
+const SEVEN_ZIP_MIME='application/x-7z-compressed';
+let sevenZipBusy=false;
+function setBuildProgress(label){const btn=document.getElementById('bBtn');if(btn)btn.textContent=label;}
+function bytesToBase64(bytes){let out='',step=0x8000;for(let i=0;i<bytes.length;i+=step)out+=String.fromCharCode(...bytes.subarray(i,i+step));return btoa(out);}
+function bytesToDataUrl(bytes,mime=SEVEN_ZIP_MIME){return `data:${mime};base64,${bytesToBase64(bytes)}`;}
+function dataUrlToBytes(dataUrl){const comma=dataUrl.indexOf(',');if(comma<0)throw new Error('Invalid encoded build data');const bin=atob(dataUrl.slice(comma+1));const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes;}
+function is7z(bytes){return bytes?.length>=6&&bytes[0]===0x37&&bytes[1]===0x7a&&bytes[2]===0xbc&&bytes[3]===0xaf&&bytes[4]===0x27&&bytes[5]===0x1c;}
+function isGzip(bytes){return bytes?.length>=2&&bytes[0]===0x1f&&bytes[1]===0x8b;}
+async function readRemoteBytes(url){if(String(url).startsWith('data:'))return dataUrlToBytes(String(url));const res=await withTimeout(fetch(url),30000,'Loading the build file timed out.');return new Uint8Array(await withTimeout(res.arrayBuffer(),30000,'Reading the build data timed out.'));}
+async function runSevenZip(args,inputBytes,inputName,outputName,onProgress){
+    if(typeof SevenZip!=='function')throw new Error('7-Zip compression is not available. Please reload the page.');
+    const runtime=await SevenZip({locateFile:(path)=>`https://unpkg.com/7z-wasm@1.2.0/${path}`,print:()=>{},printErr:()=>{}});runtime.FS.mkdir('/in');runtime.FS.mkdir('/out');runtime.FS.writeFile('/in/'+inputName,inputBytes);
+    return await new Promise((resolve,reject)=>{let finished=false;const finish=code=>{if(finished)return;if(code!==0){finished=true;reject(new Error(`7-Zip failed with exit code ${code}`));return}try{const out=runtime.FS.readFile('/out/'+outputName,{encoding:'binary'});finished=true;resolve(new Uint8Array(out));}catch(e){finished=true;reject(e)}};const fail=e=>{if(!finished){finished=true;reject(e)}};runtime.onAbort=reason=>fail(new Error(String(reason||'7-Zip stopped')));runtime.onExit=code=>finish(code);try{onProgress?.();const code=runtime.callMain(args);if(typeof code==='number')finish(code);}catch(e){fail(e)}});
 }
-function blobToDataUrl(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error||new Error('Could not encode build data'));reader.readAsDataURL(blob);});}
-async function fileToCompressedDataUrl(file,onProgress){
-    onProgress?.(10);const original=await withTimeout(file.arrayBuffer(),30000,'Reading the build file timed out.');onProgress?.(25);
-    const compressed=await withTimeout(gzipArrayBuffer(original),45000,'Compressing the build file timed out.');onProgress?.(75);
-    const result=await withTimeout(blobToDataUrl(new Blob([compressed||original],{type:compressed?'application/gzip':'application/octet-stream'})),30000,'Encoding the build file timed out.');onProgress?.(95);return result;
-}
-async function readBuildText(url){
-    const res=await withTimeout(fetch(url),30000,'Loading the build file timed out.'),bytes=new Uint8Array(await withTimeout(res.arrayBuffer(),30000,'Reading the build data timed out.'));
-    if(bytes[0]===0x1f&&bytes[1]===0x8b&&window.DecompressionStream){const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));return await withTimeout(new Response(stream).text(),30000,'Decompressing the build timed out.');}
-    return new TextDecoder().decode(bytes);
-}
-async function getBuildFileBlob(url){
-    const res=await withTimeout(fetch(url),30000,'Downloading the build timed out.'),bytes=new Uint8Array(await withTimeout(res.arrayBuffer(),30000,'Reading the download timed out.'));
-    if(bytes[0]===0x1f&&bytes[1]===0x8b&&window.DecompressionStream){const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));return new Blob([await withTimeout(new Response(stream).arrayBuffer(),30000,'Decompressing the download timed out.')],{type:'application/octet-stream'});}
-    return new Blob([bytes],{type:'application/octet-stream'});
-}
+async function fileTo7zDataUrl(file,onProgress){if(sevenZipBusy)throw new Error('Another build operation is already running. Please wait.');sevenZipBusy=true;try{onProgress?.('Reading build data…');const original=new Uint8Array(await withTimeout(file.arrayBuffer(),30000,'Reading the build file timed out.'));onProgress?.('Beginning compression…');const archive=await runSevenZip(['a','-t7z','-m0=lzma2','-mx=5','-mmt=on','/out/build.7z','/in/build.build'],original,'build.build','build.7z');onProgress?.('Compression complete. Saving…');return bytesToDataUrl(archive);}finally{sevenZipBusy=false;}}
+async function extract7zBytes(archive){if(sevenZipBusy)throw new Error('Another build operation is already running. Please wait.');sevenZipBusy=true;try{const output=await runSevenZip(['x','-y','-o/out','/in/build.7z'],archive,'build.7z','build.build');return output;}finally{sevenZipBusy=false;}}
+async function getBuildFileBytes(url,onProgress){let bytes=await readRemoteBytes(url);if(is7z(bytes)){onProgress?.('Decompressing 7-Zip build…');return extract7zBytes(bytes);}if(isGzip(bytes)&&window.DecompressionStream){onProgress?.('Decompressing legacy build…');const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));return new Uint8Array(await withTimeout(new Response(stream).arrayBuffer(),30000,'Decompressing the build timed out.'));}return bytes;}
+async function readBuildText(url,onProgress){const bytes=await getBuildFileBytes(url,onProgress);return new TextDecoder().decode(bytes);}
+async function getBuildFileBlob(url,onProgress){const bytes=await getBuildFileBytes(url,onProgress);return new Blob([bytes],{type:'application/octet-stream'});}
 let lastAutoBuildTitle='';
 function autoFillBuildName(input){
     const file=input?.files?.[0],field=document.getElementById('bTitle');
@@ -1072,13 +1068,13 @@ async function captureBuildPreview(buildDataUrl,title){
     if(!renderer||!camera||!buildGroup){closePreview();return null;}
     const view=renderer.domElement,box=new THREE.Box3().setFromObject(buildGroup),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
     const maxDim=Math.max(size.x,size.y,size.z)||20,distance=Math.abs(maxDim/2/Math.tan(camera.fov*Math.PI/360))*1.18,targetY=center.y;
-    const forwardAxis=size.x>=size.z?'x':'z';
+    const forwardAxis='z';
     const renderView=(sign)=>{const x=forwardAxis==='x'?sign*distance:0,z=forwardAxis==='z'?sign*distance:0;camera.position.set(x,targetY+maxDim*.06,z);camera.lookAt(0,targetY,0);if(controls){controls.target.set(0,targetY,0);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/jpeg',.86);};
     const front=renderView(1),back=renderView(-1);
     const [frontImage,backImage]=await Promise.all([waitForImage(front),waitForImage(back)]);
-    const canvas=document.createElement('canvas'),w=view.width,h=view.height;canvas.width=w*2;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,canvas.width,h);ctx.drawImage(frontImage,0,0,w,h);ctx.drawImage(backImage,w,0,w,h);ctx.fillStyle='#00ffcc';ctx.font='600 22px Arial';ctx.fillText('FRONT VIEW',24,34);ctx.fillText('BACK VIEW',w+24,34);
+    const canvas=document.createElement('canvas'),w=640,h=220,panel=w/2;canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,w,h);ctx.drawImage(frontImage,0,0,view.width,view.height,0,0,panel,h);ctx.drawImage(backImage,0,0,view.width,view.height,panel,0,panel,h);ctx.fillStyle='#00ffcc';ctx.font='600 12px Arial';ctx.fillText('FRONT VIEW',12,20);ctx.fillText('BACK VIEW',panel+12,20);
     closePreview();
-    return canvas.toDataURL('image/jpeg',.86);
+    return canvas.toDataURL('image/webp',.62);
 }
 let pendingTermsForm=null;
 function requireScamTerms(formId){
@@ -1103,8 +1099,8 @@ async function upBuild(e){
         if(!file?.name.toLowerCase().endsWith('.build'))throw new Error('Please choose a .build file.');
         setProgress(2,'Checking file...');const fileHash=await fileSha256(file);const{data:duplicateRows,error:duplicateError}=await sb.from('builds').select('id').eq('type','build').eq('file_hash',fileHash).limit(1);if(duplicateError)throw duplicateError;if(duplicateRows?.length)throw new Error('The file is already uploaded by someone.');
         if(!title)throw new Error('Title required');if(!cat)throw new Error('Category required');
-        setProgress(5,'Reading file...');const fu=await fileToCompressedDataUrl(file,setProgress);
-        setProgress(98,'Saving...');const savedBuild=await withTimeout(ins({type:'build',owner:actor.id,owner_email:actor.email,owner_name:actingAsUser?.name||getNm(actor),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),artKey:cat,partsLimit:Number(document.getElementById('bPartsLimit')?.value||50000)},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,file_hash:fileHash,downloads:0}),60000,'Saving the build timed out. Check your connection and try again.');
+        setProgress(5,'Reading file...');const fu=await fileTo7zDataUrl(file,(label)=>{btn.textContent=label;});
+        setProgress(98,'Saving...');const savedBuild=await withTimeout(ins({type:'build',owner:actor.id,owner_email:actor.email,owner_name:actingAsUser?.name||getNm(actor),data:{title,category:cat,description:document.getElementById('bDesc').value.trim(),artKey:cat,storageFormat:'7z-lzma2',partsLimit:Number(document.getElementById('bPartsLimit')?.value||50000)},upload_date:new Date().toISOString(),build_file_url:fu,build_file_name:file.name,file_hash:fileHash,downloads:0}),60000,'Saving the build timed out. Check your connection and try again.');
         try{if(!isAdmin()&&savedBuild?.id)await sb.rpc('award_upload_tokens',{p_build_id:savedBuild.id})}catch(rewardError){console.warn('Upload reward unavailable:',rewardError)}document.getElementById('buildForm').reset();startCooldown();toast('Build uploaded successfully','ok');loadBuilds();updateCounts();loadTokenBalance();
     }catch(err){console.error('Build upload failed:',err);toast(err?.message||'Build upload failed.','err');}
     finally{btn.disabled=false;btn.textContent='Upload';}
@@ -1143,7 +1139,7 @@ async function saveBuildEdits(buildId){
     if(!title||!category){toast('Title and category are required','err');return}
     try{
         const nextData={...(build.data||{}),title,category,description,artKey:category},patch={data:nextData};
-        if(replacement){ if(!replacement.name.toLowerCase().endsWith('.build'))throw new Error('Replacement must be a .build file'); const hash=await fileSha256(replacement),dup=await sb.from('builds').select('id').eq('type','build').eq('file_hash',hash).neq('id',build.id).limit(1); if(dup.error)throw dup.error; if(dup.data?.length)throw new Error('That build file is already uploaded'); patch.build_file_url=await fileToCompressedDataUrl(replacement);patch.build_file_name=replacement.name;patch.file_hash=hash;nextData.partsCount=undefined; }
+        if(replacement){ if(!replacement.name.toLowerCase().endsWith('.build'))throw new Error('Replacement must be a .build file'); const hash=await fileSha256(replacement),dup=await sb.from('builds').select('id').eq('type','build').eq('file_hash',hash).neq('id',build.id).limit(1); if(dup.error)throw dup.error; if(dup.data?.length)throw new Error('That build file is already uploaded'); toast('Beginning compression…','warn');patch.build_file_url=await fileTo7zDataUrl(replacement,(label)=>toast(label,'warn'));patch.build_file_name=replacement.name;patch.file_hash=hash;nextData.storageFormat='7z-lzma2';nextData.partsCount=undefined;delete nextData.previewImage;delete nextData.previewVersion;delete nextData.previewFormat; }
         const {error}=await sb.from('builds').update(patch).eq('id',build.id).eq('owner_email',user.email); if(error)throw error;
         toast('Build updated without creating a new upload','ok'); await loadBuilds(); renderMyBuildsForEdit();
     }catch(e){toast(e.message||'Could not update build','err')}
@@ -1167,11 +1163,14 @@ function openBuildDetails(id,updateHash=true){
     const item=allBuilds.find(build=>getBuildId(build)===String(id));if(!item){if(modalEl)modalEl.querySelector('#buildDetailsContent').innerHTML='<div class="empty">Build details are still loading. Please try again.</div>';return;}
     if(updateHash&&location.hash!==`#build-${id}`)history.pushState({},'',`#build-${id}`);recordUniqueView(item.id);
     const title=esc(item.data?.title||item.build_file_name||'Build'),desc=esc(item.data?.description||'No description provided.'),owner=esc(item.owner_name||'Unknown'),rawEmail=String(item.owner_email||''),email=maskEmail(rawEmail),discord=esc(item.data?.discordUsername||''),category=esc(item.data?.category||'Uncategorized'),fileName=esc(item.build_file_name||'build.build');
-    const preview=item.data?.previewImage?`<img src="${item.data.previewImage}" alt="${title} preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`:'<div class="empty">Preview will be generated after this build is processed.</div>';
+    const preview=item.data?.previewImage?`<img src="${item.data.previewImage}" alt="${title} front and back preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`:'<div id="buildThumbnail" class="empty">Generating Front View / Back View thumbnail…</div>';
     const admin=isAdmin(),ownerControls=user&&item.owner_email===user.email;
     document.getElementById('buildDetailsTitle').textContent=title;
     document.getElementById('buildDetailsContent').innerHTML=`<div style="margin:14px 0 18px">${preview}</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px"><div class="s-box"><small>Category</small><strong>${category}</strong></div><div class="s-box"><small>Downloads:</small><strong>${Number(item.downloads)||0}</strong></div><div class="s-box"><small>File</small><strong>${fileName}</strong></div><div class="s-box"><small>Parts</small><strong id="buildPartsSummary">${item.data?.partsCount?Number(item.data.partsCount).toLocaleString():'Loading...'}</strong></div></div><p style="color:var(--text-dim);margin-bottom:16px">${desc}</p><div class="s-box" style="margin-bottom:16px"><h4 style="margin-bottom:8px">Uploader information</h4><div style="display:flex;align-items:center;gap:10px">${avatarForUser(item.owner)}<span>${owner}</span></div><div style="color:var(--text-dim);font-size:.85em">${email}</div>${discord?`<div style="color:var(--accent);margin-top:6px">Discord: ${discord}</div>`:''}</div><div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}','${fileName}')">Download</button><button class="btn btn-s" onclick="openBuildChecklist('${getBuildId(item)}')">Check List</button><button class="btn btn-s" onclick="closeBuildDetails();openPreview('${item.build_file_url}','${title}')">Open 3D Preview</button>${ownerControls?`<button class="btn btn-d" onclick="closeBuildDetails();delItem('${item.id}')">Delete</button>`:''}${admin&&!ownerControls?`<button class="btn btn-d" onclick="closeBuildDetails();adminDel('${item.id}')">Delete</button><button class="btn btn-warn" onclick="closeBuildDetails();openBanModal('${rawEmail}','${owner}')">Ban</button><button class="btn btn-s" onclick="closeBuildDetails();adminLoginAsUser('${rawEmail}')">Login As</button>`:''}</div>`;
     if(modalEl)modalEl.classList.add('show');
+    if(!item.data?.previewImage){
+        captureBuildPreview(item.build_file_url,title).then(async image=>{if(!image)return;item.data={...(item.data||{}),previewImage:image,previewVersion:4};const target=document.getElementById('buildThumbnail');if(target)target.outerHTML=`<img src="${image}" alt="${title} front and back preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`;try{await sb.from('builds').update({data:item.data}).eq('id',item.id);}catch(e){console.warn('Could not save thumbnail',e)}renderBuilds();}).catch(e=>console.warn('Thumbnail generation failed',e));
+    }
     if(!item.data?.partsCount)refreshBuildParts(getBuildId(item),item);
 }
 function closeBuildDetails(updateHash=true){document.getElementById('buildDetailsModal').classList.remove('show');if(updateHash&&location.hash.startsWith('#build-'))history.pushState({},'', '#builds')}
@@ -1190,12 +1189,12 @@ async function loadLeaderboard(){
     }catch(e){console.error(e);el.innerHTML='<div class="empty">Unable to load leaderboard</div>'}
 }
 async function backfillBuildPreviews(){
-    const missing=allBuilds.filter(item=>(!item.data?.previewImage||item.data?.previewVersion!==3)&&item.build_file_url);
+    const missing=allBuilds.filter(item=>(!item.data?.previewImage||item.data?.previewVersion!==5||item.data?.previewFormat!=='webp')&&item.build_file_url);
     for(const item of missing){
         try{
             const previewImage=await captureBuildPreview(item.build_file_url,item.data?.title||item.build_file_name||'Build Preview');
             if(!previewImage)continue;
-            item.data={...(item.data||{}),previewImage,previewVersion:3};
+            item.data={...(item.data||{}),previewImage,previewVersion:5,previewFormat:'webp'};
             const{error}=await sb.from('builds').update({data:item.data}).eq('id',item.id);
             if(error)console.warn('Preview saved locally only:',error);
             renderBuilds();
