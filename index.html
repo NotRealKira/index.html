@@ -382,12 +382,6 @@
     <section id="executers">
         <div class="executor-section">
             <h3><span class="dot"></span>Android Executers</h3>
-            <div class="executor-toggle">
-                <label>
-                    <span>Show iOS</span>
-                    <div class="toggle-switch" id="iosToggle" onclick="toggleIOSExecutors()"></div>
-                </label>
-            </div>
             <div class="executor-grid" id="androidExecutors">
                 <div class="executor-card">
                     <h4>Delta</h4>
@@ -410,7 +404,7 @@
                     <button class="btn btn-p" onclick="window.open('https://www.vegax.gg/','_blank')">Visit</button>
                 </div>
             </div>
-            <div class="executor-grid" id="iosExecutors" style="display:none;margin-top:20px">
+            <div class="executor-grid" id="iosExecutors" style="display:grid;margin-top:20px">
                 <div class="executor-card">
                     <h4>Delta iOS</h4>
                     <p>iOS executor </p>
@@ -476,6 +470,11 @@
                     <h4>Xeno</h4>
                     <p>Windows executor</p>
                     <button class="btn btn-p" onclick="window.open('https://xeno.onl/','_blank')">Visit</button>
+                </div>
+                <div class="executor-card">
+                    <h4>Real executer</h4>
+                    <p>Windows executor</p>
+                    <button class="btn btn-p" onclick="window.open('https://projectreal.gg/','_blank')">Visit</button>
                 </div>
             </div>
         </div>
@@ -839,24 +838,6 @@ function rotatePreview(direction) {
     camera.position.copy(controls.target).add(offset);
     camera.lookAt(controls.target);
     controls.update();
-}
-
-// ================== EXECUTOR TOGGLE ==================
-function toggleIOSExecutors() {
-    const toggle = document.getElementById('iosToggle');
-    const iosSection = document.getElementById('iosExecutors');
-    const deltaBtn = document.getElementById('deltaDownloadBtn');
-    
-    toggle.classList.toggle('active');
-    const isIOS = toggle.classList.contains('active');
-    
-    iosSection.style.display = isIOS ? 'grid' : 'none';
-    
-    if (isIOS) {
-        deltaBtn.onclick = () => window.open('https://deltaexploits.gg/delta-executor-ios', '_blank');
-    } else {
-        deltaBtn.onclick = () => window.open('https://deltaexploits.gg/delta-executor-android', '_blank');
-    }
 }
 
 // ================== ORIGINAL WEBSITE LOGIC ==================
