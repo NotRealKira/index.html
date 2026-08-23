@@ -697,8 +697,11 @@ function initThree(containerId = 'previewContainer') {
     if (isThreeInit) { const existing = document.getElementById(activePreviewContainerId); if (existing && renderer?.domElement.parentElement !== existing) existing.appendChild(renderer.domElement); onPreviewResize(); requestAnimationFrame(onPreviewResize); return; }
     const container = document.getElementById(activePreviewContainerId);
     if (!container) return;
-    const width = Math.max(1, container.clientWidth || container.getBoundingClientRect().width || 640);
-    const height = Math.max(1, container.clientHeight || container.getBoundingClientRect().height || 420);
+    const initialRect = container.getBoundingClientRect();
+    if (initialRect.width < 2 || initialRect.height < 2) { container.style.width='100%'; container.style.height='420px'; container.style.minHeight='360px'; }
+    const measured = container.getBoundingClientRect();
+    const width = Math.max(1, container.clientWidth || measured.width || 640);
+    const height = Math.max(1, container.clientHeight || measured.height || 420);
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a14);
@@ -738,8 +741,11 @@ function initThree(containerId = 'previewContainer') {
 function onPreviewResize() {
     const container = document.getElementById(activePreviewContainerId);
     if (!container || !renderer || !camera) return;
-    const width = Math.max(1, container.clientWidth || container.getBoundingClientRect().width || 640);
-    const height = Math.max(1, container.clientHeight || container.getBoundingClientRect().height || 420);
+    const rect = container.getBoundingClientRect();
+    if (rect.width < 2 || rect.height < 2) { container.style.width='100%'; container.style.height='420px'; container.style.minHeight='360px'; }
+    const measured = container.getBoundingClientRect();
+    const width = Math.max(1, container.clientWidth || measured.width || 640);
+    const height = Math.max(1, container.clientHeight || measured.height || 420);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
@@ -818,6 +824,22 @@ function createBatchedBlockModel(specs, statusEl) {
     root.userData.blockCount=specs.length;root.userData.renderMeshCount=root.children.length;if(statusEl)statusEl.innerHTML=`<span style="color:#00ffcc">Batched ${specs.length.toLocaleString()} parts into ${root.children.length} render meshes.</span>`;return root;
 }
 
+function render2DBuildFallback(specs,statusEl,container){
+    if(!container)return;
+    container.querySelectorAll('[data-build-fallback]').forEach(el=>el.remove());
+    const canvas=document.createElement('canvas');canvas.dataset.buildFallback='1';canvas.style.cssText='display:block;width:100%;height:100%;min-height:360px;background:#0a0a14;border-radius:10px';
+    const badge=document.createElement('div');badge.dataset.buildFallback='1';badge.style.cssText='position:absolute;left:10px;top:10px;z-index:2;padding:6px 9px;border:1px solid rgba(110,231,183,.35);border-radius:6px;background:rgba(9,9,11,.82);color:#b7ffe2;font:600 12px JetBrains Mono,monospace';badge.textContent=`2D block map · ${specs.length.toLocaleString()} blocks`;
+    if(getComputedStyle(container).position==='static')container.style.position='relative';container.appendChild(canvas);container.appendChild(badge);
+    const width=Math.max(320,container.clientWidth||640),height=Math.max(280,container.clientHeight||420),dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,width,height);
+    const items=specs.map(spec=>{const p=spec.position||{x:0,y:0,z:0},q=spec.size||{x:1,y:1,z:1};return{spec,x:Number(p.x)||0,y:Number(p.y)||0,z:Number(p.z)||0,w:Math.max(.05,Number(q.x)||1),h:Math.max(.05,Number(q.y)||1),d:Math.max(.05,Number(q.z)||1)}});
+    if(!items.length){if(statusEl)statusEl.innerHTML='<span style="color:#fbbf24">No renderable blocks found.</span>';return;}
+    const spanX=Math.max(...items.map(v=>v.x+v.w/2))-Math.min(...items.map(v=>v.x-v.w/2)),spanZ=Math.max(...items.map(v=>v.z+v.d/2))-Math.min(...items.map(v=>v.z-v.d/2));
+    const useFront=spanZ<Math.max(spanX*.04,.01),minA=Math.min(...items.map(v=>v.x-v.w/2)),maxA=Math.max(...items.map(v=>v.x+v.w/2)),minB=Math.min(...items.map(v=>useFront?v.y-v.h/2:v.z-v.d/2)),maxB=Math.max(...items.map(v=>useFront?v.y+v.h/2:v.z+v.d/2)),pad=28,scale=Math.min((width-pad*2)/Math.max(maxA-minA,.01),(height-pad*2)/Math.max(maxB-minB,.01));
+    ctx.strokeStyle='rgba(110,231,183,.2)';ctx.lineWidth=1;ctx.strokeRect(pad,pad,width-pad*2,height-pad*2);
+    for(const item of items){const a=useFront?item.x:item.x,b=useFront?item.y:item.z,aw=useFront?item.w:item.w,bh=useFront?item.h:item.d,x=pad+(a-aw/2-minA)*scale,y=height-pad-(b+bh/2-minB)*scale,w=Math.max(1,aw*scale),h=Math.max(1,bh*scale),hex='#'+(Number(item.spec.color)||0x888888).toString(16).padStart(6,'0').slice(-6);ctx.globalAlpha=Math.max(.15,1-Math.min(1,Number(item.spec.transparency)||0));ctx.fillStyle=hex;ctx.fillRect(x,y,w,h);ctx.strokeStyle='rgba(255,255,255,.18)';ctx.strokeRect(x,y,w,h);}
+    ctx.globalAlpha=1;if(statusEl)statusEl.innerHTML=`<span style="color:#00ff88">✓ ${specs.length.toLocaleString()} blocks loaded in 2D fallback. WebGL is unavailable, but the block map is visible.</span>`;
+    return canvas;
+}
 async function openPreview(url, title, options={}) {
     const inline = !!options.inline;
     const previewBg=document.getElementById('previewModalBg');
@@ -831,7 +853,12 @@ async function openPreview(url, title, options={}) {
     statusEl.innerHTML = `<span style="color:#ffcc00">Beginning decompression… Preview will start soon.</span>`;
     
     if (!initThree(activePreviewContainerId)) {
-        statusEl.innerHTML = '<span style="color:#fbbf24">3D preview is unavailable in this browser. The build was parsed successfully, but no WebGL context could be created.</span>';
+        try {
+            const text = await readBuildText(url), parsed = parseBuildDocument(text);
+            const specs = parsed.blocks.map(entry => ({block:entry.raw,position:entry.position,size:entry.size,rotation:entry.rotation,color:entry.color,transparency:entry.transparency,groupName:entry.groupName,id:entry.id,shape:entry.shape,vertices:entry.vertices,vertexIndices:entry.vertexIndices})).filter(spec=>spec.position&&spec.size);
+            if(!specs.length)throw new Error('No valid blocks found in file');
+            render2DBuildFallback(specs,statusEl,document.getElementById(activePreviewContainerId));
+        } catch(e) { statusEl.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message||e)}</span>`; }
         return;
     }
     onPreviewResize();
@@ -1256,10 +1283,10 @@ function updateIgPartsLabel(value){const el=document.getElementById('igPartsValu
 function sourceAverageColor(data,canvas,x,y,w,h,step){let r=0,g=0,b=0,n=0;const x2=Math.min(canvas.width,x+w),y2=Math.min(canvas.height,y+h);for(let yy=y;yy<y2;yy+=step)for(let xx=x;xx<x2;xx+=step){const i=(yy*canvas.width+xx)*4;r+=data[i];g+=data[i+1];b+=data[i+2];n++;}return n?[Math.round(r/n),Math.round(g/n),Math.round(b/n)]:[0,0,0];}
 function sourcePixelError(data,current,canvas,x,y){const i=(y*canvas.width+x)*4;return Math.abs(data[i]-current[i])+Math.abs(data[i+1]-current[i+1])+Math.abs(data[i+2]-current[i+2]);}
 function sourceCandidateScore(data,current,canvas,shape){const{x,y,w,h,color}=shape,step=Math.max(2,Math.floor(Math.min(w,h)/7));let gain=0,count=0;const x2=Math.min(canvas.width,x+w),y2=Math.min(canvas.height,y+h);for(let yy=y;yy<y2;yy+=step)for(let xx=x;xx<x2;xx+=step){const i=(yy*canvas.width+xx)*4,before=Math.abs(data[i]-current[i])+Math.abs(data[i+1]-current[i+1])+Math.abs(data[i+2]-current[i+2]),after=Math.abs(data[i]-color[0])+Math.abs(data[i+1]-color[1])+Math.abs(data[i+2]-color[2]);gain+=before-after;count++;}return(gain/Math.max(1,count))*w*h;}
-function sourceGeometrize(sample,total,quality,rectBias,runId){const sourceCanvas=sample.canvas,W=sample.w,H=sample.h,target=sample.data,workCanvas=document.createElement('canvas');workCanvas.width=W;workCanvas.height=H;const ctx=workCanvas.getContext('2d'),base=sourceAverageColor(target,workCanvas,0,0,W,H,Math.max(2,Math.floor(Math.min(W,H)/28)));ctx.fillStyle=`rgb(${base.join(',')})`;ctx.fillRect(0,0,W,H);const current=ctx.getImageData(0,0,W,H).data,parts=[],minimum=Math.max(4,Math.round(Math.min(W,H)/80)),scale=Math.max(minimum+2,Math.round(Math.sqrt((W*H)/total)*2.25)),searchCount=total>=5000?(quality===1?12:quality===2?20:32):total>=2000?(quality===1?18:quality===2?30:46):(quality===1?28:quality===2?52:88);return new Promise(resolve=>{let rendered=0;function searchFocus(){let focus={x:Math.floor(Math.random()*W),y:Math.floor(Math.random()*H),error:-1},probe=Math.max(5,Math.floor(Math.min(W,H)/18));for(let i=0;i<24;i++){const x=Math.floor(Math.random()*W),y=Math.floor(Math.random()*H),e=sourcePixelError(target,current,workCanvas,x,y);if(e>focus.error)focus={x,y,error:e};}for(let y=Math.max(0,focus.y-probe);y<Math.min(H,focus.y+probe);y+=probe)for(let x=Math.max(0,focus.x-probe);x<Math.min(W,focus.x+probe);x+=probe){const e=sourcePixelError(target,current,workCanvas,x,y);if(e>focus.error)focus={x,y,error:e};}return focus;}
+function sourceGeometrize(sample,total,quality,rectBias,runId){const sourceCanvas=sample.canvas,visiblePreview=document.getElementById('igPreviewCanvas')||sourceCanvas,W=sample.w,H=sample.h,target=sample.data,workCanvas=document.createElement('canvas');workCanvas.width=W;workCanvas.height=H;const ctx=workCanvas.getContext('2d'),base=sourceAverageColor(target,workCanvas,0,0,W,H,Math.max(2,Math.floor(Math.min(W,H)/28)));ctx.fillStyle=`rgb(${base.join(',')})`;ctx.fillRect(0,0,W,H);const current=ctx.getImageData(0,0,W,H).data,parts=[],minimum=Math.max(4,Math.round(Math.min(W,H)/80)),scale=Math.max(minimum+2,Math.round(Math.sqrt((W*H)/total)*2.25)),searchCount=total>=5000?(quality===1?12:quality===2?20:32):total>=2000?(quality===1?18:quality===2?30:46):(quality===1?28:quality===2?52:88);return new Promise(resolve=>{let rendered=0;function searchFocus(){let focus={x:Math.floor(Math.random()*W),y:Math.floor(Math.random()*H),error:-1},probe=Math.max(5,Math.floor(Math.min(W,H)/18));for(let i=0;i<24;i++){const x=Math.floor(Math.random()*W),y=Math.floor(Math.random()*H),e=sourcePixelError(target,current,workCanvas,x,y);if(e>focus.error)focus={x,y,error:e};}for(let y=Math.max(0,focus.y-probe);y<Math.min(H,focus.y+probe);y+=probe)for(let x=Math.max(0,focus.x-probe);x<Math.min(W,focus.x+probe);x+=probe){const e=sourcePixelError(target,current,workCanvas,x,y);if(e>focus.error)focus={x,y,error:e};}return focus;}
 function makeCandidate(focus){const square=Math.random()>rectBias,grow=Math.pow(Math.random(),1.35);let w=Math.round(minimum+scale*(.35+grow*3.4)),h=square?w:Math.round(minimum+scale*(.35+Math.random()*3.4));w=Math.max(minimum,Math.min(W,w));h=Math.max(minimum,Math.min(H,h));const x=Math.max(0,Math.min(W-w,Math.round(focus.x-Math.random()*w*.85))),y=Math.max(0,Math.min(H-h,Math.round(focus.y-Math.random()*h*.85))),color=sourceAverageColor(target,workCanvas,x,y,w,h,Math.max(2,Math.floor(Math.min(w,h)/8)));return{x,y,w,h,color,score:sourceCandidateScore(target,current,workCanvas,{x,y,w,h,color}),square};}
 function commit(shape){ctx.fillStyle=`rgb(${shape.color.join(',')})`;ctx.fillRect(shape.x,shape.y,shape.w,shape.h);const x2=Math.min(W,shape.x+shape.w),y2=Math.min(H,shape.y+shape.h);for(let yy=shape.y;yy<y2;yy++)for(let xx=shape.x;xx<x2;xx++){const i=(yy*W+xx)*4;current[i]=shape.color[0];current[i+1]=shape.color[1];current[i+2]=shape.color[2];current[i+3]=255;}parts.push({color:{r:shape.color[0],g:shape.color[1],b:shape.color[2],a:255},px:(shape.x+shape.w/2)/W,py:(shape.y+shape.h/2)/H,w:shape.w/W,h:shape.h/H,shape:shape.square?'square':'rectangle',rotation:0});}
-function work(){if(runId!==igGenerationId)return;const batch=total>=5000?7:total>=2000?5:3;for(let i=0;i<batch&&rendered<total;i++){const focus=searchFocus();let best=null;for(let j=0;j<searchCount;j++){const candidate=makeCandidate(focus);if(!best||candidate.score>best.score)best=candidate;}if(best&&best.score>0)commit(best);rendered++;}igParts=parts;drawSourcePreview(parts,sourceCanvas);const status=document.getElementById('igStatus');if(status)status.textContent=`${rendered.toLocaleString()} / ${total.toLocaleString()} source Geometrizer shapes rendered…`;if(rendered<total)requestAnimationFrame(work);else{document.getElementById('igPreviewBadge').textContent='Shape creation preview';setIgStatus(`✓ Source Geometrizer complete: ${parts.length.toLocaleString()} shapes rendered.`,'ok');resolve({parts});}}requestAnimationFrame(work);});}
+function work(){if(runId!==igGenerationId)return;const batch=total>=5000?7:total>=2000?5:3;for(let i=0;i<batch&&rendered<total;i++){const focus=searchFocus();let best=null;for(let j=0;j<searchCount;j++){const candidate=makeCandidate(focus);if(!best||candidate.score>best.score)best=candidate;}if(best&&best.score>0)commit(best);rendered++;}igParts=parts;drawSourcePreview(parts,visiblePreview);const status=document.getElementById('igStatus');if(status)status.textContent=`${rendered.toLocaleString()} / ${total.toLocaleString()} source Geometrizer shapes rendered…`;if(rendered<total)requestAnimationFrame(work);else{document.getElementById('igPreviewBadge').textContent='Shape creation preview';setIgStatus(`✓ Source Geometrizer complete: ${parts.length.toLocaleString()} shapes rendered.`,'ok');resolve({parts});}}requestAnimationFrame(work);});}
 function drawSourcePreview(parts,canvas){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,canvas.width,canvas.height);const margin=18,innerW=canvas.width-margin*2,innerH=canvas.height-margin*2;for(const p of parts){const cx=margin+p.px*innerW,cy=margin+p.py*innerH,w=p.w*innerW,h=p.h*innerH;ctx.fillStyle=rgbHex(p.color);ctx.fillRect(cx-w/2,cy-h/2,w,h);}}
 let igGenerationId=0;
 async function geometrizeImage(){if(!igImage||igBusy)return;return updateIgPreview();}
@@ -1542,14 +1569,16 @@ function parseVecShort(str) {
 
 function parseColor(str, defaultColor = 0x888888) {
     if (str === undefined || str === null || str === '') return defaultColor;
-    if (typeof str === 'number') return Number.isFinite(str) ? str : defaultColor;
+    if (typeof str === 'number') return Number.isFinite(str) ? Math.max(0, Math.min(0xffffff, Math.round(str))) : defaultColor;
+    if (typeof str === 'object') {
+        const r = parseNumberValue(str.r ?? str.R ?? str.x), g = parseNumberValue(str.g ?? str.G ?? str.y), b = parseNumberValue(str.b ?? str.B ?? str.z);
+        if ([r,g,b].every(Number.isFinite)) { const rr=r<=1?r*255:r, gg=g<=1?g*255:g, bb=b<=1?b*255:b; return (Math.floor(Math.max(0,Math.min(255,rr)))<<16)+(Math.floor(Math.max(0,Math.min(255,gg)))<<8)+Math.floor(Math.max(0,Math.min(255,bb))); }
+        return defaultColor;
+    }
     const value = String(str).trim().replace(/^#/, '');
     if (/^[0-9a-fA-F]{6}$/.test(value)) return parseInt(value, 16);
     const rgb = value.split(',').map(n => parseNumberValue(n));
-    if (rgb.length === 3) {
-        const r = rgb[0] <= 1 ? rgb[0] * 255 : rgb[0], g = rgb[1] <= 1 ? rgb[1] * 255 : rgb[1], b = rgb[2] <= 1 ? rgb[2] * 255 : rgb[2];
-        return (Math.floor(r) << 16) + (Math.floor(g) << 8) + Math.floor(b);
-    }
+    if (rgb.length === 3) { const r=rgb[0]<=1?rgb[0]*255:rgb[0],g=rgb[1]<=1?rgb[1]*255:rgb[1],b=rgb[2]<=1?rgb[2]*255:rgb[2]; return (Math.floor(Math.max(0,Math.min(255,r)))<<16)+(Math.floor(Math.max(0,Math.min(255,g)))<<8)+Math.floor(Math.max(0,Math.min(255,b))); }
     return defaultColor;
 }
 
