@@ -1067,9 +1067,9 @@ async function captureBuildPreview(buildDataUrl,title){
     await new Promise(resolve=>setTimeout(resolve,220));
     if(!renderer||!camera||!buildGroup){closePreview();return null;}
     const view=renderer.domElement,box=new THREE.Box3().setFromObject(buildGroup),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
-    const maxDim=Math.max(size.x,size.y,size.z)||20,distance=Math.abs(maxDim/2/Math.tan(camera.fov*Math.PI/360))*1.18,targetY=center.y;
+    const maxDim=Math.max(size.x,size.y,size.z)||20,distance=Math.abs(maxDim/2/Math.tan(camera.fov*Math.PI/360))*1.34,targetY=center.y+size.y*.10;
     const forwardAxis='z';
-    const renderView=(sign)=>{const x=forwardAxis==='x'?sign*distance:0,z=forwardAxis==='z'?sign*distance:0;camera.position.set(x,targetY+maxDim*.06,z);camera.lookAt(0,targetY,0);if(controls){controls.target.set(0,targetY,0);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/jpeg',.86);};
+    const renderView=(sign)=>{const x=forwardAxis==='x'?center.x+sign*distance:center.x,z=forwardAxis==='z'?center.z+sign*distance:center.z;camera.position.set(x,targetY+maxDim*.16,z);camera.lookAt(center.x,targetY,center.z);if(controls){controls.target.set(center.x,targetY,center.z);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/webp',.82);};
     const front=renderView(1),back=renderView(-1);
     const [frontImage,backImage]=await Promise.all([waitForImage(front),waitForImage(back)]);
     const canvas=document.createElement('canvas'),w=640,h=220,panel=w/2;canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,w,h);ctx.drawImage(frontImage,0,0,view.width,view.height,0,0,panel,h);ctx.drawImage(backImage,0,0,view.width,view.height,panel,0,panel,h);ctx.fillStyle='#00ffcc';ctx.font='600 12px Arial';ctx.fillText('FRONT VIEW',12,20);ctx.fillText('BACK VIEW',panel+12,20);
@@ -1163,13 +1163,14 @@ function openBuildDetails(id,updateHash=true){
     const item=allBuilds.find(build=>getBuildId(build)===String(id));if(!item){if(modalEl)modalEl.querySelector('#buildDetailsContent').innerHTML='<div class="empty">Build details are still loading. Please try again.</div>';return;}
     if(updateHash&&location.hash!==`#build-${id}`)history.pushState({},'',`#build-${id}`);recordUniqueView(item.id);
     const title=esc(item.data?.title||item.build_file_name||'Build'),desc=esc(item.data?.description||'No description provided.'),owner=esc(item.owner_name||'Unknown'),rawEmail=String(item.owner_email||''),email=maskEmail(rawEmail),discord=esc(item.data?.discordUsername||''),category=esc(item.data?.category||'Uncategorized'),fileName=esc(item.build_file_name||'build.build');
-    const preview=item.data?.previewImage?`<img src="${item.data.previewImage}" alt="${title} front and back preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`:'<div id="buildThumbnail" class="empty">Generating Front View / Back View thumbnail…</div>';
+    const needsPreview=!item.data?.previewImage||item.data?.previewVersion!==5||item.data?.previewFormat!=='webp';
+    const preview=needsPreview?`<div id="buildThumbnail" class="empty">Generating Front View / Back View thumbnail…</div>`:`<img src="${item.data.previewImage}" alt="${title} front and back preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`;
     const admin=isAdmin(),ownerControls=user&&item.owner_email===user.email;
     document.getElementById('buildDetailsTitle').textContent=title;
     document.getElementById('buildDetailsContent').innerHTML=`<div style="margin:14px 0 18px">${preview}</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:16px"><div class="s-box"><small>Category</small><strong>${category}</strong></div><div class="s-box"><small>Downloads:</small><strong>${Number(item.downloads)||0}</strong></div><div class="s-box"><small>File</small><strong>${fileName}</strong></div><div class="s-box"><small>Parts</small><strong id="buildPartsSummary">${item.data?.partsCount?Number(item.data.partsCount).toLocaleString():'Loading...'}</strong></div></div><p style="color:var(--text-dim);margin-bottom:16px">${desc}</p><div class="s-box" style="margin-bottom:16px"><h4 style="margin-bottom:8px">Uploader information</h4><div style="display:flex;align-items:center;gap:10px">${avatarForUser(item.owner)}<span>${owner}</span></div><div style="color:var(--text-dim);font-size:.85em">${email}</div>${discord?`<div style="color:var(--accent);margin-top:6px">Discord: ${discord}</div>`:''}</div><div style="display:flex;flex-wrap:wrap;gap:8px"><button class="btn btn-p" onclick="dlFile('${item.id}','${item.build_file_url}','${fileName}')">Download</button><button class="btn btn-s" onclick="openBuildChecklist('${getBuildId(item)}')">Check List</button><button class="btn btn-s" onclick="closeBuildDetails();openPreview('${item.build_file_url}','${title}')">Open 3D Preview</button>${ownerControls?`<button class="btn btn-d" onclick="closeBuildDetails();delItem('${item.id}')">Delete</button>`:''}${admin&&!ownerControls?`<button class="btn btn-d" onclick="closeBuildDetails();adminDel('${item.id}')">Delete</button><button class="btn btn-warn" onclick="closeBuildDetails();openBanModal('${rawEmail}','${owner}')">Ban</button><button class="btn btn-s" onclick="closeBuildDetails();adminLoginAsUser('${rawEmail}')">Login As</button>`:''}</div>`;
     if(modalEl)modalEl.classList.add('show');
-    if(!item.data?.previewImage){
-        captureBuildPreview(item.build_file_url,title).then(async image=>{if(!image)return;item.data={...(item.data||{}),previewImage:image,previewVersion:4};const target=document.getElementById('buildThumbnail');if(target)target.outerHTML=`<img src="${image}" alt="${title} front and back preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`;try{await sb.from('builds').update({data:item.data}).eq('id',item.id);}catch(e){console.warn('Could not save thumbnail',e)}renderBuilds();}).catch(e=>console.warn('Thumbnail generation failed',e));
+    if(needsPreview){
+        captureBuildPreview(item.build_file_url,title).then(async image=>{if(!image)return;item.data={...(item.data||{}),previewImage:image,previewVersion:5,previewFormat:'webp'};const target=document.getElementById('buildThumbnail');if(target)target.outerHTML=`<img src="${image}" alt="${title} front and back preview" style="width:100%;max-height:420px;object-fit:contain;border-radius:12px;background:#0a0a14">`;await persistBuildPreview(item,image);renderBuilds();}).catch(e=>console.warn('Thumbnail generation failed',e));
     }
     if(!item.data?.partsCount)refreshBuildParts(getBuildId(item),item);
 }
@@ -1188,17 +1189,15 @@ async function loadLeaderboard(){
         obsAll();
     }catch(e){console.error(e);el.innerHTML='<div class="empty">Unable to load leaderboard</div>'}
 }
+async function persistBuildPreview(item,previewImage){
+    item.data={...(item.data||{}),previewImage,previewVersion:5,previewFormat:'webp'};
+    const rpc=await sb.rpc('save_build_preview',{p_build_id:String(item.id),p_preview_image:previewImage,p_preview_version:5,p_preview_format:'webp'});
+    if(rpc.error){const fallback=await sb.from('builds').update({data:item.data}).eq('id',item.id);if(fallback.error)console.warn('Preview could not be saved for all-build refresh. Apply supabase_preview_rpc.sql:',rpc.error.message||rpc.error);}
+}
 async function backfillBuildPreviews(){
-    const missing=allBuilds.filter(item=>(!item.data?.previewImage||item.data?.previewVersion!==5||item.data?.previewFormat!=='webp')&&item.build_file_url);
+    const missing=allBuilds.filter(item=>item.type==='build'&&(!item.data?.previewImage||item.data?.previewVersion!==5||item.data?.previewFormat!=='webp')&&item.build_file_url);
     for(const item of missing){
-        try{
-            const previewImage=await captureBuildPreview(item.build_file_url,item.data?.title||item.build_file_name||'Build Preview');
-            if(!previewImage)continue;
-            item.data={...(item.data||{}),previewImage,previewVersion:5,previewFormat:'webp'};
-            const{error}=await sb.from('builds').update({data:item.data}).eq('id',item.id);
-            if(error)console.warn('Preview saved locally only:',error);
-            renderBuilds();
-        }catch(e){console.warn('Preview backfill skipped:',e)}
+        try{const previewImage=await captureBuildPreview(item.build_file_url,item.data?.title||item.build_file_name||'Build Preview');if(!previewImage)continue;await persistBuildPreview(item,previewImage);renderBuilds();}catch(e){console.warn('Preview backfill skipped:',e)}
     }
 }
 async function loadBuilds(){try{allBuilds=await loadDB('build','new');renderBuilds();loadAllProfileAvatars();renderTopProfile();handleHash();backfillBuildPreviews()}catch(e){console.error(e)}}
