@@ -1733,9 +1733,9 @@ async function backfillBuildPreviews(){
     }
 }
 async function loadBuildList(){
-    const result=await withTimeout(sb.from('builds').select('id,type,owner_name,owner_email,owner,downloads,upload_date,build_file_name,data->>title,data->>category,data->>description,data->>discordUsername,data->>partsCount,data->>artKey').eq('type','build').order('upload_date',{ascending:false}),10000,'Loading builds timed out.');
+    const result=await withTimeout(sb.from('builds').select('id,type,owner_name,owner_email,owner,downloads,upload_date,build_file_name,data->>title,data->>category,data->>description,data->>discordUsername,data->>partsCount,data->>artKey,data->>previewImage,data->>previewVersion,data->>previewFormat').eq('type','build').order('upload_date',{ascending:false}),10000,'Loading builds timed out.');
     if(result.error)throw result.error;
-    return (result.data||[]).map(row=>({...row,data:{title:row.title||'',category:row.category||'',description:row.description||'',discordUsername:row.discordUsername||'',partsCount:row.partsCount||'',artKey:row.artKey||''}}));
+    return (result.data||[]).map(row=>({...row,data:{title:row.title||'',category:row.category||'',description:row.description||'',discordUsername:row.discordUsername||'',partsCount:row.partsCount||'',artKey:row.artKey||'',previewImage:row.previewImage||'',previewVersion:row.previewVersion||'',previewFormat:row.previewFormat||''}}));
 }
 async function ensureBuildFile(item){
     if(!item||item.build_file_url)return item;
@@ -1755,7 +1755,7 @@ async function loadTrades(){try{const i=await loadDB('trade',document.getElement
 async function loadMy(){if(!user)return;try{const{data}=await sb.from('builds').select('*').eq('owner_email',user.email).order('upload_date',{ascending:false});document.getElementById('myCards').innerHTML=data?.length?data.map(i=>card(i,true)).join(''):'<div class="empty">No uploads</div>';obsAll()}catch(e){console.error(e)}}
 async function delItem(id){if(!confirm('Delete?'))return;try{await delItemLogic(id);toast('Deleted','ok');loadMy();loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
 async function adminDel(id){if(!isAdmin()||!confirm('Delete?'))return;try{await delItemLogic(id);toast('Deleted','ok');loadBuilds();loadSells();loadTrades()}catch(e){toast(e.message||e,'err')}}
-async function updateCounts(){const el=document.getElementById('sBuilds');try{const result=await withTimeout(sb.from('builds').select('*',{count:'exact',head:true}).eq('type','build'),6000,'Loading build count timed out.');if(result.error)throw result.error;if(el)el.textContent=result.count||0}catch(e){if(el)el.textContent='—';console.warn('Build count unavailable:',e.message||e)}}
+async function updateCounts(){const el=document.getElementById('sBuilds');try{const result=await withTimeout(sb.from('builds').select('id',{count:'exact',head:true}).eq('type','build'),6000,'Loading build count timed out.');if(result.error)throw result.error;if(el&&Number.isFinite(Number(result.count)))el.textContent=Number(result.count).toLocaleString();}catch(e){if(el&&(!allBuilds||!allBuilds.length))el.textContent='—';console.warn('Build count unavailable:',e.message||e)}}
 function showOwner(n,e){document.getElementById('mName').textContent=n||'Unknown';document.getElementById('mEmail').textContent=e?e.slice(0,3)+'**********************':'Hidden';document.getElementById('modal').classList.add('show')}
 function closeModal(){document.getElementById('modal').classList.remove('show')}
 function openDiscord(){window.open(DISCORD,'_blank')}
