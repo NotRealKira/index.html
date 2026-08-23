@@ -584,7 +584,7 @@
                     <div class="s-box">
                         <h4>2. Choose block</h4>
                         <label class="field"><span class="picker-label">Block type</span><select class="input" id="glbBlockType"><option value="PlasticBlock" selected>PlasticBlock</option><option value="MetalBlock">MetalBlock</option><option value="IceBlock">IceBlock</option><option value="GlassBlock">GlassBlock</option></select></label>
-                        <p class="glb-help" style="margin-top:10px">Every generated part uses this block type. Large models use conservative, shape-safe merging only: adjacent coplanar triangles with matching colors are merged when the resulting part tightly covers the original surface. No coarse grouping is used.</p>
+                        <p class="glb-help" style="margin-top:10px">Every generated part uses this block type. Large flat surfaces use exact property-preserving grid merging: touching coplanar triangles with identical color, material, transparency, and reflectance merge only when they completely fill one rectangle. Gapped, curved, L-shaped, or differently colored surfaces remain separate.</p>
                         <button class="btn btn-p btn-full" id="glbConvertBtn" onclick="convertGlbToBuild()" disabled>Convert to .Build</button>
                     </div>
                     <div id="glbStatus" class="glb-status" aria-live="polite">Import a GLB to begin.</div>
@@ -1190,41 +1190,26 @@ function appendTrianglePart(parts,p0,p1,p2,material,uv0,uv1,uv2,vc0,vc1,vc2,scal
     parts.push({Anchored:true,CanCollide:true,CastShadow:true,Color:hexColor(color),CFrame:cframeArray(center.clone().multiplyScalar(.5),axisX,axisY,axisZ),Size:[width*.5,height*.5,thickness*.5],Transparency:color.a<.999?Math.min(.9,1-color.a):0,_vertices:[p0.clone(),p1.clone(),p2.clone()],_center:center.clone(),_normal:normal.clone(),_axes:{x:axisX.clone(),y:axisY.clone(),z:axisZ.clone()},_color:color,_materialKey:material?.name||material?.uuid||'default'});
 }
 function stripBuildPart(part){return{Anchored:part.Anchored,CanCollide:part.CanCollide,CastShadow:part.CastShadow,Color:part.Color,CFrame:part.CFrame,Size:part.Size,Transparency:part.Transparency};}
-function mergePartGroup(group){
-    const ref=group[0],axes=ref._axes,min={x:Infinity,y:Infinity,z:Infinity},max={x:-Infinity,y:-Infinity,z:-Infinity};
-    for(const part of group)for(const vertex of part._vertices){const x=vertex.dot(axes.x),y=vertex.dot(axes.y),z=vertex.dot(axes.z);min.x=Math.min(min.x,x);min.y=Math.min(min.y,y);min.z=Math.min(min.z,z);max.x=Math.max(max.x,x);max.y=Math.max(max.y,y);max.z=Math.max(max.z,z);}
-    const center=axes.x.clone().multiplyScalar((min.x+max.x)/2).addScaledVector(axes.y,(min.y+max.y)/2).addScaledVector(axes.z,(min.z+max.z)/2),size=[Math.max(max.x-min.x,.02),Math.max(max.y-min.y,.02),Math.max(max.z-min.z,.06)],color=group.reduce((sum,p)=>({r:sum.r+p._color.r,g:sum.g+p._color.g,b:sum.b+p._color.b,a:sum.a+p._color.a}),{r:0,g:0,b:0,a:0});color.r/=group.length;color.g/=group.length;color.b/=group.length;color.a/=group.length;
-    size[0]*=.5;size[1]*=.5;size[2]*=.5;return{Anchored:true,CanCollide:true,CastShadow:true,Color:hexColor(color),CFrame:cframeArray(center.clone().multiplyScalar(.5),axes.x,axes.y,axes.z),Size:size,Transparency:color.a<.999?Math.min(.9,1-color.a):0};
+function surfaceFrame(group){
+    const ref=group[0],normal=ref._normal.clone().normalize(),points=[];for(const part of group)points.push(...part._vertices);
+    const candidates=[ref._axes.x.clone(),ref._axes.y.clone()];for(let i=0;i<points.length;i++)for(let j=i+1;j<points.length;j++){const edge=points[j].clone().sub(points[i]);edge.addScaledVector(normal,-edge.dot(normal));if(edge.lengthSq()>1e-8)candidates.push(edge.normalize());}
+    let best=null;for(const candidate of candidates){const axisX=candidate.clone().normalize(),axisY=normal.clone().cross(axisX).normalize();if(axisY.lengthSq()<1e-8)continue;const origin=points[0],min={x:Infinity,y:Infinity,z:Infinity},max={x:-Infinity,y:-Infinity,z:-Infinity};for(const point of points){const d=point.clone().sub(origin);const x=d.dot(axisX),y=d.dot(axisY),z=d.dot(normal);min.x=Math.min(min.x,x);min.y=Math.min(min.y,y);min.z=Math.min(min.z,z);max.x=Math.max(max.x,x);max.y=Math.max(max.y,y);max.z=Math.max(max.z,z);}let area=0;for(const part of group){const v=part._vertices,ab=v[1].clone().sub(v[0]),ac=v[2].clone().sub(v[0]);area+=ab.cross(ac).length()*.5;}const rectangle=Math.max(0,max.x-min.x)*Math.max(0,max.y-min.y),fill=rectangle?area/rectangle:0;if(!best||fill>best.fill){best={axisX,axisY,axisZ:normal,min,max,origin,fill};}}
+    return best;
 }
-function groupParts(parts,cell,colorBucket,normalBucket){const groups=new Map();for(const part of parts){const c=part._center,n=part._normal,col=part._color,key=[Math.floor(c.x/cell),Math.floor(c.y/cell),Math.floor(c.z/cell),Math.round((n.x+1)*normalBucket),Math.round((n.y+1)*normalBucket),Math.round((n.z+1)*normalBucket),part._materialKey,Math.floor(col.r/colorBucket),Math.floor(col.g/colorBucket),Math.floor(col.b/colorBucket)].join('|');if(!groups.has(key))groups.set(key,[]);groups.get(key).push(part);}return Array.from(groups.values()).map(mergePartGroup);}
+function mergePartGroup(group){
+    const frame=surfaceFrame(group),{axisX,axisY,axisZ,min,max,origin}=frame,center=origin.clone().addScaledVector(axisX,(min.x+max.x)/2).addScaledVector(axisY,(min.y+max.y)/2).addScaledVector(axisZ,(min.z+max.z)/2),size=[Math.max(max.x-min.x,.02)*.5,Math.max(max.y-min.y,.02)*.5,Math.max(max.z-min.z,.06)*.5],color=group.reduce((sum,p)=>({r:sum.r+p._color.r,g:sum.g+p._color.g,b:sum.b+p._color.b,a:sum.a+p._color.a}),{r:0,g:0,b:0,a:0});color.r/=group.length;color.g/=group.length;color.b/=group.length;color.a/=group.length;
+    return{Anchored:true,CanCollide:true,CastShadow:true,Color:hexColor(color),CFrame:cframeArray(center.clone().multiplyScalar(.5),axisX,axisY,axisZ),Size:size,Transparency:color.a<.999?Math.min(.9,1-color.a):0};
+}
 function reduceBuildParts(parts){
     const sourceCount=parts.length;
     if(sourceCount<=1)return{parts:parts.map(stripBuildPart),sourceCount,merged:false};
-    const pointKey=p=>`${Math.round(p.x*1000)}|${Math.round(p.y*1000)}|${Math.round(p.z*1000)}`;
-    const vertexOwners=new Map();
+    const pointKey=p=>`${Math.round(p.x*1000)}|${Math.round(p.y*1000)}|${Math.round(p.z*1000)}`,vertexOwners=new Map();
     parts.forEach((part,index)=>{for(const vertex of part._vertices){const key=pointKey(vertex);if(!vertexOwners.has(key))vertexOwners.set(key,[]);vertexOwners.get(key).push(index);}});
-    const neighbors=new Map();
-    for(const owners of vertexOwners.values()){const unique=[...new Set(owners)];for(const a of unique)for(const b of unique)if(a!==b){if(!neighbors.has(a))neighbors.set(a,new Set());neighbors.get(a).add(b);}}
-    const used=new Uint8Array(sourceCount),safeParts=[];
-    const sameSurface=(a,b)=>{
-        if(a._materialKey!==b._materialKey||a.Color!==b.Color)return false;
-        if(a._normal.dot(b._normal)<.9995)return false;
-        if(a._axes.x.dot(b._axes.x)<.995||a._axes.y.dot(b._axes.y)<.995)return false;
-        const planeGap=Math.abs(a._normal.dot(b._center.clone().sub(a._center)));if(planeGap>.035)return false;
-        const edgeScale=Math.max(a.Size[0],a.Size[1],b.Size[0],b.Size[1],1),close=0.045+edgeScale*.003;
-        let touching=false;for(const va of a._vertices)for(const vb of b._vertices)if(va.distanceToSquared(vb)<=close*close)touching=true;
-        return touching;
-    };
-    const groupIsTight=group=>{
-        if(group.length<2||group.length>12)return false;const ref=group[0],axis=ref._axes,origin=ref._center,min={x:Infinity,y:Infinity},max={x:-Infinity,y:-Infinity};let area=0;
-        for(const part of group){const v=part._vertices;const ab=v[1].clone().sub(v[0]),ac=v[2].clone().sub(v[0]);area+=ab.cross(ac).length()*.5;for(const point of v){const d=point.clone().sub(origin);const x=d.dot(axis.x),y=d.dot(axis.y);min.x=Math.min(min.x,x);min.y=Math.min(min.y,y);max.x=Math.max(max.x,x);max.y=Math.max(max.y,y);if(Math.abs(d.dot(axis.z))>.06)return false;}}
-        const rectangle=Math.max(0,max.x-min.x)*Math.max(0,max.y-min.y);return rectangle>0&&area/rectangle>=.985;
-    };
-    for(let i=0;i<sourceCount;i++){
-        if(used[i])continue;const seed=parts[i],group=[seed],queue=[i];used[i]=1;
-        while(queue.length){const current=queue.shift();for(const next of neighbors.get(current)||[]){if(used[next]||group.length>=12||!sameSurface(parts[current],parts[next]))continue;const candidate=group.concat(parts[next]);if(groupIsTight(candidate)){group.push(parts[next]);used[next]=1;queue.push(next);}}}
-        safeParts.push(group.length>1?mergePartGroup(group):stripBuildPart(group[0]));
-    }
+    const neighbors=new Map();for(const owners of vertexOwners.values()){const unique=[...new Set(owners)];for(const a of unique)for(const b of unique)if(a!==b){if(!neighbors.has(a))neighbors.set(a,new Set());neighbors.get(a).add(b);}}
+    const sameSurface=(a,b)=>{if(a._materialKey!==b._materialKey||a.Color!==b.Color||a.Transparency!==b.Transparency||a.Reflectance!==b.Reflectance||a.Material!==b.Material)return false;if(a._normal.dot(b._normal)<.9995)return false;return Math.abs(a._normal.dot(b._center.clone().sub(a._center)))<.035;};
+    const groupIsTight=group=>{if(group.length<2)return false;const frame=surfaceFrame(group);if(!frame)return false;for(const part of group)for(const point of part._vertices)if(Math.abs(frame.axisZ.dot(point.clone().sub(frame.origin)))>.06)return false;return frame.fill>=.995;};
+    const visited=new Uint8Array(sourceCount),safeParts=[];
+    for(let i=0;i<sourceCount;i++){if(visited[i])continue;const component=[],queue=[i];visited[i]=1;while(queue.length){const current=queue.pop();component.push(current);for(const next of neighbors.get(current)||[]){if(!visited[next]&&sameSurface(parts[current],parts[next])){visited[next]=1;queue.push(next);}}}const group=component.map(index=>parts[index]);if(groupIsTight(group))safeParts.push(mergePartGroup(group));else for(const part of group)safeParts.push(stripBuildPart(part));}
     return{parts:safeParts,sourceCount,merged:safeParts.length<sourceCount};
 }
 function collectTriangleParts(model,box){
