@@ -920,31 +920,24 @@ function renderParsedSummary(parsed) {
 }
 
 function renderParsedBlockList() {
-    const list = document.getElementById('bpBlockList');
-    if (!list || !bpParsedBuild) return;
-    const needle = bpBlockFilter.trim().toLowerCase();
-    const matches = bpParsedBuild.blocks.filter(entry => {
-        if (!needle) return true;
-        const haystack = `${entry.groupName} ${entry.id ?? ''} ${Object.keys(entry.raw || {}).join(' ')} ${JSON.stringify(entry.raw || {})}`.toLowerCase();
+    const list=document.getElementById('bpBlockList');
+    if(!list||!bpParsedBuild)return;
+    const needle=bpBlockFilter.trim().toLowerCase();
+    const matches=bpParsedBuild.blocks.filter(entry=>{
+        if(!needle)return true;
+        const haystack=`${entry.groupName} ${entry.id??''} ${Object.keys(entry.raw||{}).join(' ')} ${JSON.stringify(entry.raw||{})}`.toLowerCase();
         return haystack.includes(needle);
     });
-    const visible = matches.slice(0, 1500);
-    if (!visible.length) {
-        list.innerHTML = '<div class="empty">No matching blocks</div>';
-        document.getElementById('bpBlockDetail').innerHTML = '<div class="empty">No block selected</div>';
-        return;
-    }
-    list.innerHTML = visible.map(entry => {
-        const index = bpParsedBuild.blocks.indexOf(entry);
-        const selected = index === bpSelectedBlock ? ' active' : '';
-        const id = entry.id === undefined || entry.id === null ? 'no ID' : `ID ${esc(String(entry.id))}`;
-        return `<button class="bp-block-row${selected}" type="button" data-bp-index="${index}"><span><span class="name">${esc(entry.groupName)}</span><span class="meta">${id} · ${esc(formatParsedVector(entry.position))}</span></span><span class="count">#${entry.index + 1}</span></button>`;
+    if(!matches.length){list.innerHTML='<div class="empty">No matching blocks</div>';document.getElementById('bpBlockDetail').innerHTML='<div class="empty">No block selected</div>';return;}
+    const groups=new Map();for(const entry of matches){const key=entry.groupName||'UnknownBlock';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(entry);}
+    const visible=[...groups.entries()].slice(0,1500);
+    list.innerHTML=visible.map(([name,entries])=>{
+        const representative=entries[0],index=bpParsedBuild.blocks.indexOf(representative),selected=entries.some(entry=>bpParsedBuild.blocks.indexOf(entry)===bpSelectedBlock)?' active':'';
+        const id=representative.id===undefined||representative.id===null?'no ID':`ID ${esc(String(representative.id))}`;
+        return `<button class="bp-block-row${selected}" type="button" data-bp-index="${index}"><span><span class="name">${esc(name)} ×${entries.length.toLocaleString()}</span><span class="meta">${id} · ${esc(formatParsedVector(representative.position))}</span></span><span class="count">${entries.length.toLocaleString()}</span></button>`;
     }).join('');
-    if (matches.length > visible.length) {
-        list.insertAdjacentHTML('beforeend', `<div class="bp-parser-note" style="padding:6px 4px">Showing first ${visible.length.toLocaleString()} of ${matches.length.toLocaleString()} matches.</div>`);
-    }
-    if (bpSelectedBlock < 0 || !bpParsedBuild.blocks[bpSelectedBlock]) selectParsedBlock(bpParsedBuild.blocks.indexOf(visible[0]));
-    else renderParsedBlockDetail(bpSelectedBlock);
+    if(groups.size>visible.length)list.insertAdjacentHTML('beforeend',`<div class="bp-parser-note" style="padding:6px 4px">Showing first ${visible.length.toLocaleString()} of ${groups.size.toLocaleString()} block groups.</div>`);
+    if(bpSelectedBlock<0||!bpParsedBuild.blocks[bpSelectedBlock])selectParsedBlock(bpParsedBuild.blocks.indexOf(visible[0][1][0]));else renderParsedBlockDetail(bpSelectedBlock);
 }
 
 function renderParsedBlockDetail(index) {
@@ -984,27 +977,11 @@ function resetParsedPreviewState() {
 }
 
 async function handleBuildFileSelect(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    document.getElementById('bpFilebox').classList.add('ok');
-    document.getElementById('bpFiletext').textContent = file.name;
-    document.getElementById('bpResult').style.display = 'block';
-    document.getElementById('bpPreviewBtn').disabled = true;
-    const status = document.getElementById('bpPreviewStatus');
-    status.innerHTML = '<span style="color:#ffcc00">Reading and parsing file…</span>';
-    resetParsedPreviewState();
-    try {
-        const parsed = parseBuildDocument(await file.text());
-        if (!parsed.stats.total) throw new Error('No block data found');
-        bpParsedBuild = parsed;
-        renderParsedSummary(parsed);
-        renderParsedBlockList();
-        document.getElementById('bpPreviewBtn').disabled = false;
-        status.innerHTML = `<span style="color:#00ff88">✓ Parsed ${parsed.stats.total.toLocaleString()} blocks across ${parsed.stats.types} types. Click Preview to render.</span>`;
-    } catch (e) {
-        status.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message || e)}</span>`;
-        toast(e.message || 'Could not parse build file', 'err');
-    }
+    const file=event.target.files?.[0];if(!file)return;
+    document.getElementById('bpFilebox').classList.add('ok');document.getElementById('bpFiletext').textContent=file.name;document.getElementById('bpResult').style.display='block';document.getElementById('bpPreviewBtn').disabled=true;
+    const status=document.getElementById('bpPreviewStatus');status.innerHTML='<span style="color:#ffcc00">Reading and parsing file…</span>';resetParsedPreviewState();
+    try{const text=await withTimeout(file.text(),30000,'Reading the selected build timed out.');const parsed=parseBuildDocument(text);if(!parsed.stats.total)throw new Error('No block data found');bpParsedBuild=parsed;renderParsedSummary(parsed);renderParsedBlockList();document.getElementById('bpPreviewBtn').disabled=false;status.innerHTML=`<span style="color:#00ff88">✓ Parsed ${parsed.stats.total.toLocaleString()} blocks across ${parsed.stats.types} types. Click Preview to render.</span>`;}
+    catch(e){status.innerHTML=`<span style="color:#f87171">Error: ${esc(e.message||e)}</span>`;toast(e.message||'Could not parse build file','err');}
 }
 
 async function previewSelectedBuild() {
