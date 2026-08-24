@@ -466,6 +466,11 @@
         section.on{animation:sectionReveal .28s ease both}@keyframes sectionReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
         @media(max-width:980px){.hero{grid-template-columns:1fr}.hero-img{min-height:260px}.feat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
         @media(max-width:620px){.wrap{padding-inline:12px}.topbar{align-items:stretch;flex-direction:column}.top-left{justify-content:space-between}.top-stats{justify-content:stretch}.top-stat{flex:1;text-align:center}nav{overflow-x:auto}nav a{padding:9px 11px}.hero{min-height:0;padding:28px 22px;border-radius:22px}.hero h1{font-size:clamp(2.45rem,13vw,4rem)}.hero:after{display:none}.feat-grid{grid-template-columns:1fr 1fr}.controls{align-items:stretch}.search-box{max-width:none;min-width:100%}}
+
+        .build-card .card-art.has-thumbnail{aspect-ratio:640/220;min-height:0;height:auto}
+        .build-card .card-art.has-thumbnail img{object-fit:contain;background:#0b1218}
+        .build-card .favorite-actions{justify-content:flex-end;margin-top:13px}
+        .build-card .favorite-actions .favorite-star{margin-left:auto}
     </style>
 </head>
 <body id="app">
@@ -1723,9 +1728,9 @@ async function captureBuildPreview(buildDataUrl,title){
     await new Promise(resolve=>setTimeout(resolve,220));
     if(!renderer||!camera||!buildGroup){closePreview();return null;}
     const view=renderer.domElement,box=new THREE.Box3().setFromObject(buildGroup),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());
-    const maxDim=Math.max(size.x,size.y,size.z)||20,distance=Math.abs(maxDim/2/Math.tan(camera.fov*Math.PI/360))*1.34,targetY=center.y+size.y*.10;
+    const maxDim=Math.max(size.x,size.y,size.z)||20,distance=Math.abs(maxDim/2/Math.tan(camera.fov*Math.PI/360))*1.34,targetY=center.y;
     const forwardAxis='z';
-    const renderView=(sign)=>{const x=forwardAxis==='x'?center.x+sign*distance:center.x,z=forwardAxis==='z'?center.z+sign*distance:center.z;camera.position.set(x,targetY+maxDim*.16,z);camera.lookAt(center.x,targetY,center.z);if(controls){controls.target.set(center.x,targetY,center.z);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/webp',.82);};
+    const renderView=(sign)=>{const x=forwardAxis==='x'?center.x+sign*distance:center.x,z=forwardAxis==='z'?center.z+sign*distance:center.z;camera.position.set(x,targetY+maxDim*.08,z);camera.lookAt(center.x,targetY,center.z);if(controls){controls.target.set(center.x,targetY,center.z);controls.update();}renderer.render(scene,camera);return view.toDataURL('image/webp',.82);};
     const front=renderView(1),back=renderView(-1);
     const [frontImage,backImage]=await Promise.all([waitForImage(front),waitForImage(back)]);
     const canvas=document.createElement('canvas'),w=640,h=220,panel=w/2;canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,w,h);ctx.drawImage(frontImage,0,0,view.width,view.height,0,0,panel,h);ctx.drawImage(backImage,0,0,view.width,view.height,panel,0,panel,h);ctx.fillStyle='#00ffcc';ctx.font='600 12px Arial';ctx.fillText('FRONT VIEW',12,20);ctx.fillText('BACK VIEW',panel+12,20);
@@ -1802,7 +1807,7 @@ async function saveBuildEdits(buildId){
 }
 
 function artFor(item){
-    if(item.data?.previewImage)return `<div class="card-art"><img src="${item.data.previewImage}" alt="${esc(item.data?.title||'Build preview')}" loading="lazy"></div>`;
+    if(item.data?.previewImage)return `<div class="card-art has-thumbnail"><img src="${item.data.previewImage}" alt="${esc(item.data?.title||'Build preview')}" loading="lazy"></div>`;
     const key=String(item.data?.artKey||item.data?.category||'local').toLowerCase().replace(/[^a-z0-9]+/g,'-');
     return `<div class="card-art art-${key}"><span>${esc((item.data?.category||item.data?.artKey||'LOCAL').slice(0,10))}</span></div>`;
 }
@@ -1991,7 +1996,7 @@ function card(item,canDel=false){
     const admin=isAdmin(),id=String(getBuildId(safeItem)),on=esc(safeItem.owner_name)||'Unknown',oe=esc(safeItem.owner_email)||'',cat=meta.category,dl=safeItem.downloads||0,desc=meta.description,discord=esc(meta.discordUsername||''),parts=Number(meta.partsCount)||0;
     if(safeItem.type==='build'){
         const favorite=isFavorite(id);
-        return `<article class="card reveal build-card" data-build-id="${esc(id)}" role="article" onclick="if(!event.target.closest('button,a,input,select,textarea'))openBuildDetails('${id}',true)">${artFor(safeItem)}<div class="card-body"><div class="card-title">${esc(meta.title||safeItem.build_file_name||'Untitled build')}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}<div class="card-owner" style="display:flex;align-items:center;gap:8px">${avatarForUser(item.owner)}<span>${on}</span></div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${safeItem.upload_date?new Date(safeItem.upload_date).toLocaleDateString():'—'}</span><span>Downloads: ${dl}</span><span>${parts?`Parts: ${parts.toLocaleString()}`:'Parts: —'}</span></div><div class="card-actions"><a class="btn btn-p preview-link" href="#preview-${encodeURIComponent(id)}" onclick="event.preventDefault();event.stopPropagation();openBuildPreviewById('${id}')">Preview</a><button class="favorite-star${favorite?' is-favorite':''}" type="button" aria-label="${favorite?'Remove from':'Add to'} favorites" aria-pressed="${favorite}" title="${favorite?'Remove from':'Add to'} favorites" onclick="toggleFavorite('${id}',event)">${favorite?'★':'☆'}</button></div></div></article>`;
+        return `<article class="card reveal build-card" data-build-id="${esc(id)}" role="article" onclick="if(!event.target.closest('button,a,input,select,textarea'))openBuildDetails('${id}',true)">${artFor(safeItem)}<div class="card-body"><div class="card-title">${esc(meta.title||safeItem.build_file_name||'Untitled build')}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}<div class="card-owner" style="display:flex;align-items:center;gap:8px">${avatarForUser(item.owner)}<span>${on}</span></div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${safeItem.upload_date?new Date(safeItem.upload_date).toLocaleDateString():'—'}</span><span>Downloads: ${dl}</span><span>${parts?`Parts: ${parts.toLocaleString()}`:'Parts: —'}</span></div><div class="card-actions favorite-actions"><button class="favorite-star${favorite?' is-favorite':''}" type="button" aria-label="${favorite?'Remove from':'Add to'} favorites" aria-pressed="${favorite}" title="${favorite?'Remove from':'Add to'} favorites" onclick="toggleFavorite('${id}',event)">${favorite?'★':'☆'}</button></div></div></article>`;
     }
     return`<div class="card reveal">${artFor(safeItem)}<div class="card-body"><div class="card-title">${esc(meta.title)}</div>${cat?`<div class="card-cat">${esc(cat)}</div>`:''}${safeItem.price?`<div class="card-price">${safeItem.price} R$</div>`:''}<div class="card-owner" onclick="showOwner('${on}','${oe}')">${on}</div>${desc?`<div class="card-desc">${esc(desc)}</div>`:''}${discord?`<div class="card-owner">Discord: ${discord}</div>`:''}<div class="card-meta"><span>${new Date(safeItem.upload_date).toLocaleDateString()}</span><span>Downloads: ${dl}</span></div><div class="card-actions">${safeItem.build_file_url?`<button class="btn btn-p" onclick="dlFile('${safeItem.id}','${safeItem.build_file_url}')">Download</button>`:''}${canDel?`<button class="btn btn-d" onclick="delItem('${safeItem.id}')">Delete</button>`:''}${admin&&!canDel?`<button class="btn btn-d" onclick="adminDel('${safeItem.id}')">Delete</button><button class="btn btn-warn" onclick="openBanModal('${oe}','${on}')">Ban</button><button class="btn btn-s" onclick="adminLoginAsUser('${oe}')">Login As</button>`:''}</div></div></div>`}
 async function loadLeaderboard(){
@@ -2096,4 +2101,4 @@ window.addEventListener('load',()=>{
     void initAuth();
 });
 </script>
-</body>
+</body>             
