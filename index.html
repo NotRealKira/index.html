@@ -323,6 +323,99 @@
     
         .ig-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.85fr);gap:16px;align-items:start}.ig-preview-card{min-width:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px}.ig-preview-card #igPreviewWrap{position:relative;width:100%;min-height:360px;background:#0a0a14;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center}.ig-preview-card canvas{display:block;width:100%;height:auto;max-height:620px;image-rendering:auto}.ig-preview-card #igPreviewBadge{position:absolute;left:10px;top:10px;padding:6px 9px;border-radius:6px;background:rgba(9,9,11,.78);border:1px solid var(--border);color:var(--text);font-size:.72em}.ig-controls{display:grid;gap:12px}.ig-or{margin:10px 0;color:var(--text-dim);font-size:.75em;text-align:center}.ig-credit{margin:-2px 0 16px;color:var(--text-dim);font-size:.78em}.ig-credit strong{color:var(--accent)}@media(max-width:900px){.ig-layout{grid-template-columns:1fr}.ig-preview-card #igPreviewWrap{min-height:260px}}
     .preview-adjusters{display:none!important;position:absolute;left:10px;right:10px;bottom:10px;z-index:8;background:rgba(13,13,18,.92);border:1px solid var(--border);border-radius:9px;padding:9px;display:grid;grid-template-columns:repeat(4,minmax(80px,1fr));gap:5px 9px;backdrop-filter:blur(8px)}.preview-adjusters strong{grid-column:1/-1;color:var(--accent);font-size:.78em}.preview-adjusters label{font-size:.58em;color:var(--text-dim);text-transform:uppercase}.preview-adjusters output{float:right;color:var(--accent);font-family:'JetBrains Mono',monospace}.preview-adjusters input{display:block;width:100%;accent-color:var(--accent)}.preview-adjusters button{grid-column:1/-1;margin-top:3px;padding:8px;font-size:.75em}@media(max-width:700px){.preview-adjusters{grid-template-columns:repeat(2,minmax(80px,1fr))}}.select-search{width:100%;margin-bottom:6px;padding:8px 10px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);font-size:.78em;outline:none}.select-search:focus{border-color:var(--accent)}.preview-gesture-hint{position:absolute;left:10px;bottom:10px;z-index:7;padding:6px 9px;border:1px solid rgba(110,231,183,.28);border-radius:7px;background:rgba(8,10,18,.76);color:var(--text-dim);font-size:.68em;pointer-events:auto;backdrop-filter:blur(6px)}.preview-gesture-hint button{margin-left:7px;border:0;background:transparent;color:var(--text-dim);font-size:1.15em;line-height:1;cursor:pointer}.preview-gesture-hint button:hover{color:var(--accent)}.model-selected{box-shadow:inset 0 0 0 2px var(--accent)}
+
+        /* Modern visual refresh */
+        :root{
+            --bg:#080b10;
+            --surface:#10161d;
+            --surface2:#17212b;
+            --surface3:#21303b;
+            --border:#2b3a46;
+            --text:#f4f8f7;
+            --text-dim:#91a3ad;
+            --accent:#8cf5ca;
+            --accent-strong:#48dbaa;
+            --accent-dim:rgba(140,245,202,.14);
+            --accent-glow:rgba(140,245,202,.075);
+            --danger:#ff7d8a;
+            --warning:#ffd166;
+        }
+        body{
+            background:
+                radial-gradient(900px 500px at 8% -10%,rgba(72,219,170,.13),transparent 62%),
+                radial-gradient(700px 500px at 98% 10%,rgba(119,137,255,.10),transparent 64%),
+                var(--bg);
+            color:var(--text);
+            letter-spacing:.01em;
+        }
+        .bg-grid{opacity:.16;background-size:56px 56px}
+        .bg-mesh .orb{filter:blur(145px);opacity:.045!important}
+        .wrap{max-width:1320px;padding:28px 24px}
+        .topbar{
+            padding:13px 16px;
+            margin:0 0 16px;
+            border:1px solid rgba(145,163,173,.18);
+            border-radius:18px;
+            background:rgba(16,22,29,.76);
+            box-shadow:0 18px 55px rgba(0,0,0,.18);
+            backdrop-filter:blur(18px);
+        }
+        .logo{font-size:1.35em;letter-spacing:-.04em}
+        .logo .mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));box-shadow:0 0 22px rgba(72,219,170,.24)}
+        .top-profile{background:rgba(23,33,43,.82);border-color:rgba(145,163,173,.22);padding:7px 15px 7px 7px}
+        nav{
+            position:sticky;
+            top:14px;
+            z-index:30;
+            gap:5px;
+            padding:5px;
+            margin-bottom:38px;
+            border:1px solid rgba(145,163,173,.20);
+            border-radius:14px;
+            background:rgba(16,22,29,.82);
+            box-shadow:0 14px 34px rgba(0,0,0,.16);
+            backdrop-filter:blur(16px);
+        }
+        nav a{padding:11px 16px;border-radius:10px;color:#9badb7}
+        nav a:hover{background:rgba(140,245,202,.08);color:var(--text)}
+        nav a.on{background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#06110d;box-shadow:0 6px 18px rgba(72,219,170,.18)}
+        .form-card,.s-box,.p-card,.price-card,.feat{
+            background:linear-gradient(145deg,rgba(16,22,29,.96),rgba(13,19,25,.96));
+            border-color:rgba(145,163,173,.20);
+            border-radius:18px;
+            box-shadow:0 18px 55px rgba(0,0,0,.14);
+        }
+        .form-card{padding:26px}
+        .form-card h3{font-size:1.08em;border-bottom-color:rgba(145,163,173,.16)}
+        .input,.builder-material-select,.bp-search{background:rgba(23,33,43,.88);border-color:rgba(145,163,173,.22);border-radius:10px}
+        .input:focus,.bp-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(140,245,202,.10)}
+        .btn{border-radius:10px;padding:12px 18px}
+        .btn-p{background:linear-gradient(135deg,var(--accent),var(--accent-strong));box-shadow:0 8px 22px rgba(72,219,170,.12)}
+        .btn-p:hover{box-shadow:0 10px 28px rgba(72,219,170,.26)}
+        .btn-s{background:rgba(23,33,43,.9);border-color:rgba(145,163,173,.24)}
+        .file-box{min-height:48px;border-color:rgba(145,163,173,.30);background:rgba(23,33,43,.66);border-radius:10px}
+        .file-box:hover,.file-box.ok{border-color:var(--accent);background:rgba(140,245,202,.07)}
+        .build-preview-controls{padding:12px;border:1px solid rgba(145,163,173,.16);border-radius:14px;background:rgba(23,33,43,.42)}
+        .build-preview-result{padding:16px;border-color:rgba(145,163,173,.20);border-radius:16px;background:rgba(16,22,29,.70)}
+        .build-info,.bp-summary-card,.bp-inspector,.toggle-row{background:rgba(23,33,43,.74);border-color:rgba(145,163,173,.18)}
+        .bp-summary-card{border-radius:12px;padding:14px 15px}
+        .build-preview-layout{gap:16px}
+        .build-preview-layout .inline-preview-container,#glbPreviewContainer,#objPreviewContainer{border:1px solid rgba(140,245,202,.20);border-radius:14px;background:radial-gradient(circle at 50% 35%,#1d2a32,#0c1117 72%)}
+        .bp-inspector{border-radius:14px}
+        .bp-block-row{border-radius:10px;background:rgba(16,22,29,.75)}
+        .bp-block-row:hover,.bp-block-row.active{background:rgba(140,245,202,.08)}
+        .hero-art,.sc-art{border-color:rgba(140,245,202,.20);border-radius:20px;box-shadow:0 22px 70px rgba(0,0,0,.22)}
+        .hero h1{letter-spacing:-.055em}
+        .feat,.price-card,.build-card{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+        .feat:hover,.price-card:hover,.build-card:hover{transform:translateY(-3px);border-color:rgba(140,245,202,.46);box-shadow:0 16px 38px rgba(0,0,0,.22)}
+        .preview-fps,.storage-status{border-color:rgba(140,245,202,.30);background:rgba(8,13,17,.80)}
+        @media(max-width:768px){
+            .wrap{padding:18px 14px}
+            .topbar{padding:12px;border-radius:14px}
+            nav{position:relative;top:0;margin-bottom:24px;overflow-x:auto;flex-wrap:nowrap}
+            nav a{padding:9px 12px}
+            .form-card{padding:18px}
+        }
     </style>
 </head>
 <body id="app">
@@ -679,6 +772,8 @@ const isAdmin=()=>user?.email?.toLowerCase()===ADMIN.toLowerCase();
 
 // ================== THREE.JS PREVIEWER LOGIC ==================
 let scene, camera, renderer, controls, buildGroup = null, grid = null;
+let previewRequestId = 0;
+let bpSelectedFile = null;
 let activePreviewContainerId = 'previewContainer';
 let activePreviewStatusId = 'previewStatus';
 let activePreviewMetricsId = 'previewMetrics';
@@ -708,7 +803,7 @@ function makeSafeRenderer(options,container,label){
 
 function initThree(containerId = 'previewContainer') {
     activePreviewContainerId = containerId;
-    if (isThreeInit) { const existing = document.getElementById(activePreviewContainerId); if (existing && renderer?.domElement.parentElement !== existing) existing.appendChild(renderer.domElement); onPreviewResize(); requestAnimationFrame(onPreviewResize); return; }
+    if (isThreeInit) { const existing = document.getElementById(activePreviewContainerId); if (existing && renderer?.domElement.parentElement !== existing) existing.appendChild(renderer.domElement); onPreviewResize(); requestAnimationFrame(onPreviewResize); return true; }
     const container = document.getElementById(activePreviewContainerId);
     if (!container) return;
     const initialRect = container.getBoundingClientRect();
@@ -855,6 +950,9 @@ function render2DBuildFallback(specs,statusEl,container){
     return canvas;
 }
 async function openPreview(url, title, options={}) {
+    const requestId = Number.isInteger(options.requestId) ? options.requestId : ++previewRequestId;
+    const isCurrent = () => requestId === previewRequestId;
+    if (!isCurrent()) return;
     const inline = !!options.inline;
     const previewBg=document.getElementById('previewModalBg');
     previewBg.classList.toggle('capture-mode',!!options.silent);
@@ -864,34 +962,34 @@ async function openPreview(url, title, options={}) {
     activePreviewContainerId = inline ? 'bpPreviewContainer' : 'previewContainer';
     activePreviewStatusId = inline ? 'bpPreviewStatus' : 'previewStatus';
     const statusEl = document.getElementById(activePreviewStatusId);
-    statusEl.innerHTML = `<span style="color:#ffcc00">Beginning decompression… Preview will start soon.</span>`;
-    
+    if (statusEl) statusEl.innerHTML = `<span style="color:#ffcc00">Beginning decompression… Preview will start soon.</span>`;
+
+    // Always remove the previous model/fallback before a new request starts.
+    disposeBuildGroup();
+    document.getElementById(activePreviewContainerId)?.querySelectorAll('[data-build-fallback]').forEach(el => el.remove());
+    if (!isCurrent()) return;
+
     if (!initThree(activePreviewContainerId)) {
         try {
-            const text = await readBuildText(url), parsed = parseBuildDocument(text);
+            const text = await readBuildText(url);
+            if (!isCurrent()) return;
+            const parsed = parseBuildDocument(text);
             const specs = parsed.blocks.map(entry => ({block:entry.raw,position:entry.position,size:entry.size,rotation:entry.rotation,color:entry.color,transparency:entry.transparency,groupName:entry.groupName,id:entry.id,shape:entry.shape,vertices:entry.vertices,vertexIndices:entry.vertexIndices})).filter(spec=>spec.position&&spec.size);
             if(!specs.length)throw new Error('No valid blocks found in file');
             render2DBuildFallback(specs,statusEl,document.getElementById(activePreviewContainerId));
-        } catch(e) { statusEl.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message||e)}</span>`; }
+        } catch(e) {
+            if (isCurrent() && statusEl) statusEl.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message||e)}</span>`;
+        }
         return;
     }
     onPreviewResize();
+    if (!isCurrent()) return;
 
-    if (buildGroup) {
-        scene.remove(buildGroup);
-        buildGroup.traverse(child => {
-            if (child.geometry) child.geometry.dispose();
-            if (child.material) {
-                if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
-                else child.material.dispose();
-            }
-        });
-    }
     buildGroup = new THREE.Group();
     scene.add(buildGroup);
-
     try {
         const text = await readBuildText(url);
+        if (!isCurrent()) return;
         const parsed = parseBuildDocument(text);
         const blockSpecs = parsed.blocks.map(entry => ({
             block: entry.raw,
@@ -916,34 +1014,49 @@ async function openPreview(url, title, options={}) {
         const outlierLimit=Math.max(40,medDist+Math.max(12,mad*6));
         const kept=blockSpecs.filter(v=>Math.hypot(v.position.x-seed.x,v.position.y-seed.y,v.position.z-seed.z)<=outlierLimit);
         const blockCount = kept.length;
-        if (blockCount === 0) throw new Error("No valid blocks found in file");
+        if (blockCount === 0) throw new Error('No valid blocks found in file');
+        if (!isCurrent()) return;
         const batchedModel = createBatchedBlockModel(kept, statusEl);
+        if (!isCurrent()) return;
         buildGroup.add(batchedModel);
         if(inline)setPreviewExport('bp',kept.map(v=>Object.assign({},v.block||{}, {__groupName:v.groupName||'PlasticBlock'})));
 
         const box = new THREE.Box3().setFromObject(buildGroup);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-        
         buildGroup.position.x = -center.x;
         buildGroup.position.z = -center.z;
         buildGroup.position.y = -box.min.y;
 
         const maxDim = Math.max(size.x, size.y, size.z);
         const fov = camera.fov * (Math.PI / 180);
-        let cameraDist = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
+        const cameraDist = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 1.8;
         camera.position.set(cameraDist, cameraDist, cameraDist);
         camera.lookAt(0, 0, 0);
         if (controls) {
             controls.target.set(0, 0, 0);
             controls.update();
         }
-
-        statusEl.innerHTML = `<span style="color:#00ff88">✓ ${blockCount} blocks loaded.</span>`;
+        if (isCurrent() && statusEl) statusEl.innerHTML = `<span style="color:#00ff88">✓ ${blockCount.toLocaleString()} blocks loaded from ${esc(title || 'selected build')}.</span>`;
     } catch (e) {
-        statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
+        if (!isCurrent()) return;
+        disposeBuildGroup();
+        if (statusEl) statusEl.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message || e)}</span>`;
         console.error(e);
     }
+}
+
+function disposeBuildGroup() {
+    if (!buildGroup) return;
+    if (scene) scene.remove(buildGroup);
+    buildGroup.traverse(child => {
+        if (child.geometry) child.geometry.dispose();
+        if (child.material) {
+            if (Array.isArray(child.material)) child.material.forEach(material => material.dispose());
+            else child.material.dispose();
+        }
+    });
+    buildGroup = null;
 }
 
 function closePreview() {
@@ -1033,31 +1146,67 @@ function resetParsedPreviewState() {
 }
 
 async function handleBuildFileSelect(event) {
-    const file=event.target.files?.[0];if(!file)return;
-    document.getElementById('bpFilebox').classList.add('ok');document.getElementById('bpFiletext').textContent=file.name;document.getElementById('bpResult').style.display='block';document.getElementById('bpPreviewBtn').disabled=true;
-    const status=document.getElementById('bpPreviewStatus');status.innerHTML='<span style="color:#ffcc00">Reading and parsing file…</span>';resetParsedPreviewState();
-    try{const text=await withTimeout(file.text(),30000,'Reading the selected build timed out.');const parsed=parseBuildDocument(text);if(!parsed.stats.total)throw new Error('No block data found');bpParsedBuild=parsed;renderParsedSummary(parsed);renderParsedBlockList();document.getElementById('bpPreviewBtn').disabled=false;status.innerHTML=`<span style="color:#00ff88">✓ Parsed ${parsed.stats.total.toLocaleString()} blocks across ${parsed.stats.types} types. Click Preview to render.</span>`;}
-    catch(e){status.innerHTML=`<span style="color:#f87171">Error: ${esc(e.message||e)}</span>`;toast(e.message||'Could not parse build file','err');}
+    const file=event.target.files?.[0];
+    if(!file)return;
+    const requestId = ++previewRequestId;
+    bpSelectedFile = file;
+    disposeBuildGroup();
+    document.getElementById(activePreviewContainerId)?.querySelectorAll('[data-build-fallback]').forEach(el => el.remove());
+    previewExports.bp = null;
+    document.querySelector('.preview-adjusters[data-adjuster="bp"] button')?.setAttribute('disabled','');
+    document.getElementById('bpFilebox').classList.add('ok');
+    document.getElementById('bpFiletext').textContent=file.name;
+    document.getElementById('bpResult').style.display='block';
+    document.getElementById('bpPreviewBtn').disabled=true;
+    const status=document.getElementById('bpPreviewStatus');
+    status.innerHTML='<span style="color:#ffcc00">Reading and parsing file…</span>';
+    resetParsedPreviewState();
+    try {
+        const text=await withTimeout(file.text(),30000,'Reading the selected build timed out.');
+        if (requestId !== previewRequestId || bpSelectedFile !== file) return;
+        const parsed=parseBuildDocument(text);
+        if(!parsed.stats.total)throw new Error('No block data found');
+        bpParsedBuild=parsed;
+        renderParsedSummary(parsed);
+        renderParsedBlockList();
+        document.getElementById('bpPreviewBtn').disabled=false;
+        status.innerHTML=`<span style="color:#00ff88">✓ Parsed ${parsed.stats.total.toLocaleString()} blocks across ${parsed.stats.types} types. Click Preview to render.</span>`;
+    } catch(e) {
+        if (requestId !== previewRequestId || bpSelectedFile !== file) return;
+        status.innerHTML=`<span style="color:#f87171">Error: ${esc(e.message||e)}</span>`;
+        toast(e.message||'Could not parse build file','err');
+    }
 }
 
 async function previewSelectedBuild() {
-    const file = document.getElementById('bpFile').files[0];
+    const file = bpSelectedFile || document.getElementById('bpFile').files[0];
     const status = document.getElementById('bpPreviewStatus');
-    if (!file) return;
+    if (!file || file !== document.getElementById('bpFile').files[0]) return;
+    const requestId = ++previewRequestId;
     document.getElementById('bpResult').style.display = 'block';
+    document.getElementById('bpPreviewBtn').disabled = true;
     status.innerHTML = '<span style="color:#ffcc00">Preparing 3D preview…</span>';
     try {
-        const text = await file.text();
+        const text = await withTimeout(file.text(),30000,'Reading the selected build timed out.');
+        if (requestId !== previewRequestId || bpSelectedFile !== file) return;
         const parsed = parseBuildDocument(text);
         if (!parsed.stats.total) throw new Error('No block data found');
         bpParsedBuild = parsed;
         renderParsedSummary(parsed);
         renderParsedBlockList();
         const url = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
-        await openPreview(url, file.name, {inline:true});
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
-        toast('Build preview updated in the GUI', 'ok');
+        try {
+            await openPreview(url, file.name, {inline:true, requestId});
+        } finally {
+            URL.revokeObjectURL(url);
+        }
+        if (requestId === previewRequestId) {
+            document.getElementById('bpPreviewBtn').disabled = false;
+            toast('Build preview updated in the GUI', 'ok');
+        }
     } catch (e) {
+        if (requestId !== previewRequestId || bpSelectedFile !== file) return;
+        document.getElementById('bpPreviewBtn').disabled = false;
         status.innerHTML = `<span style="color:#f87171">Error: ${esc(e.message || e)}</span>`;
         toast(e.message || 'Preview failed', 'err');
     }
