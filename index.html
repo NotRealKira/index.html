@@ -471,6 +471,8 @@
         .build-card .card-art.has-thumbnail img{object-fit:contain;background:#0b1218}
         .build-card .favorite-actions{justify-content:flex-end;margin-top:13px}
         .build-card .favorite-actions .favorite-star{margin-left:auto}
+
+        .upload-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:18px;padding:clamp(26px,4vw,48px);border:1px solid rgba(140,245,202,.18);border-radius:26px;background:radial-gradient(circle at 92% 8%,rgba(140,245,202,.14),transparent 32%),linear-gradient(135deg,#12242b,#0d151d 70%);box-shadow:0 22px 70px rgba(0,0,0,.22)}.upload-hero h1{margin:7px 0 10px;font-size:clamp(2.3rem,5vw,4.4rem);letter-spacing:-.065em}.upload-hero p{max-width:620px;color:var(--text-dim);line-height:1.65}.upload-badge{display:flex;align-items:center;gap:9px;flex:0 0 auto;padding:12px 14px;border:1px solid rgba(140,245,202,.22);border-radius:12px;color:var(--accent);font:700 .65rem 'JetBrains Mono',monospace;letter-spacing:.13em}.upload-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}.upload-card{padding:24px;border-radius:22px}.upload-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:22px}.upload-card-head h3{margin-bottom:4px}.upload-subtitle{color:var(--text-dim);font-size:.82rem}.upload-type-label{min-width:180px;color:var(--text-dim);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.upload-type-select{display:block;margin-top:7px;width:100%;font-size:.9rem;letter-spacing:0;text-transform:none}.upload-type-fields[hidden]{display:none!important}.optional{color:var(--text-dim);font-size:.75em;font-weight:400;margin-left:4px}.upload-note{display:flex;gap:12px;align-items:center;margin-top:14px;padding:14px 16px;border:1px solid rgba(255,209,102,.15);border-radius:13px;background:rgba(255,209,102,.045);color:var(--text-dim);font-size:.78rem;line-height:1.5}.upload-note strong{color:var(--warning);white-space:nowrap}@media(max-width:680px){.upload-hero{display:block}.upload-badge{width:max-content;margin-top:22px}.upload-card-head{display:block}.upload-type-label{display:block;max-width:none;margin-top:18px}.upload-note{align-items:flex-start;flex-direction:column;gap:4px}}
     </style>
 </head>
 <body id="app">
@@ -492,7 +494,7 @@
 
     <nav id="nav">
         <a href="#home" class="on" data-t="home">Home</a>
-        <a href="#builds" class="" data-t="builds">Builds</a>
+        <a href="#builds" class="" data-t="builds">Builds</a><a href="#upload" class="" data-t="upload">Upload</a>
         <a href="#favorites" class="" data-t="favorites">Favorites <span id="favCount">0</span></a>
         <a href="#sell" class="" data-t="sell">Sell</a>
         <a href="#trade" class="" data-t="trade">Trade</a>
@@ -535,17 +537,30 @@
         </div>
     </section>
 
+
+    <section id="upload">
+        <div id="uploadBan" class="ban-box" style="display:none"></div><div id="uploadWarn" class="warn-box" style="display:none"></div>
+        <div class="upload-hero"><div><div class="market-kicker">Creator workspace</div><h1>Share something <em>great</em></h1><p>Upload a build, list an item, or find someone to trade with. Choose a type below and the form will adapt.</p></div><div class="upload-badge"><span class="upload-badge-dot"></span><span>POST TO THE COMMUNITY</span></div></div>
+        <div class="form-card reveal upload-card">
+            <div class="upload-card-head"><div><h3><span class="dot"></span>New submission</h3><p class="upload-subtitle">One uploader, three ways to share.</p></div><label class="upload-type-label">Type<select id="uploadType" class="input upload-type-select" onchange="setUploadType(this.value)"><option value="build" selected>Build</option><option value="sell">Sell</option><option value="trade">Trade</option></select></label></div>
+            <form id="uploadForm" onsubmit="return upUnified(event)">
+                <div id="uploadBuildFields" class="upload-type-fields">
+                    <div class="form-row"><div class="field"><label>Build file <span class="req">*</span></label><div class="file-box" id="uBuildFileBox"><span></span><span id="uBuildFileText">Choose .build file...</span><input type="file" id="uBuildFile" accept=".build" required onchange="fileChg(this,'uBuildFileBox','uBuildFileText');autoFillBuildName(this,'uBuildTitle')"></div></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="uBuildTitle" maxlength="15" placeholder="Build name" required></div><div class="field"><label>Category <span class="req">*</span></label><select class="input" id="uBuildCategory" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Anime</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div><div class="field"><label>Credits <span class="optional">Optional</span></label><input type="text" class="input" id="uRoblox" maxlength="40" placeholder="Roblox username"></div><div class="field"><label>Credits <span class="optional">Optional</span></label><input type="text" class="input" id="uBuildDiscord" maxlength="40" placeholder="Discord username"></div><div class="field" style="grid-column:1/-1"><label>Description <span class="optional">Optional</span></label><textarea class="input" id="uBuildDescription" maxlength="25" placeholder="Tell people what makes this build special"></textarea></div></div>
+                </div>
+                <div id="uploadSellFields" class="upload-type-fields" hidden>
+                    <div class="form-row"><div class="field"><label>Discord username <span class="req">*</span></label><input type="text" class="input" id="uSellDiscord" maxlength="40" placeholder="username or @username" required><small class="discord-help">Required so buyers can contact you.</small></div><div class="field"><label>Display name <span class="req">*</span></label><input type="text" class="input" id="uSellDisplay" maxlength="20" required></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="uSellTitle" required></div><div class="field"><label>Price (R$) <span class="req">*</span></label><input type="number" class="input" id="uSellPrice" min="1" required></div><div class="field" style="grid-column:1/-1"><label>Description <span class="optional">Optional</span></label><textarea class="input" id="uSellDescription"></textarea></div></div>
+                </div>
+                <div id="uploadTradeFields" class="upload-type-fields" hidden>
+                    <div class="form-row"><div class="field"><label>Discord username <span class="req">*</span></label><input type="text" class="input" id="uTradeDiscord" maxlength="40" placeholder="username or @username" required><small class="discord-help">Required so traders can contact you.</small></div><div class="field"><label>Display name <span class="req">*</span></label><input type="text" class="input" id="uTradeDisplay" maxlength="20" required></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="uTradeTitle" required></div><div class="field" style="grid-column:1/-1"><label>Description <span class="optional">Optional</span></label><textarea class="input" id="uTradeDescription"></textarea></div></div>
+                </div>
+                <button type="submit" class="btn btn-p btn-full" id="uploadSubmit">Upload Build</button><div id="uploadCooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:.82em;color:var(--warning)"></div>
+            </form>
+        </div>
+        <div class="upload-note"><strong>Posting safely</strong><span>Sell and Trade listings require both a Discord username and display name so other members know how to reach you.</span></div>
+    </section>
+
     <section id="builds">
         <div id="buildBan" class="ban-box" style="display:none"></div><div id="buildWarn" class="warn-box" style="display:none"></div>
-        <div class="form-card reveal"><h3><span class="dot"></span>Upload Build</h3>
-            <form id="buildForm" onsubmit="return upBuild(event)"><div class="form-row">
-                <div class="field"><label>Build File <span class="req">*</span></label><div class="file-box" id="bFB"><span></span><span id="bFT">Choose .build file...</span><input type="file" id="bFile" accept=".build" required onchange="fileChg(this,'bFB','bFT');autoFillBuildName(this)"></div></div>
-                <div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="bTitle" placeholder="Build name" maxlength="15" required oninput="this.dataset.autofilled='false'"></div>
-                <div class="field"><label>Category <span class="req">*</span></label><select class="input" id="bCat" required><option value="">Select...</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Car</option><option>FighterJet</option><option>Anime</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select></div>
-                <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="bDesc" placeholder="Optional" maxlength="25"></textarea></div>
-            </div><button type="submit" class="btn btn-p btn-full" id="bBtn">Upload</button>
-            <div id="cooldownMsg" style="display:none;text-align:center;margin-top:10px;font-size:0.82em;color:var(--warning)"></div></form>
-        </div>
         <div class="market-heading"><div><div class="market-kicker">Community marketplace</div><h2>Explore builds</h2><p>Find, preview, and save builds you want to revisit.</p></div><span class="favorites-count">Tip: tap the star to save a build</span></div><div class="controls"><h3>All Builds <span id="bLoadStatus" style="color:var(--text-dim);font-size:.68em;font-weight:500;margin-left:6px">Loading…</span></h3><div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="bSearch" placeholder="Search..." oninput="renderBuilds()"></div><select class="sel" id="bCatFilter" onchange="renderBuilds()"><option value="">All</option><option>Airplane</option><option>AutoFarm</option><option>Base</option><option>Buildings</option><option>Bus</option><option>Anime</option><option>Car</option><option>FighterJet</option><option>Helicopter</option><option>House</option><option>Juggernaut</option><option>Maps</option><option>Mechs</option><option>Military</option><option>Miscellaneous</option><option>Motorbike</option><option>Other</option><option>PVP</option><option>Scary</option><option>Ship</option><option>Space</option><option>Spaceship</option><option>Structure</option><option>Tank</option><option>Truck</option><option>Vehicles</option></select><label style="display:flex;align-items:center;gap:8px;color:var(--text-dim);font-size:.82em;white-space:nowrap">Max Parts:</label><input class="input" style="width:120px;padding:8px" type="number" id="bPartsFilter" min="1" max="50000" step="1" value="50000" oninput="this.value=Math.max(1,Math.min(50000,Number(this.value)||1));renderBuilds()"><select class="sel" id="bSort" onchange="renderBuilds()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="bCards"><div class="empty">Loading...</div></div></section>
 
 
@@ -555,9 +570,11 @@
         <div class="cards" id="favCards"><div class="favorites-empty"><strong>No favorites yet</strong>Star a build in the marketplace and it will appear here.</div></div>
     </section>
 
-    <section id="sell"><div id="sellBan" class="ban-box" style="display:none"></div><div id="sellWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>List for Sale</h3><form id="sellForm" onsubmit="return upSell(event)"><div class="form-row"><div class="field"><label>Discord Username <span class="req">*</span></label><input type="text" class="input" id="sDiscord" placeholder="username or @username" maxlength="40" required><small class="discord-help">Used so buyers can contact you on Discord.</small></div><div class="field"><label>Display Name <span class="req">*</span></label><input type="text" class="input" id="sDisplayName" maxlength="20" required><small class="discord-help">Shown on this listing.</small></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="sTitle" required></div><div class="field"><label>Price (R$) <span class="req">*</span></label><input type="number" class="input" id="sPrice" min="1" required></div><div class="field"><label>Description</label><textarea class="input" id="sDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="sBtn">List Item</button></form></div><div class="controls"><h3>For Sale</h3><select class="sel" id="sSort" onchange="loadSells()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="sCards"><div class="empty">Loading...</div></div></section>
+    <section id="sell"><div id="sellBan" class="ban-box" style="display:none"></div><div id="sellWarn" class="warn-box" style="display:none"></div>
+        <div class="controls"><h3>For Sale</h3><select class="sel" id="sSort" onchange="loadSells()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="sCards"><div class="empty">Loading...</div></div></section>
 
-    <section id="trade"><div id="tradeBan" class="ban-box" style="display:none"></div><div id="tradeWarn" class="warn-box" style="display:none"></div><div class="form-card reveal"><h3><span class="dot"></span>Post Trade</h3><form id="tradeForm" onsubmit="return upTrade(event)"><div class="form-row"><div class="field"><label>Discord Username <span class="req">*</span></label><input type="text" class="input" id="tDiscord" placeholder="username or @username" maxlength="40" required><small class="discord-help">Used so traders can contact you on Discord.</small></div><div class="field"><label>Display Name <span class="req">*</span></label><input type="text" class="input" id="tDisplayName" maxlength="20" required><small class="discord-help">Shown on this trade.</small></div><div class="field"><label>Title <span class="req">*</span></label><input type="text" class="input" id="tTitle" required></div><div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" id="tDesc"></textarea></div></div><button type="submit" class="btn btn-p btn-full" id="tBtn">Post Trade</button></form></div><div class="controls"><h3>Trades</h3><select class="sel" id="tSort" onchange="loadTrades()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="tCards"><div class="empty">Loading...</div></div></section>
+    <section id="trade"><div id="tradeBan" class="ban-box" style="display:none"></div><div id="tradeWarn" class="warn-box" style="display:none"></div>
+        <div class="controls"><h3>Trades</h3><select class="sel" id="tSort" onchange="loadTrades()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="tCards"><div class="empty">Loading...</div></div></section>
 
     <section id="script"><div class="sc-grid"><div class="sc-box reveal"><h2>LexusHub Script</h2><p>Copy the loadstring and paste it into your executor.</p><div class="code-block"><button class="copy" onclick="copyCode()">Copy</button><code id="codeText">loadstring(game:HttpGet("https://raw.githubusercontent.com/amd156935-create/BoatbuilderhubIsShitLexusHubIsBestAlso/main/9b21a6b954470aed.lua.txt"))()</code></div></div><div class="sc-img reveal reveal-d1"><img src="https://i.imgur.com/ZkebzWz.png" alt="Preview"></div></div></section>
 
@@ -1581,7 +1598,7 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 
 //  COOLDOWN 
 function canUpload(){const left=30000-(Date.now()-lastUpload);if(left>0){toast(`Wait ${Math.ceil(left/1000)}s before uploading again`,'warn');return false}return true}
-function startCooldown(){lastUpload=Date.now();const msg=document.getElementById('cooldownMsg');if(!msg)return;msg.style.display='block';const tick=()=>{const l=30000-(Date.now()-lastUpload);if(l<=0){msg.style.display='none';return}msg.textContent=` Cooldown: ${Math.ceil(l/1000)}s`;requestAnimationFrame(tick)};tick()}
+function startCooldown(){lastUpload=Date.now();const msg=document.getElementById('uploadCooldownMsg')||document.getElementById('cooldownMsg');if(!msg)return;msg.style.display='block';const tick=()=>{const l=30000-(Date.now()-lastUpload);if(l<=0){msg.style.display='none';return}msg.textContent=` Cooldown: ${Math.ceil(l/1000)}s`;requestAnimationFrame(tick)};tick()}
 
 function tokenUser(){return actingAsUser||user;}
 async function loadTokenBalance(){const el=document.getElementById('sTokens');if(!el)return;if(isAdmin()){el.textContent='INF';return}if(!user){el.textContent='0';return}el.textContent='…';try{const{data}=await withTimeout(sb.from('token_balances').select('tokens').eq('user_id',user.id).maybeSingle(),12000,'Loading token balance timed out.');el.textContent=(data?.tokens||0).toLocaleString();}catch(e){el.textContent='—';console.warn('Token balance unavailable:',e.message||e)}}
@@ -1652,9 +1669,9 @@ function getDiscordUsername(u){
 }
 function syncDiscordFields(){
     const value=getDiscordUsername(actingAsUser||user);
-    ['sDiscord','tDiscord'].forEach(id=>{const el=document.getElementById(id);if(!el)return;if(value){el.value=value;el.readOnly=true;el.title='Filled automatically from your Discord login';}else{el.readOnly=false;el.title='Enter your Discord username';}});
+    ['sDiscord','tDiscord','uSellDiscord','uTradeDiscord'].forEach(id=>{const el=document.getElementById(id);if(!el)return;if(value){el.value=value;el.readOnly=true;el.title='Filled automatically from your Discord login';}else{el.readOnly=false;el.title='Enter your Discord username';}});
 }
-function syncSellTradeDisplayNames(){const value=(actingAsUser?.name||getNm(effectiveUser())||'').slice(0,20);['sDisplayName','tDisplayName'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=value;});}
+function syncSellTradeDisplayNames(){const value=(actingAsUser?.name||getNm(effectiveUser())||'').slice(0,20);['sDisplayName','tDisplayName','uSellDisplay','uTradeDisplay'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=value;});}
 function getNm(u){ return localStorage.getItem('lh_name') || u?.user_metadata?.full_name || u?.user_metadata?.name || u?.user_metadata?.custom_claims?.global_name || null; }
 function renderAuth(){
     const auth=document.getElementById('authArea'),ua=document.getElementById('userArea');
@@ -1714,8 +1731,8 @@ async function getBuildFileBytes(url,onProgress){let bytes=await readRemoteBytes
 async function readBuildText(url,onProgress){const bytes=await getBuildFileBytes(url,onProgress);return new TextDecoder().decode(bytes);}
 async function getBuildFileBlob(url,onProgress){const bytes=await getBuildFileBytes(url,onProgress);return new Blob([bytes],{type:'application/octet-stream'});}
 let lastAutoBuildTitle='';
-function autoFillBuildName(input){
-    const file=input?.files?.[0],field=document.getElementById('bTitle');
+function autoFillBuildName(input,targetId='bTitle'){
+    const file=input?.files?.[0],field=document.getElementById(targetId)||document.getElementById('bTitle');
     if(!file||!field)return;
     const generated=file.name.replace(/\.build$/i,'').trim().toLowerCase().slice(0,15);
     if(!generated)return;
@@ -1751,6 +1768,45 @@ function confirmScamTerms(){
     if(formId)document.getElementById(formId)?.requestSubmit();
 }
 async function fileSha256(file){const buf=await file.arrayBuffer();const digest=await crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+
+function setUploadType(type){
+    const selected=type==='sell'||type==='trade'?type:'build';
+    const typeSelect=document.getElementById('uploadType');if(typeSelect&&typeSelect.value!==selected)typeSelect.value=selected;
+    ['build','sell','trade'].forEach(kind=>{const box=document.getElementById(`upload${kind[0].toUpperCase()+kind.slice(1)}Fields`);if(box)box.hidden=kind!==selected;});
+    const groups={build:['uBuildFile','uBuildTitle','uBuildCategory'],sell:['uSellDiscord','uSellDisplay','uSellTitle','uSellPrice'],trade:['uTradeDiscord','uTradeDisplay','uTradeTitle']};
+    Object.values(groups).flat().forEach(id=>{const el=document.getElementById(id);if(el)el.required=false;});
+    groups[selected].forEach(id=>{const el=document.getElementById(id);if(el)el.required=true;});
+    const submit=document.getElementById('uploadSubmit');if(submit)submit.textContent=selected==='build'?'Upload Build':selected==='sell'?'List Item':'Post Trade';
+    if(selected!=='build')syncUnifiedDiscordFields(selected);
+}
+function syncUnifiedDiscordFields(kind){
+    const value=getDiscordUsername(actingAsUser||user),name=(actingAsUser?.name||getNm(effectiveUser())||'').slice(0,20);
+    const ids=kind==='sell'?['uSellDiscord','uSellDisplay']:['uTradeDiscord','uTradeDisplay'];
+    const discord=document.getElementById(ids[0]),display=document.getElementById(ids[1]);
+    if(discord&&value){discord.value=value;discord.readOnly=true;discord.title='Filled automatically from your Discord login';}
+    if(display&&name&&!display.value)display.value=name;
+}
+setUploadType('build');
+async function upUnified(e){
+    e.preventDefault();const type=document.getElementById('uploadType').value;if(!preCheck())return false;
+    const btn=document.getElementById('uploadSubmit');btn.disabled=true;const actor=effectiveUser();
+    try{
+        if(type==='build'){
+            const file=document.getElementById('uBuildFile').files[0],title=document.getElementById('uBuildTitle').value.trim(),category=document.getElementById('uBuildCategory').value;
+            if(!file?.name.toLowerCase().endsWith('.build'))throw new Error('Please choose a .build file.');if(!title)throw new Error('Title required');if(!category)throw new Error('Category required');
+            btn.textContent='Checking file...';const fileHash=await fileSha256(file);const{data:duplicates,error:duplicateError}=await sb.from('builds').select('id').eq('type','build').eq('file_hash',fileHash).limit(1);if(duplicateError)throw duplicateError;if(duplicates?.length)throw new Error('The file is already uploaded by someone.');
+            btn.textContent='Reading file...';const fileUrl=await fileTo7zDataUrl(file,(label)=>{btn.textContent=label;});const roblox=document.getElementById('uRoblox').value.trim(),discord=document.getElementById('uBuildDiscord').value.trim();
+            await withTimeout(ins({type:'build',owner:actor.id,owner_email:actor.email,owner_name:actingAsUser?.name||getNm(actor),data:{title,category,description:document.getElementById('uBuildDescription').value.trim(),artKey:category,storageFormat:'7z-lzma2',partsLimit:50000,credits:{robloxUsername:roblox,discordUsername:discord}},upload_date:new Date().toISOString(),build_file_url:fileUrl,build_file_name:file.name,file_hash:fileHash,downloads:0}),60000,'Saving the build timed out. Check your connection and try again.');
+            toast('Build uploaded successfully','ok');loadBuilds();updateCounts();loadTokenBalance();
+        }else{
+            if(!requireScamTerms('uploadForm'))return false;const discordId=type==='sell'?'uSellDiscord':'uTradeDiscord',displayId=type==='sell'?'uSellDisplay':'uTradeDisplay',titleId=type==='sell'?'uSellTitle':'uTradeTitle',descId=type==='sell'?'uSellDescription':'uTradeDescription';const discord=document.getElementById(discordId).value.trim(),display=document.getElementById(displayId).value.trim();if(!discord)throw'Discord username required';if(!display)throw'Display name required';
+            const data={displayName:display,title:document.getElementById(titleId).value.trim(),description:document.getElementById(descId).value.trim(),artKey:type==='sell'?'sale':'trade',discordUsername:discord};const row={type,owner:actor.id,owner_email:actor.email,owner_name:display,data,upload_date:new Date().toISOString(),downloads:0};if(type==='sell')row.price=parseInt(document.getElementById('uSellPrice').value);await ins(row);toast(type==='sell'?'Listed':'Posted','ok');if(type==='sell')loadSells();else loadTrades();
+        }
+        document.getElementById('uploadForm').reset();setUploadType('build');startCooldown();
+    }catch(err){toast(err.message||err,'err')}finally{btn.disabled=false;setUploadType(document.getElementById('uploadType').value);}
+    return false;
+}
+
 async function upBuild(e){
     e.preventDefault();if(!preCheck())return false;
     const btn=document.getElementById('bBtn');btn.disabled=true;const actor=effectiveUser();
@@ -2101,4 +2157,4 @@ window.addEventListener('load',()=>{
     void initAuth();
 });
 </script>
-</body>             
+</body>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
