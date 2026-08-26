@@ -1484,7 +1484,7 @@ function reduceBuildParts(parts,quality=0){
     return{parts:safeParts,sourceCount,merged:safeParts.length<sourceCount};
 }
 function collectTriangleParts(model,box,quality=0,targetSize=80,optimize=true,smoothness=false,voxelize=false,voxelResolution=24){
-    const size=box.getSize(new THREE.Vector3()),largest=Math.max(size.x,size.y,size.z)||1,target=Math.max(1,Math.min(200,Number(targetSize)||80)),scale=target/largest,origin=box.getCenter(new THREE.Vector3()),voxelCell=target/Math.max(4,Number(voxelResolution)||24),parts=[];
+    const size=box.getSize(new THREE.Vector3()),largest=Math.max(size.x,size.y,size.z)||1,target=Math.max(1,Math.min(800,Number(targetSize)||80)),scale=target/largest,origin=box.getCenter(new THREE.Vector3()),voxelCell=target/Math.max(4,Number(voxelResolution)||24),parts=[];
     model.updateWorldMatrix(true,true);model.traverse(mesh=>{if(!mesh.isMesh)return;const geometry=mesh.geometry,position=geometry.getAttribute('position'),uvs=geometry.getAttribute('uv'),colors=geometry.getAttribute('color'),index=geometry.index;if(!position)return;mesh.updateWorldMatrix(true,false);const matrix=mesh.matrixWorld,p0=new THREE.Vector3(),p1=new THREE.Vector3(),p2=new THREE.Vector3(),u0=new THREE.Vector2(),u1=new THREE.Vector2(),u2=new THREE.Vector2(),c0=new THREE.Color(),c1=new THREE.Color(),c2=new THREE.Color(),triangleCount=index?index.count/3:position.count/3;
         for(let t=0;t<triangleCount;t++){const ia=index?index.getX(t*3):t*3,ib=index?index.getX(t*3+1):t*3+1,ic=index?index.getX(t*3+2):t*3+2;attrVec(position,ia,p0).applyMatrix4(matrix).sub(origin).multiplyScalar(scale);attrVec(position,ib,p1).applyMatrix4(matrix).sub(origin).multiplyScalar(scale);attrVec(position,ic,p2).applyMatrix4(matrix).sub(origin).multiplyScalar(scale);attrUv(uvs,ia,u0);attrUv(uvs,ib,u1);attrUv(uvs,ic,u2);attrColor(colors,ia,c0);attrColor(colors,ib,c1);attrColor(colors,ic,c2);if(voxelize){[p0,p1,p2].forEach(p=>{p.x=Math.round(p.x/voxelCell)*voxelCell;p.y=Math.round(p.y/voxelCell)*voxelCell;p.z=Math.round(p.z/voxelCell)*voxelCell;});}appendTrianglePart(parts,p0,p1,p2,materialAt(mesh,triangleMaterialIndex(geometry,t)),u0,u1,u2,c0,c1,c2,target,quality);}
     });
@@ -2164,4 +2164,4 @@ window.addEventListener('load',()=>{
     void initAuth();
 });
 </script>
-</body>
+</body>                                                                                                                                                                                                                                                                                                                                                                                                                                               
