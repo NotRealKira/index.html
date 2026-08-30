@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexushub Features</title>
+    <title>LexusHub</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
@@ -473,37 +473,6 @@
         .build-card .favorite-actions .favorite-star{margin-left:auto}
 
         .upload-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:18px;padding:clamp(26px,4vw,48px);border:1px solid rgba(140,245,202,.18);border-radius:26px;background:radial-gradient(circle at 92% 8%,rgba(140,245,202,.14),transparent 32%),linear-gradient(135deg,#12242b,#0d151d 70%);box-shadow:0 22px 70px rgba(0,0,0,.22)}.upload-hero h1{margin:7px 0 10px;font-size:clamp(2.3rem,5vw,4.4rem);letter-spacing:-.065em}.upload-hero p{max-width:620px;color:var(--text-dim);line-height:1.65}.upload-badge{display:flex;align-items:center;gap:9px;flex:0 0 auto;padding:12px 14px;border:1px solid rgba(140,245,202,.22);border-radius:12px;color:var(--accent);font:700 .65rem 'JetBrains Mono',monospace;letter-spacing:.13em}.upload-badge-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}.upload-card{padding:24px;border-radius:22px}.upload-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:22px}.upload-card-head h3{margin-bottom:4px}.upload-subtitle{color:var(--text-dim);font-size:.82rem}.upload-type-label{min-width:180px;color:var(--text-dim);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.upload-type-select{display:block;margin-top:7px;width:100%;font-size:.9rem;letter-spacing:0;text-transform:none}.upload-type-fields[hidden]{display:none!important}.optional{color:var(--text-dim);font-size:.75em;font-weight:400;margin-left:4px}.upload-note{display:flex;gap:12px;align-items:center;margin-top:14px;padding:14px 16px;border:1px solid rgba(255,209,102,.15);border-radius:13px;background:rgba(255,209,102,.045);color:var(--text-dim);font-size:.78rem;line-height:1.5}.upload-note strong{color:var(--warning);white-space:nowrap}@media(max-width:680px){.upload-hero{display:block}.upload-badge{width:max-content;margin-top:22px}.upload-card-head{display:block}.upload-type-label{display:block;max-width:none;margin-top:18px}.upload-note{align-items:flex-start;flex-direction:column;gap:4px}}
-    
-        /* GLB to Build Premium add-on */
-        .premium-hero{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:stretch;margin-bottom:22px}
-        .premium-hero-copy,.premium-status,.premium-card,.premium-admin,.tutorial-card{background:linear-gradient(145deg,rgba(18,28,34,.96),rgba(11,16,21,.96));border:1px solid rgba(140,245,202,.2);border-radius:18px;box-shadow:0 18px 48px rgba(0,0,0,.18)}
-        .premium-hero-copy{padding:34px;position:relative;overflow:hidden}
-        .premium-hero-copy:after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;right:-110px;top:-120px;background:rgba(110,231,183,.12);filter:blur(4px)}
-        .premium-kicker{font:700 .68em 'JetBrains Mono',monospace;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:12px}
-        .premium-hero h2{font-size:clamp(2rem,4vw,3.3rem);letter-spacing:-.06em;line-height:1.02;margin-bottom:14px;max-width:650px}
-        .premium-hero h2 em{font-style:normal;color:var(--accent)}
-        .premium-hero-copy p{max-width:610px;color:var(--text-dim);font-size:1rem}
-        .premium-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.premium-pill{border:1px solid rgba(140,245,202,.22);background:rgba(110,231,183,.07);color:#c9fce7;border-radius:999px;padding:7px 11px;font-size:.76em}
-        .premium-status{padding:26px;display:flex;flex-direction:column;justify-content:space-between;min-height:260px}
-        .status-label{color:var(--text-dim);font:700 .66em 'JetBrains Mono',monospace;letter-spacing:1.6px;text-transform:uppercase}.status-plan{font-size:2rem;font-weight:800;letter-spacing:-.05em;margin:10px 0 4px}.status-copy{color:var(--text-dim);font-size:.84em}.status-bar{height:7px;border-radius:99px;background:#1c2a2d;overflow:hidden;margin:18px 0 8px}.status-bar span{display:block;height:100%;width:18%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#b3f7d8);transition:width .25s ease}.status-meta{display:flex;justify-content:space-between;gap:10px;color:var(--text-dim);font-size:.72em}.premium-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0 22px}.premium-card{padding:24px;position:relative}.premium-card.featured{border-color:rgba(140,245,202,.52);box-shadow:0 16px 48px rgba(47,180,131,.12)}.premium-card.featured:before{content:'MOST POPULAR';position:absolute;top:16px;right:16px;color:#06110d;background:var(--accent);border-radius:999px;padding:5px 8px;font:800 .57em 'JetBrains Mono',monospace;letter-spacing:1px}.premium-card h3{font-size:1.15rem;margin-bottom:5px}.premium-price{font:800 2.35rem 'JetBrains Mono',monospace;color:var(--accent);letter-spacing:-.08em;margin:12px 0 4px}.premium-price small{font:500 .36em 'Outfit',sans-serif;color:var(--text-dim);letter-spacing:0}.premium-card p{color:var(--text-dim);font-size:.84em;min-height:44px}.premium-list{list-style:none;display:grid;gap:8px;margin:18px 0;color:#c9d8d4;font-size:.8em}.premium-list li:before{content:'✓';color:var(--accent);font-weight:800;margin-right:8px}.premium-card .btn{width:100%;margin-top:4px}.premium-admin{padding:24px;margin-top:18px;border-color:rgba(251,191,36,.26);background:linear-gradient(145deg,rgba(35,29,17,.76),rgba(15,18,20,.96))}.premium-admin h3{font-size:1.05rem;margin-bottom:5px}.premium-admin p{color:var(--text-dim);font-size:.82em;margin-bottom:16px}.premium-admin-grid{display:grid;grid-template-columns:1fr 180px auto;gap:10px;align-items:end}.premium-admin-list{display:grid;gap:8px;margin-top:16px}.premium-grant-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:rgba(0,0,0,.12);font-size:.8em}.premium-grant-row strong{color:#e8f4ef}.premium-grant-row span{color:var(--text-dim)}.premium-empty{color:var(--text-dim);font-size:.82em;padding:12px 0}.purchase-note{border:1px dashed rgba(140,245,202,.35);border-radius:12px;padding:13px 15px;color:#c9fce7;background:rgba(110,231,183,.05);font-size:.82em;margin-top:18px}.purchase-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.tutorial-layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.tutorial-card{padding:24px}.tutorial-card h2{font-size:1.5rem;letter-spacing:-.04em;margin-bottom:8px}.tutorial-card p,.tutorial-card li{color:var(--text-dim);font-size:.86em}.tutorial-video{width:100%;display:block;aspect-ratio:16/9;border-radius:12px;background:#080b0d;border:1px solid var(--border);margin:16px 0}.tutorial-steps{display:grid;gap:10px;list-style:none;margin-top:18px}.tutorial-steps li{display:flex;gap:12px;align-items:flex-start}.step-number{flex:0 0 26px;height:26px;display:grid;place-items:center;border-radius:8px;background:rgba(110,231,183,.12);color:var(--accent);font:700 .74em 'JetBrains Mono',monospace}.tutorial-callout{padding:14px;border-radius:12px;background:rgba(129,140,248,.08);border:1px solid rgba(129,140,248,.22);color:#dfe2ff;font-size:.8em;margin-top:16px}.premium-email{margin-top:16px}.premium-email small{display:block;color:var(--text-dim);font-size:.73em;margin-top:6px}.premium-modal-copy{color:var(--text-dim);font-size:.86em;line-height:1.6}.premium-modal-code{background:#0b1113;border:1px solid var(--border);border-radius:10px;padding:12px;color:#c9fce7;font:500 .76em 'JetBrains Mono',monospace;word-break:break-word;margin-top:14px}
-        @media(max-width:760px){.premium-hero,.tutorial-layout{grid-template-columns:1fr}.premium-grid{grid-template-columns:1fr}.premium-admin-grid{grid-template-columns:1fr}.premium-hero-copy{padding:25px}.premium-status{min-height:220px}.purchase-modal-actions{grid-template-columns:1fr}}
-
-    
-        /* Premium lock for GLB-to-Build */
-        #glbtobuild .form-card{position:relative;overflow:hidden}
-        #glbtobuild .form-card.premium-locked> :not(.glb-premium-lock){filter:blur(2px);opacity:.34;pointer-events:none;user-select:none}
-        .glb-premium-lock{position:absolute;z-index:8;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;background:linear-gradient(135deg,rgba(8,13,17,.68),rgba(8,13,17,.88));backdrop-filter:blur(3px)}
-        .glb-premium-lock[hidden]{display:none}
-        .glb-premium-lock-inner{max-width:390px;padding:26px;border:1px solid rgba(140,245,202,.35);border-radius:16px;background:rgba(13,22,25,.92);box-shadow:0 16px 50px rgba(0,0,0,.3)}
-        .glb-premium-lock-icon{font-size:2rem;color:var(--accent);margin-bottom:8px}.glb-premium-lock h3{font-size:1.3rem;margin-bottom:7px}.glb-premium-lock p{color:var(--text-dim);font-size:.84em;margin-bottom:16px}
-
-    
-        #glbtobuild .form-card{position:relative;overflow:hidden}
-        #glbtobuild .form-card.premium-locked> :not(.glb-premium-lock){filter:blur(2px);opacity:.34;pointer-events:none;user-select:none}
-        .glb-premium-lock{position:absolute;z-index:8;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px;background:linear-gradient(135deg,rgba(8,13,17,.68),rgba(8,13,17,.88));backdrop-filter:blur(3px)}
-        .glb-premium-lock[hidden]{display:none}.glb-premium-lock-inner{max-width:390px;padding:26px;border:1px solid rgba(140,245,202,.35);border-radius:16px;background:rgba(13,22,25,.92);box-shadow:0 16px 50px rgba(0,0,0,.3)}
-        .glb-premium-lock-icon{font-size:2rem;color:var(--accent);margin-bottom:8px}.glb-premium-lock h3{font-size:1.3rem;margin-bottom:7px}.glb-premium-lock p{color:var(--text-dim);font-size:.84em;margin-bottom:16px}
-
     </style>
 </head>
 <body id="app">
@@ -515,7 +484,7 @@
 <div class="wrap">
     <div class="topbar">
         <div class="top-left">
-            <div class="logo"><div class="mark">L</div>Lexushub Features</div>
+            <div class="logo"><div class="mark">L</div>LexusHub</div>
             <div id="topProfile"></div>
         </div>
         <div class="top-stats">
@@ -525,21 +494,21 @@
 
     <nav id="nav">
         <a href="#home" class="on" data-t="home">Home</a>
-        
+        <a href="#builds" class="" data-t="builds">Builds</a><a href="#upload" class="" data-t="upload">Upload</a>
         <a href="#favorites" class="" data-t="favorites">Favorites <span id="favCount">0</span></a>
-        
-        
+        <a href="#sell" class="" data-t="sell">Sell</a>
+        <a href="#trade" class="" data-t="trade">Trade</a>
         <a href="#script" class="" data-t="script">Script</a>
         <a href="#rules" class="" data-t="rules">Rules</a>
         <a href="#executers" class="" data-t="executers">Executers</a>
         <a href="#buildpreviewer" class="" data-t="buildpreviewer">Build Previewer</a>
-        <a href="#glbtobuild" class="" data-t="glbtobuild">GLB to build</a><a href="#premium" class="" data-t="premium">Premium</a><a href="#tutorial" class="" data-t="tutorial">Showcase and tutorial of Glb to Build</a>
+        <a href="#glbtobuild" class="" data-t="glbtobuild">GLB to build</a>
         <a href="#objtobuild" class="" data-t="objtobuild">OBJ to build</a>
         <a href="#imagegeometrizer" class="" data-t="imagegeometrizer">Image Geometrizer</a>
         <a href="#builder" class="" data-t="builder">Builder</a>
         <a href="#profile" class="" data-t="profile">Profile</a>
         <a href="#settings" class="" data-t="settings">Settings</a>
-        <a href="#leaderboard" class="" data-t="leaderboard">Leaderboard</a>
+        <a href="#buy" class="" data-t="buy">Buy</a><a href="#leaderboard" class="" data-t="leaderboard">Leaderboard</a>
     </nav>
 
     <section id="builder">
@@ -558,51 +527,13 @@
                     <button class="btn btn-s" onclick="openDiscord()">Discord</button>
                 </div>
             </div>
-            <div class="hero-img"><img src="https://i.imgur.com/ZkebzWz.png" alt="Lexushub Features"></div>
+            <div class="hero-img"><img src="https://i.imgur.com/ZkebzWz.png" alt="LexusHub"></div>
         </div>
         <div class="feat-grid">
             <div class="feat reveal"><div class="feat-ico">⚡︎</div><h4>Fast</h4><p>Files load instantly</p></div>
             <div class="feat reveal reveal-d1"><div class="feat-ico">⛨</div><h4>Secure</h4><p>Your data is safe</p></div>
             <div class="feat reveal reveal-d2"><div class="feat-ico">✪</div><h4>Free</h4><p>All free</p></div>
             <div class="feat reveal reveal-d3"><div class="feat-ico">✦</div><h4>Clean</h4><p>Minimal interface</p></div>
-        </div>
-    </section>
-
-
-
-    <section id="premium">
-        <div class="premium-hero">
-            <div class="premium-hero-copy reveal visible">
-                <div class="premium-kicker">GLB TO BUILD / PREMIUM ACCESS</div>
-                <h2>Convert with a <em>faster path</em> from model to build.</h2>
-                <p>Unlock the GLB-to-Build workflow for importing models, tuning block output, previewing results, and downloading the converted Build file. Payment is handled manually through Discord so the owner can verify your request.</p>
-                <div class="premium-pills"><span class="premium-pill">GLB import</span><span class="premium-pill">Quality controls</span><span class="premium-pill">3D preview</span><span class="premium-pill">Build download</span></div>
-            </div>
-            <div class="premium-status reveal reveal-d1 visible" id="premiumStatusCard">
-                <div><div class="status-label">Your access</div><div class="status-plan" id="premiumStatusPlan">Guest mode</div><div class="status-copy" id="premiumStatusCopy">Enter your Gmail below to check local access status.</div></div>
-                <div><div class="status-bar"><span id="premiumStatusBar"></span></div><div class="status-meta"><span id="premiumStatusExpiry">No active access</span><span id="premiumStatusBadge">CHECK STATUS</span></div></div>
-            </div>
-        </div>
-        <div class="form-card premium-email reveal visible">
-            <h3><span class="dot"></span>Check your access</h3>
-            <div class="form-row"><div class="field"><label for="premiumEmail">Gmail address</label><input class="input" id="premiumEmail" type="email" placeholder="you@gmail.com" autocomplete="email" oninput="premiumRender()"><small>Use the same Gmail you give to the owner or admin.</small></div><div class="field" style="display:flex;align-items:end"><button class="btn btn-s" type="button" onclick="premiumStartTrial()">Start free preview</button></div></div>
-        </div>
-        <div class="premium-grid">
-            <article class="premium-card featured reveal visible"><div class="premium-kicker">TRIAL</div><h3>1-week premium</h3><div class="premium-price">$5 <small>one-time</small></div><p>Seven days to test the full GLB-to-Build workflow before deciding on lifetime access.</p><ul class="premium-list"><li>7 days of premium access</li><li>GLB conversion controls</li><li>Download converted Build files</li></ul><button class="btn btn-p" type="button" onclick="openPremiumPurchase('week')">Buy 1 week — $5</button></article>
-            <article class="premium-card reveal reveal-d1 visible"><div class="premium-kicker">LIFETIME</div><h3>Lifetime premium</h3><div class="premium-price">$15 <small>one-time</small></div><p>Keep premium access permanently with no renewal or expiration date.</p><ul class="premium-list"><li>Lifetime access to premium tools</li><li>All future premium improvements</li><li>Owner-verified activation</li></ul><button class="btn btn-p" type="button" onclick="openPremiumPurchase('lifetime')">Buy lifetime — $15</button></article>
-        </div>
-        <div class="purchase-note reveal visible"><strong>Manual activation:</strong> Clicking Buy does not process a card payment. Join the Discord server, contact <strong>xploit</strong>, and send the Gmail address that should receive access. The owner or admin will verify and activate the plan.</div>
-        <div class="premium-admin" id="premiumAdminPanel" hidden>
-            <div class="premium-kicker">ADMIN / LIFETIME+</div><h3>Grant premium access</h3><p>Only the configured admin Gmail can see this panel. Grant one week or lifetime access to a user's Gmail address.</p>
-            <div class="premium-admin-grid"><div class="field"><label for="premiumGrantEmail">User Gmail</label><input class="input" id="premiumGrantEmail" type="email" placeholder="user@gmail.com"></div><div class="field"><label for="premiumGrantPlan">Access</label><select class="input" id="premiumGrantPlan"><option value="week">1 week</option><option value="lifetime">Lifetime</option></select></div><button class="btn btn-warn" type="button" onclick="premiumGrantAccess()">Grant access</button></div>
-            <div class="premium-admin-list" id="premiumGrantList"></div>
-        </div>
-    </section>
-
-    <section id="tutorial">
-        <div class="tutorial-layout">
-            <div class="tutorial-card reveal visible"><div class="premium-kicker">START HERE</div><h2>Glb showcase and tutorial</h2><p>Follow the walkthrough, then use the controls in the GLB to Build tab to reproduce the workflow with your own model.</p><div class="tutorial-video"><iframe title="Glb showcase and tutorial" src="https://www.youtube.com/embed/7EMVG2G5DVw?rel=0" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="width:100%;height:100%;border:0;border-radius:12px"></iframe></div><div class="tutorial-callout">Watch the “Glb showcase and tutorial” walkthrough, then try the same workflow in the GLB to Build tab.</div></div>
-            <div class="tutorial-card reveal reveal-d1 visible"><div class="premium-kicker">QUICK GUIDE</div><h2>Convert in four steps</h2><ol class="tutorial-steps"><li><span class="step-number">01</span><span><strong>Open GLB to Build.</strong><br>Choose the GLB file you want to convert.</span></li><li><span class="step-number">02</span><span><strong>Set the output.</strong><br>Pick a block type, build size, quality, and optimization options.</span></li><li><span class="step-number">03</span><span><strong>Preview the result.</strong><br>Rotate the model and confirm the shape before exporting.</span></li><li><span class="step-number">04</span><span><strong>Convert and download.</strong><br>Save the generated .Build file and import it into your workflow.</span></li></ol><div class="purchase-note"><strong>Need access?</strong><br>Join Discord and contact xploit with your Gmail and selected plan.</div></div>
         </div>
     </section>
 
@@ -645,11 +576,11 @@
     <section id="trade"><div id="tradeBan" class="ban-box" style="display:none"></div><div id="tradeWarn" class="warn-box" style="display:none"></div>
         <div class="controls"><h3>Trades</h3><select class="sel" id="tSort" onchange="loadTrades()"><option value="new">Newest</option><option value="old">Oldest</option></select></div><div class="cards" id="tCards"><div class="empty">Loading...</div></div></section>
 
-    <section id="script"><div class="sc-grid"><div class="sc-box reveal"><h2>Lexushub Features Script</h2><p>Copy the loadstring and paste it into your executor.</p><div class="code-block"><button class="copy" onclick="copyCode()">Copy</button><code id="codeText">loadstring(game:HttpGet("https://raw.githubusercontent.com/amd156935-create/BoatbuilderhubIsShitLexusHubIsBestAlso/main/9b21a6b954470aed.lua.txt"))()</code></div></div><div class="sc-img reveal reveal-d1"><img src="https://i.imgur.com/ZkebzWz.png" alt="Preview"></div></div></section>
+    <section id="script"><div class="sc-grid"><div class="sc-box reveal"><h2>LexusHub Script</h2><p>Copy the loadstring and paste it into your executor.</p><div class="code-block"><button class="copy" onclick="copyCode()">Copy</button><code id="codeText">loadstring(game:HttpGet("https://raw.githubusercontent.com/amd156935-create/BoatbuilderhubIsShitLexusHubIsBestAlso/main/9b21a6b954470aed.lua.txt"))()</code></div></div><div class="sc-img reveal reveal-d1"><img src="https://i.imgur.com/ZkebzWz.png" alt="Preview"></div></div></section>
 
     <section id="rules">
         <div class="s-box reveal">
-            <h4>Lexushub Features Rules</h4>
+            <h4>LexusHub Rules</h4>
             <ul class="rules-list">
                 <li>No promotion</li>
                 <li>No gross content</li>
@@ -828,8 +759,7 @@
     </section>
 
     <section id="glbtobuild">
-        <div class="form-card reveal premium-locked">
-            <div class="glb-premium-lock" id="glbPremiumLock"><div class="glb-premium-lock-inner"><div class="glb-premium-lock-icon">⌁</div><div class="premium-kicker">PREMIUM FEATURE</div><h3>GLB to Build is locked</h3><p>Sign in with the Gmail that has active premium access to use import, preview, settings, conversion, and download.</p><button class="btn btn-p" type="button" onclick="go('premium')">View premium access</button></div></div>
+        <div class="form-card reveal">
             <h3><span class="dot"></span>GLB to build</h3>
             <p style="font-size:.85em;color:var(--text-dim);margin-bottom:16px">Import a .glb model, preview it, then convert it to Build parts. After conversion, this preview switches from the source GLB to the converted Build. Low quality reduces texture resolution, color detail, and creates larger safe flat-surface parts.</p>
             <div class="glb-converter-grid">
@@ -876,11 +806,11 @@
 
     <section id="profile"><div class="p-card reveal"><div class="p-top"><div id="pAvatar" class="profile-avatar" aria-label="Pixel profile avatar"></div><div class="p-info"><h2 id="pName">Not logged in</h2><p id="pEmail">Sign in to get started</p></div></div><div id="authArea"></div></div><div id="userArea" style="display:none"><div class="s-box reveal"><h4>Display Name</h4><input type="text" class="input" id="nameIn" placeholder="Your name" style="margin-bottom:10px"><button class="btn btn-p" onclick="saveName()">Save</button></div><div class="s-box reveal reveal-d1"><h4>Pixel Profile Avatar</h4><small style="display:block;color:var(--text-dim);margin-bottom:8px">42x42</small><input type="file" id="avatarFile" accept="image/*" class="input" onchange="generateAvatarFromFile(this)" style="margin-bottom:10px"><div id="avatarCanvasWrap" style="display:none;margin-bottom:12px"><canvas id="avatarCanvas" width="240" height="240" style="width:100%;max-width:240px;border-radius:14px;border:1px solid var(--border);background:#101018"></canvas></div><button class="btn btn-p" onclick="saveAvatar()">Save Avatar</button></div><div class="s-box reveal reveal-d2"><h4>Edit Build Files</h4><div id="myBuildsForEdit"></div></div></div><div id="adminBanPanel" style="display:none"><div class="s-box"><h4>Ban Management</h4><p style="color:var(--text-dim);font-size:.8em;margin-bottom:10px">Active bans appear below with an Unban control.</p><div id="banList"></div></div><div class="s-box"><h4>Admin Actions</h4><div id="adminLoginPanel"></div></div></div><div class="note reveal"> Your data is Safe</div><h3 class="sec-title">Your Uploads</h3><div class="cards" id="myCards"><div class="empty">Login to see uploads</div></div></section>
 
-    <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>Lexushub Features v2.7  By K I R A</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
+    <section id="settings"><div class="s-box reveal"><h4> Accent Color</h4><div class="picker-label">Presets</div><div class="color-presets" id="accentPresets"></div><div class="picker-label">Custom</div><div class="picker-row"><input type="color" id="accentPicker" value="#6ee7b7" oninput="setAccent(this.value)"><input type="text" class="hex-input" id="accentHex" value="#6ee7b7" maxlength="7" onkeyup="hexAT(this.value)"><button class="btn btn-s" style="padding:7px 12px;font-size:0.78em" onclick="setAccent('#6ee7b7')">Reset</button></div></div><div class="s-box reveal reveal-d1"><h4>Theme</h4><div class="theme-preview"><div class="theme-card on" onclick="pickTheme('dark')" data-th="dark"><div class="swatch" style="background:#09090b;border:1px solid #2a2a30"></div><div class="name">Dark</div></div><div class="theme-card" onclick="pickTheme('light')" data-th="light"><div class="swatch" style="background:#fafafa;border:1px solid #d4d4d8"></div><div class="name">Light</div></div><div class="theme-card" onclick="pickTheme('midnight')" data-th="midnight"><div class="swatch" style="background:#0c1222;border:1px solid #2a3655"></div><div class="name">Midnight</div></div><div class="theme-card" onclick="pickTheme('custom')" data-th="custom"><div class="swatch" id="customSwatch" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333"></div><div class="name">Custom</div></div></div><div id="customThemePanel" style="display:none"><div class="theme-custom-row"><label>Background</label><input type="color" id="cBg" value="#09090b" oninput="liveC()"><input type="text" class="hex-input" id="cBgH" value="#09090b" maxlength="7" onkeyup="syncCH('Bg')"></div><div class="theme-custom-row"><label>Surface</label><input type="color" id="cSf" value="#131316" oninput="liveC()"><input type="text" class="hex-input" id="cSfH" value="#131316" maxlength="7" onkeyup="syncCH('Sf')"></div><div class="theme-custom-row"><label>Text</label><input type="color" id="cTx" value="#eeeef0" oninput="liveC()"><input type="text" class="hex-input" id="cTxH" value="#eeeef0" maxlength="7" onkeyup="syncCH('Tx')"></div><div class="theme-custom-row"><label>Border</label><input type="color" id="cBr" value="#2a2a30" oninput="liveC()"><input type="text" class="hex-input" id="cBrH" value="#2a2a30" maxlength="7" onkeyup="syncCH('Br')"></div><button class="btn btn-s" style="margin-top:12px;font-size:0.82em" onclick="pickTheme('dark')">Reset</button></div></div><div class="s-box reveal reveal-d2"><h4>️ About</h4><p>LexusHub v2.7  By K I R A</p></div><div class="s-box reveal reveal-d3"><h4> Links</h4><button class="btn btn-s" onclick="openDiscord()">Discord</button></div></section>
 
     <section id="buy">
         <h2 class="reveal" style="margin-bottom:8px;font-size:1.6em">Pricing</h2>
-        <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">Choose one of the available Lexushub Features options.</p><div class="price-grid"><div class="price-card reveal"><div class="ico">◆</div><h4>Lifetime</h4><p>$5</p><button class="btn btn-p btn-full" onclick="openTokenPurchase('lifetime')">Buy Lifetime — $5</button></div><div class="price-card reveal"><div class="ico">◆</div><h4>900 tokens</h4><p>Token bundle</p><button class="btn btn-p btn-full" onclick="openTokenPurchase('tokens')">Buy 900 Tokens</button></div></div>
+        <p class="reveal" style="color:var(--text-dim);margin-bottom:24px;font-weight:300">Choose one of the available LexusHub options.</p><div class="price-grid"><div class="price-card reveal"><div class="ico">◆</div><h4>Lifetime</h4><p>$5</p><button class="btn btn-p btn-full" onclick="openTokenPurchase('lifetime')">Buy Lifetime — $5</button></div><div class="price-card reveal"><div class="ico">◆</div><h4>900 tokens</h4><p>Token bundle</p><button class="btn btn-p btn-full" onclick="openTokenPurchase('tokens')">Buy 900 Tokens</button></div></div>
     </section>
 <section id="leaderboard">
         <div class="controls"><h3>Leaderboard</h3><button class="btn btn-s" onclick="loadLeaderboard()">Refresh</button></div>
@@ -889,18 +819,15 @@
     </section>
 </div>
 <!-- One-time marketplace disclaimer -->
-<div class="modal-bg" id="scamModal"><div class="modal"><h3>Before you continue</h3><p style="color:var(--text-dim);margin-bottom:20px">We are not responsible for scams. Trade and purchase at your own risk. Lexushub Features is not responsible for transactions between users.</p><button class="btn btn-p btn-full" onclick="confirmScamTerms()">Confirm</button></div></div>
-<div class="modal-bg" id="tokenPurchaseModal"><div class="modal"><a class="preview-close" href="#buy" onclick="closeTokenPurchase(false)">×</a><h3 id="purchaseModalTitle">Buy 900 Tokens</h3><p id="purchaseModalHelp" style="color:var(--text-dim);margin-bottom:16px">After completing the payment, record your receipt and send it in the Lexushub Features server. Please join the server first.</p><button class="btn btn-s btn-full" style="margin-bottom:10px" onclick="copyInviteLink()">Copy invite link</button><div id="tokenPurchaseStep"><div style="display:flex;gap:8px"><button class="btn btn-s" style="flex:1" onclick="closeTokenPurchase()">Cancel</button><button class="btn btn-p" style="flex:1" onclick="showPurchaseDiscord()">Confirm</button></div></div><div id="tokenPurchaseDiscord" style="display:none"><label>Discord Username</label><input class="input" id="purchaseDiscord" placeholder="username" maxlength="40"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-s" style="flex:1" onclick="closeTokenPurchase()">Cancel</button><button class="btn btn-p" style="flex:1" onclick="submitTokenOrder()">Confirm</button></div></div></div></div>
-
-<div class="modal-bg" id="premiumPurchaseModal"><div class="modal"><a class="preview-close" href="#premium" onclick="closePremiumPurchase()">×</a><div class="premium-kicker">MANUAL ACTIVATION</div><h3 id="premiumPurchaseTitle">Premium access</h3><p class="premium-modal-copy">To buy this plan, join the Discord server and contact <strong>xploit</strong>. Send the Gmail address that should receive access. The owner or admin will verify your request and grant access.</p><div class="premium-modal-code" id="premiumPurchasePlan">Selected plan</div><div class="purchase-modal-actions"><a class="btn btn-p" href="https://discord.gg/5DUGs9KvE" target="_blank" rel="noopener">Join Discord</a><button class="btn btn-s" type="button" onclick="premiumCopyMessage()">Copy message</button></div><button class="btn btn-s btn-full" type="button" onclick="closePremiumPurchase()">Close</button></div></div>
-
+<div class="modal-bg" id="scamModal"><div class="modal"><h3>Before you continue</h3><p style="color:var(--text-dim);margin-bottom:20px">We are not responsible for scams. Trade and purchase at your own risk. LexusHub is not responsible for transactions between users.</p><button class="btn btn-p btn-full" onclick="confirmScamTerms()">Confirm</button></div></div>
+<div class="modal-bg" id="tokenPurchaseModal"><div class="modal"><a class="preview-close" href="#buy" onclick="closeTokenPurchase(false)">×</a><h3 id="purchaseModalTitle">Buy 900 Tokens</h3><p id="purchaseModalHelp" style="color:var(--text-dim);margin-bottom:16px">After completing the payment, record your receipt and send it in the LexusHub server. Please join the server first.</p><button class="btn btn-s btn-full" style="margin-bottom:10px" onclick="copyInviteLink()">Copy invite link</button><div id="tokenPurchaseStep"><div style="display:flex;gap:8px"><button class="btn btn-s" style="flex:1" onclick="closeTokenPurchase()">Cancel</button><button class="btn btn-p" style="flex:1" onclick="showPurchaseDiscord()">Confirm</button></div></div><div id="tokenPurchaseDiscord" style="display:none"><label>Discord Username</label><input class="input" id="purchaseDiscord" placeholder="username" maxlength="40"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-s" style="flex:1" onclick="closeTokenPurchase()">Cancel</button><button class="btn btn-p" style="flex:1" onclick="submitTokenOrder()">Confirm</button></div></div></div></div>
 <!-- Build details dialog -->
 <div class="modal-bg" id="buildDetailsModal"><div class="modal" style="max-width:760px"><a class="preview-close" href="#builds" onclick="closeBuildDetails(false)">×</a><h3 id="buildDetailsTitle">Build Details</h3><div id="buildDetailsContent"></div></div></div>
 <div class="modal-bg" id="checklistModal"><div class="modal" style="max-width:620px"><a class="preview-close" href="#builds" onclick="closeChecklist(false)">×</a><h3 id="checklistTitle">Build Checklist</h3><div id="checklistContent"><div class="empty">Loading checklist...</div></div></div></div>
 <!-- Modals -->
 <div class="modal-bg" id="modal"><div class="modal"><h3>Owner</h3><div class="m-user"><div><div style="font-weight:600" id="mName">Unknown</div><div style="color:var(--text-dim);font-size:0.82em" id="mEmail">Hidden</div></div></div><button class="btn btn-d" style="width:100%" onclick="closeModal()">Close</button></div></div>
 <div class="modal-bg" id="banModal"><div class="modal"><h3> Ban User</h3><div id="banTarget" style="font-weight:600;margin-bottom:16px"></div><div class="field"><label>Duration</label><select class="input" id="banDuration"><option value="permanent">Permanent</option><option value="1h">1 Hour</option><option value="6h">6 Hours</option><option value="12h">12 Hours</option><option value="1d">1 Day</option><option value="3d">3 Days</option><option value="7d">7 Days</option><option value="14d">14 Days</option><option value="30d">30 Days</option></select></div><div class="field"><label>Reason</label><input type="text" class="input" id="banReason" placeholder="Rule violation..."></div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-d" style="flex:1" onclick="confirmBan()">Ban</button><button class="btn btn-s" style="flex:1" onclick="closeBanModal()">Cancel</button></div></div></div>
-<div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to Lexushub Features</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
+<div class="modal-bg" id="loginModal"><div class="modal"><h3>Login to LexusHub</h3><p style="font-size:0.85em;color:var(--text-dim);margin-bottom:20px">Choose your preferred login method.</p><div style="display:flex;flex-direction:column;gap:10px"><button class="discord-btn" onclick="login('discord')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M19.27 4.57C17.75 3.86 16.12 3.35 14.41 3.06c-.21.37-.45.77-.61 1.14-1.83-.27-3.65-.27-5.44 0-.17-.37-.41-.77-.63-1.14-1.71.29-3.34.8-4.86 1.51C.8 8.97-.01 13.27.21 17.51c2.05 1.51 4.04 2.43 5.99 3.03.48-.66.91-1.38 1.27-2.14-1.1-.41-2.15-.93-3.12-1.56.26-.19.52-.39.77-.6 3.93 1.81 8.19 1.81 12.06 0 .25.21.51.41.77.6-.97.63-2.02 1.15-3.12 1.56.36.76.79 1.48 1.27 2.14 1.95-.6 3.94-1.52 5.99-3.03.28-4.88-.47-9.13-2.86-12.94zM8.02 15.33c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42zm7.97 0c-1.18 0-2.15-1.08-2.15-2.42 0-1.33.95-2.42 2.15-2.42 1.21 0 2.17 1.08 2.15 2.42 0-1.33-.94 2.42-2.15 2.42z"/></svg> Login with Discord</button><button class="gmail-btn" onclick="login('google')"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Login with Google</button></div><button class="btn btn-s btn-full" onclick="closeLoginModal()">Cancel</button></div></div>
 
 <!-- 3D Preview Modal -->
 <div class="modal-bg" id="previewModalBg">
@@ -917,7 +844,7 @@
 </div>
 
 <script>
-const SB_URL='https://tzrmfivprjmbruykwwol.supabase.co',SB_KEY='sb_publishable_F5oTPMwXunZUm_kDECf-cg_XsfDkxUC';
+const SB_URL='https://puhusbessxmmstfxdowr.supabase.co',SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1aHVzYmVzc3htbXN0Znhkb3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjU4MjIsImV4cCI6MjA4OTI0MTgyMn0.7tW48EhCOz6H4cDxF6AuqUH9m8SoXWwj2Cn_rqucm1w';
 const sb=supabase.createClient(SB_URL,SB_KEY);
 let user=null,bannedList=[],allBuilds=[],dlCooldowns={},pendingBanEmail='',pendingBanName='',lastUpload=0,adminLoginTarget=null;
 const ADMIN='amd156935@gmail.com',DISCORD='https://discord.gg/5DUGs9KvE';
@@ -1688,7 +1615,7 @@ async function recordUniqueDownload(buildId){if(!user)return null;try{const{data
 function closeTokenPurchase(){document.getElementById('tokenPurchaseModal')?.classList.remove('show')}
 function showPurchaseDiscord(){document.getElementById('tokenPurchaseStep').style.display='none';document.getElementById('tokenPurchaseDiscord').style.display='block'}
 let pendingPurchaseType='tokens';
-function openTokenPurchase(type='tokens'){pendingPurchaseType=type;const lifetime=type==='lifetime';document.getElementById('purchaseModalTitle').textContent=lifetime?'Buy Lifetime — $5':'Buy 900 Tokens';document.getElementById('purchaseModalHelp').textContent=lifetime?'After completing the $5 payment, record your receipt and send it in the Lexushub Features server. Someone will send you your lifetime key. Please join the server first.':'After completing the payment for 900 tokens, record your receipt and send it in the Lexushub Features server. Someone will send you the key. Please join the server first.';document.getElementById('tokenPurchaseModal')?.classList.add('show');document.getElementById('tokenPurchaseStep').style.display='block';document.getElementById('tokenPurchaseDiscord').style.display='none'}
+function openTokenPurchase(type='tokens'){pendingPurchaseType=type;const lifetime=type==='lifetime';document.getElementById('purchaseModalTitle').textContent=lifetime?'Buy Lifetime — $5':'Buy 900 Tokens';document.getElementById('purchaseModalHelp').textContent=lifetime?'After completing the $5 payment, record your receipt and send it in the LexusHub server. Someone will send you your lifetime key. Please join the server first.':'After completing the payment for 900 tokens, record your receipt and send it in the LexusHub server. Someone will send you the key. Please join the server first.';document.getElementById('tokenPurchaseModal')?.classList.add('show');document.getElementById('tokenPurchaseStep').style.display='block';document.getElementById('tokenPurchaseDiscord').style.display='none'}
 async function copyInviteLink(){try{await navigator.clipboard.writeText(DISCORD);toast('Invite link copied','ok')}catch(e){prompt('Copy this invite link:',DISCORD)}}
 async function submitTokenOrder(){if(!user){toast('Please log in first','warn');return}const discord=document.getElementById('purchaseDiscord').value.trim();if(!discord){toast('Discord username required','err');return}const amount=pendingPurchaseType==='lifetime'?5:900;try{const{error}=await sb.from('token_orders').insert([{user_id:user.id,discord_username:discord,amount,status:'pending'}]);if(error)throw error;closeTokenPurchase();toast(pendingPurchaseType==='lifetime'?'Request submitted. Send your receipt in the server.':'Request submitted. Send your receipt in the server.','ok')}catch(e){toast(e.message||'Could not submit purchase request','err')}}
 //  DOWNLOAD 
@@ -2237,73 +2164,5 @@ window.addEventListener('load',()=>{
     // Authentication is optional for public preview tools and cannot block the app shell.
     void initAuth();
 });
-
-// ================== LEXUSHUB FEATURES PREMIUM ==================
-const PREMIUM_ADMIN_EMAIL = 'amd156935@gmail.com';
-const PREMIUM_DISCORD_URL = 'https://discord.gg/5DUGs9KvE';
-const PREMIUM_OWNER_NAME = 'xploit';
-const PREMIUM_GRANTS_KEY = 'glb_to_build_premium_grants_v1';
-function premiumNormalizeEmail(value){return String(value || '').trim().toLowerCase();}
-function premiumIsGmail(value){return new RegExp('^[^\\s@]+@gmail\\.com$','i').test(premiumNormalizeEmail(value));}
-function premiumReadGrants(){try{const parsed=JSON.parse(localStorage.getItem(PREMIUM_GRANTS_KEY)||'{}');return parsed&&typeof parsed==='object'?parsed:{};}catch(error){return {};}}
-function premiumWriteGrants(grants){localStorage.setItem(PREMIUM_GRANTS_KEY,JSON.stringify(grants));}
-function premiumCurrentEmail(){return premiumNormalizeEmail(document.getElementById('premiumEmail')?.value || user?.email || '');}
-function premiumIsAdmin(){return premiumNormalizeEmail(user?.email || '')===PREMIUM_ADMIN_EMAIL;}
-function premiumGetAccess(email){const normalized=premiumNormalizeEmail(email);if(!premiumIsGmail(normalized))return null;if(normalized===PREMIUM_ADMIN_EMAIL)return {plan:'admin',startsAt:null,expiresAt:null,grantedBy:'system'};const grants=premiumReadGrants();const grant=grants[normalized];if(!grant)return null;if(grant.expiresAt && new Date(grant.expiresAt).getTime()<=Date.now()){delete grants[normalized];premiumWriteGrants(grants);return null;}return grant;}
-function premiumFormatDate(value){if(!value)return 'No expiration';const date=new Date(value);return Number.isNaN(date.getTime())?'Unknown expiration':date.toLocaleString([], {dateStyle:'medium',timeStyle:'short'});}
-function premiumRender(){const email=premiumCurrentEmail();const access=premiumGetAccess(email);const plan=document.getElementById('premiumStatusPlan'),copy=document.getElementById('premiumStatusCopy'),expiry=document.getElementById('premiumStatusExpiry'),badge=document.getElementById('premiumStatusBadge'),bar=document.getElementById('premiumStatusBar');if(!plan)return;if(access){const label=access.plan==='admin'?'Lifetime+ admin':access.plan==='lifetime'?'Lifetime premium':'1-week premium';plan.textContent=label;copy.textContent=access.plan==='admin'?'Admin access is always active.': 'Premium tools are available for this Gmail.';expiry.textContent=access.expiresAt?'Until '+premiumFormatDate(access.expiresAt):'Never expires';badge.textContent='ACTIVE';bar.style.width=access.expiresAt?'72%':'100%';}else{plan.textContent=email?'No active access':'Guest mode';copy.textContent=email?'No access record found for this Gmail yet.':'Enter your Gmail below to check local access status.';expiry.textContent='No active access';badge.textContent='CHECK STATUS';bar.style.width='18%';}premiumRenderAdmin();}
-function premiumStartTrial(){const email=premiumCurrentEmail();if(!premiumIsGmail(email)){toast('Enter a valid Gmail address first','err');return;}const grants=premiumReadGrants(),now=new Date(),expires=new Date(now.getTime()+7*24*60*60*1000);grants[email]={plan:'week',startsAt:now.toISOString(),expiresAt:expires.toISOString(),grantedBy:'self-preview'};premiumWriteGrants(grants);premiumRender();toast('Seven-day preview activated on this device','ok');}
-function openPremiumPurchase(plan){const modal=document.getElementById('premiumPurchaseModal');if(!modal)return;const chosen=plan==='lifetime'?'Lifetime premium — $15':'1-week premium — $5';document.getElementById('premiumPurchaseTitle').textContent=chosen;document.getElementById('premiumPurchasePlan').textContent=chosen;modal.classList.add('show');}
-function closePremiumPurchase(){document.getElementById('premiumPurchaseModal')?.classList.remove('show');}
-async function premiumCopyMessage(){const email=premiumCurrentEmail()||'your Gmail';const text='Hi xploit, I want '+(document.getElementById('premiumPurchasePlan')?.textContent||'GLB to Build Premium')+'. My Gmail is '+email+'.';try{await navigator.clipboard.writeText(text);toast('Message copied — paste it in Discord','ok');}catch(error){toast('Copy failed; use the message shown in the dialog','warn');}}
-function premiumGrantAccess(){if(!premiumIsAdmin()){toast('Admin access required','err');return;}const email=premiumNormalizeEmail(document.getElementById('premiumGrantEmail')?.value);const plan=document.getElementById('premiumGrantPlan')?.value||'week';if(!premiumIsGmail(email)){toast('Enter a valid Gmail address','err');return;}if(email===PREMIUM_ADMIN_EMAIL){toast('Admin already has Lifetime+','warn');return;}const grants=premiumReadGrants(),now=new Date(),expires=plan==='lifetime'?null:new Date(now.getTime()+7*24*60*60*1000).toISOString();grants[email]={plan,startsAt:now.toISOString(),expiresAt:expires,grantedBy:PREMIUM_ADMIN_EMAIL};premiumWriteGrants(grants);document.getElementById('premiumGrantEmail').value='';premiumRender();toast((plan==='lifetime'?'Lifetime':'1-week')+' access granted','ok');}
-function premiumRevokeAccess(email){if(!premiumIsAdmin())return;const grants=premiumReadGrants();delete grants[premiumNormalizeEmail(email)];premiumWriteGrants(grants);premiumRender();toast('Access revoked','ok');}
-function premiumRenderAdmin(){const panel=document.getElementById('premiumAdminPanel'),list=document.getElementById('premiumGrantList');if(!panel||!list)return;panel.hidden=!premiumIsAdmin();if(!premiumIsAdmin())return;const grants=premiumReadGrants(),entries=Object.entries(grants);list.innerHTML=entries.length?entries.map(function(entry){const email=entry[0],grant=entry[1];return '<div class="premium-grant-row"><div><strong>'+esc(email)+'</strong><br><span>'+(grant.plan==='lifetime'?'Lifetime':'1 week')+' · granted '+premiumFormatDate(grant.startsAt)+'</span></div><button class="btn btn-s" type="button" style="padding:7px 10px" data-email="'+esc(email)+'" onclick="premiumRevokeAccess(this.dataset.email)">Revoke</button></div>';}).join(''):'<div class="premium-empty">No local grants yet.</div>';}
-document.addEventListener('click',function(event){const link=event.target.closest('a[data-t="premium"],a[data-t="tutorial"]');if(link)setTimeout(premiumRender,30);});
-setTimeout(premiumRender,250);
-
-
-// ================== LEXUSHUB FEATURES ACCESS + GLB LOCK ==================
-let premiumRemoteAccess = false;
-function premiumSyncAuthenticatedEmail(){
-    const input=document.getElementById('premiumEmail');
-    if(!input)return;
-    const email=premiumNormalizeEmail(user?.email || '');
-    if(email) input.value=email;
-    else if(!user) input.value='';
-}
-function premiumHasActiveAccess(){
-    const email=premiumNormalizeEmail(user?.email || '');
-    return !!email && (email===PREMIUM_ADMIN_EMAIL || premiumRemoteAccess || !!premiumGetAccess(email));
-}
-function premiumApplyGlbLock(){
-    const section=document.getElementById('glbtobuild'),lock=document.getElementById('glbPremiumLock');
-    if(!section||!lock)return;
-    const active=premiumHasActiveAccess();
-    section.classList.toggle('premium-locked',!active);
-    lock.hidden=active;
-    section.querySelectorAll('input,select,button').forEach(function(control){
-        if(control.closest('#glbPremiumLock'))return;
-        if(!control.dataset.premiumOriginalDisabled)control.dataset.premiumOriginalDisabled=control.disabled?'1':'0';
-        control.disabled=active ? control.dataset.premiumOriginalDisabled==='1' : true;
-    });
-}
-async function premiumLoadRemoteAccess(){
-    premiumSyncAuthenticatedEmail();
-    premiumRemoteAccess=false;
-    if(user?.email && !premiumIsAdmin()){
-        try{const result=await sb.rpc('has_premium_access',{p_email:user.email});premiumRemoteAccess=result?.error?false:result?.data===true;}catch(error){console.warn('Premium access lookup unavailable:',error?.message||error);}
-    }
-    premiumRender();
-    premiumApplyGlbLock();
-}
-const premiumBaseRender = premiumRender;
-premiumRender = function(){premiumSyncAuthenticatedEmail();premiumBaseRender();premiumApplyGlbLock();};
-try{sb.auth.onAuthStateChange(function(){setTimeout(premiumLoadRemoteAccess,0);});}catch(error){console.warn('Premium auth listener unavailable:',error?.message||error);}
-setTimeout(premiumLoadRemoteAccess,350);
-
-
-
-
 </script>
 </body>
